@@ -1,0 +1,63 @@
+Dag Stijn,
+
+Ik heb de scripts op je intern gezet:
+
+W:\Uitwisseling\intern\Stijn_c\py_proc_psensor
+
+De namen van de scripts wijzen naar de verschillende stappen in de omzetting van V(olt)->p-(druk)>eta (verheffing)-> golfparameters (voor korte (SW) en lange (LW) golven)
+In de memo wordt verwezen naar de scripts.
+
+https://wl.vlaanderen.be/18_053/ProjectDocumenten/WL2022M18_053_12_vergelijking_radac_druksensor_Jachthaven.docx
+
+Hopelijk kan je er je plan mee trekken. Mocht je ergens mee vast zitten, laat maar horen.
+
+Groet,
+D
+
+
+Van: Claeys Styn <stijn.claeys@mow.vlaanderen.be> 
+Verzonden: donderdag 22 juni 2023 10:34
+Aan: Vanneste Dieter <dieter.vanneste@mow.vlaanderen.be>
+Onderwerp: Script HF druk-golvenmeter
+
+Beste Dieter,
+
+Zou ik je script voor de verwerking van de hoog frequente druksensor kunnen bekomen (python?).
+Ik zou deze willen gebruiken om een eerste check uit te voeren op de opgenomen data.
+
+Vriendelijke groeten,
+
+Styn 
+
+
+
+Styn Claeys
+Hoofd Instrumentatie en Techniek WL HIC
+Manager Instruments & Techniques WL HIC
+
+ 
+
+DEPARTEMENT MOBILITEIT & OPENBARE WERKEN
+Waterbouwkundig Laboratorium
+T 03 224 61 72 M 0490 66 05 59
+stijn.claeys@mow.vlaanderen.be
+Berchemlei 115, 2140 Antwerpen
+mow.vlaanderen.be
+waterbouwkundiglaboratorium.be
+
+Hydrologisch Informatie Centrum
+T 03 224 6040 (HIC-permanentie)
+hic@vlaanderen.be
+waterinfo.be
+
+
+Volg ons op Facebook   Twitter  LinkedIn  
+
+ 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ 
+
+
