@@ -12,10 +12,11 @@ import numpy as np
 plt.ion()
 
 
-def select_directory():
+def select_directory(title="Selecteer Directory"):
+    """Toon een dialoog om een directory te kiezen."""
     root = tk.Tk()
     root.withdraw()
-    return filedialog.askdirectory(title="Selecteer Directory")
+    return filedialog.askdirectory(title=title)
 
 
 def get_offset_input(label):
@@ -37,6 +38,30 @@ def get_file_creation_time(file_path):
     except Exception as e:
         print(f"Fout bij het verkrijgen van aanmaakdatum voor {file_path}: {e}")
         return datetime.now()
+
+
+def dataset_selection_gui():
+    """Toon een eerste venster om te kiezen welke datasets verwerkt worden."""
+    root = tk.Tk()
+    root.title("Kies datasets")
+
+    use_wave_var = tk.BooleanVar(value=False)
+    use_mon_var = tk.BooleanVar(value=False)
+    use_ref_var = tk.BooleanVar(value=False)
+
+    ttk.Checkbutton(root, text="HF druksensor gegevens",
+                    variable=use_wave_var).pack(anchor="w", padx=10, pady=2)
+    ttk.Checkbutton(root, text="Diver gegevens",
+                    variable=use_mon_var).pack(anchor="w", padx=10, pady=2)
+    ttk.Checkbutton(root, text="Referentiedruk (DDR) gegevens",
+                    variable=use_ref_var).pack(anchor="w", padx=10, pady=2)
+
+    def proceed():
+        root.destroy()
+
+    ttk.Button(root, text="Verder", command=proceed).pack(pady=10)
+    root.mainloop()
+    return use_wave_var.get(), use_mon_var.get(), use_ref_var.get()
 
 
 def process_wave_file(file_path, pressure_offset=0):
@@ -103,80 +128,58 @@ def convert_pressure_units(pressure_pa):
 
 
 def display_pressure_summary(df_wave, df_mon, df_reference):
+    """Toon een samenvatting van de gemeten drukken."""
     try:
-        wave_start = df_wave['Pressure'].iloc[0]
-        wave_end = df_wave['Pressure'].iloc[-1]
-        wave_max = df_wave['Pressure'].max()
+        summary_rows = []
 
-        mon_start = df_mon['Pressure'].iloc[0]
-        mon_end = df_mon['Pressure'].iloc[-1]
-        mon_max = df_mon['Pressure'].max()
+        if not df_wave.empty:
+            wave_start = df_wave['Pressure'].iloc[0]
+            wave_end = df_wave['Pressure'].iloc[-1]
+            wave_max = df_wave['Pressure'].max()
+            summary_rows.extend([
+                ('HF Druksonde Start', wave_start),
+                ('HF Druksonde Eind', wave_end),
+                ('HF Druksonde Max', wave_max)
+            ])
+
+        if not df_mon.empty:
+            mon_start = df_mon['Pressure'].iloc[0]
+            mon_end = df_mon['Pressure'].iloc[-1]
+            mon_max = df_mon['Pressure'].max()
+            summary_rows.extend([
+                ('Diver Druk Start', mon_start),
+                ('Diver Druk Eind', mon_end),
+                ('Diver Druk Max', mon_max)
+            ])
 
         if not df_reference.empty:
             ref_start = df_reference['Pressure'].iloc[0]
             ref_end = df_reference['Pressure'].iloc[-1]
             ref_max = df_reference['Pressure'].max()
-        else:
-            ref_start = ref_end = ref_max = np.nan
+            summary_rows.extend([
+                ('Referentie Sensor Start', ref_start),
+                ('Referentie Sensor Eind', ref_end),
+                ('Referentie Sensor Max', ref_max)
+            ])
+
+        if not summary_rows:
+            messagebox.showinfo("Geen Data", "Geen data om samen te vatten.")
+            return
 
         summary_data = {
-            'Druksoort': [
-                'HF Druksonde Start', 'HF Druksonde Eind', 'HF Druksonde Max',
-                'Diver Druk Start', 'Diver Druk Eind', 'Diver Druk Max'
-            ],
-            'Druk (Pa)': [
-                wave_start, wave_end, wave_max,
-                mon_start, mon_end, mon_max
-            ],
-            'Druk (mmH₂O)': [
-                convert_pressure_units(wave_start)[1],
-                convert_pressure_units(wave_end)[1],
-                convert_pressure_units(wave_max)[1],
-                convert_pressure_units(mon_start)[1],
-                convert_pressure_units(mon_end)[1],
-                convert_pressure_units(mon_max)[1]
-            ],
-            'Druk (mmHg)': [
-                convert_pressure_units(wave_start)[2],
-                convert_pressure_units(wave_end)[2],
-                convert_pressure_units(wave_max)[2],
-                convert_pressure_units(mon_start)[2],
-                convert_pressure_units(mon_end)[2],
-                convert_pressure_units(mon_max)[2]
-            ],
-            'Druk (bar)': [
-                convert_pressure_units(wave_start)[3],
-                convert_pressure_units(wave_end)[3],
-                convert_pressure_units(wave_max)[3],
-                convert_pressure_units(mon_start)[3],
-                convert_pressure_units(mon_end)[3],
-                convert_pressure_units(mon_max)[3]
-            ]
+            'Druksoort': [],
+            'Druk (Pa)': [],
+            'Druk (mmH₂O)': [],
+            'Druk (mmHg)': [],
+            'Druk (bar)': []
         }
 
-        if not df_reference.empty:
-            summary_data['Druksoort'].extend([
-                'Referentie Sensor Start', 'Referentie Sensor Eind',
-                'Referentie Sensor Max'
-            ])
-            summary_data['Druk (Pa)'].extend([
-                ref_start, ref_end, ref_max
-            ])
-            summary_data['Druk (mmH₂O)'].extend([
-                convert_pressure_units(ref_start)[1],
-                convert_pressure_units(ref_end)[1],
-                convert_pressure_units(ref_max)[1]
-            ])
-            summary_data['Druk (mmHg)'].extend([
-                convert_pressure_units(ref_start)[2],
-                convert_pressure_units(ref_end)[2],
-                convert_pressure_units(ref_max)[2]
-            ])
-            summary_data['Druk (bar)'].extend([
-                convert_pressure_units(ref_start)[3],
-                convert_pressure_units(ref_end)[3],
-                convert_pressure_units(ref_max)[3]
-            ])
+        for soort, druk in summary_rows:
+            summary_data['Druksoort'].append(soort)
+            summary_data['Druk (Pa)'].append(druk)
+            summary_data['Druk (mmH₂O)'].append(convert_pressure_units(druk)[1])
+            summary_data['Druk (mmHg)'].append(convert_pressure_units(druk)[2])
+            summary_data['Druk (bar)'].append(convert_pressure_units(druk)[3])
 
         df_summary = pd.DataFrame(summary_data)
 
@@ -208,16 +211,26 @@ def display_pressure_summary(df_wave, df_mon, df_reference):
 def create_time_selection_gui(df_wave, df_mon, df_reference,
                               selected_directory,
                               update_plot_callback,
-                              export_and_close_callback):
+                              export_and_close_callback,
+                              show_wave=True,
+                              show_mon=True):
     root = tk.Tk()
     root.title("Tijdselectie voor Grafiek")
 
-    min_time = min(df_wave['Datetime'].min(), df_mon['Datetime'].min())
+    time_values = []
+    if not df_wave.empty:
+        time_values.extend([df_wave['Datetime'].min(), df_wave['Datetime'].max()])
+    if not df_mon.empty:
+        time_values.extend([df_mon['Datetime'].min(), df_mon['Datetime'].max()])
     if not df_reference.empty:
-        min_time = min(min_time, df_reference['Datetime'].min())
-    max_time = max(df_wave['Datetime'].max(), df_mon['Datetime'].max())
-    if not df_reference.empty:
-        max_time = max(max_time, df_reference['Datetime'].max())
+        time_values.extend([df_reference['Datetime'].min(), df_reference['Datetime'].max()])
+
+    if not time_values:
+        messagebox.showerror("Geen Data", "Er is geen data om te tonen.")
+        return
+
+    min_time = min(time_values)
+    max_time = max(time_values)
 
     ttk.Label(root, text="Begin tijd (YYYY-MM-DD HH:MM:SS):").grid(
         row=0, column=0, padx=5, pady=5, sticky='e')
@@ -231,13 +244,18 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
     end_time_entry.insert(0, max_time.strftime("%Y-%m-%d %H:%M:%S"))
     end_time_entry.grid(row=1, column=1, padx=5, pady=5)
 
-    use_wave_var = tk.BooleanVar(value=True)
-    use_mon_var = tk.BooleanVar(value=True)
+    use_wave_var = tk.BooleanVar(value=show_wave)
+    use_mon_var = tk.BooleanVar(value=show_mon)
 
-    ttk.Checkbutton(root, text="Gebruik HF gegevens",
-                    variable=use_wave_var).grid(row=2, column=0, sticky='w', padx=5)
-    ttk.Checkbutton(root, text="Gebruik Diver gegevens",
-                    variable=use_mon_var).grid(row=3, column=0, sticky='w', padx=5)
+    row_idx = 2
+    if not df_wave.empty:
+        ttk.Checkbutton(root, text="Gebruik HF gegevens",
+                        variable=use_wave_var).grid(row=row_idx, column=0, sticky='w', padx=5)
+        row_idx += 1
+    if not df_mon.empty:
+        ttk.Checkbutton(root, text="Gebruik Diver gegevens",
+                        variable=use_mon_var).grid(row=row_idx, column=0, sticky='w', padx=5)
+        row_idx += 1
 
     def update_plot():
         try:
@@ -273,9 +291,9 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
                                  "Gebruik het juiste formaat: YYYY-MM-DD HH:MM:SS")
 
     ttk.Button(root, text="Update Grafiek",
-               command=update_plot).grid(row=4, column=0, padx=5, pady=10, sticky='e')
+               command=update_plot).grid(row=row_idx, column=0, padx=5, pady=10, sticky='e')
     ttk.Button(root, text="Export Data en Sluiten",
-               command=export_and_close).grid(row=4, column=1, padx=5, pady=10, sticky='w')
+               command=export_and_close).grid(row=row_idx, column=1, padx=5, pady=10, sticky='w')
 
     root.mainloop()
 
@@ -333,6 +351,12 @@ def plot_xy_regression_with_slider(df_wave, df_mon,
                                    start_time=None, end_time=None,
                                    show_wave=True, show_mon=True):
     try:
+        if not show_wave or not show_mon or df_wave.empty or df_mon.empty:
+            messagebox.showinfo(
+                "Regressie niet mogelijk",
+                "Voor regressie zijn zowel HF- als Divergegevens nodig.")
+            return
+
         fig, ax = plt.subplots(figsize=(8, 6))
         plt.subplots_adjust(bottom=0.25)
 
@@ -352,8 +376,8 @@ def plot_xy_regression_with_slider(df_wave, df_mon,
         merged_df = merged_df[(merged_df['Pressure_hf'] <= 2100) &
                               (merged_df['Pressure_diver'] <= 2100)]
 
-        x = merged_df['Pressure_hf'] if show_wave else merged_df['Pressure_diver']*0
-        y = merged_df['Pressure_diver'] if show_mon else merged_df['Pressure_hf']*0
+        x = merged_df['Pressure_hf']
+        y = merged_df['Pressure_diver']
 
         ax.scatter(x, y, color='blue', label='Data')
 
@@ -396,8 +420,8 @@ def plot_xy_regression_with_slider(df_wave, df_mon,
                 merged = merged[(merged['Pressure_hf'] <= 2100) &
                                 (merged['Pressure_diver'] <= 2100)]
 
-                x_new = merged['Pressure_hf'] if show_wave else merged['Pressure_diver']*0
-                y_new = merged['Pressure_diver'] if show_mon else merged['Pressure_hf']*0
+                x_new = merged['Pressure_hf']
+                y_new = merged['Pressure_diver']
 
                 valid_mask = (~np.isnan(x_new)) & (~np.isnan(y_new))
                 x_valid = x_new[valid_mask]
@@ -470,95 +494,118 @@ def export_data(df_wave, df_mon, selected_directory,
             f"Er is een fout opgetreden bij het exporteren van de data:\n{e}")
 
 
-def load_reference_sensor_data():
-    reference_data = [
-        ('22/10/2024 12:49:15', 1044.8),
-        ('22/10/2024 12:49:20', 1366),
-        ('22/10/2024 12:49:25', 1629.4),
-        ('22/10/2024 12:49:30', 1716.7),
-        ('22/10/2024 12:50:30', 1677.9),
-        ('22/10/2024 12:51:02', 1668.8)
-    ]
-    df_reference = pd.DataFrame(reference_data, columns=['Datetime', 'Pressure'])
+def load_reference_sensor_data(file_path):
+    """Lees een referentiedrukbestand met kolommen DatumTijd en Druk."""
     try:
-        df_reference['Datetime'] = pd.to_datetime(df_reference['Datetime'],
-                                                 format="%d/%m/%Y %H:%M:%S")
+        df_reference = pd.read_csv(file_path)
+        if df_reference.shape[1] >= 2:
+            df_reference = df_reference.iloc[:, :2]
+            df_reference.columns = ['Datetime', 'Pressure']
+        df_reference['Datetime'] = pd.to_datetime(df_reference['Datetime'])
+        df_reference['Pressure'] = pd.to_numeric(df_reference['Pressure'], errors='coerce')
+        df_reference.dropna(inplace=True)
+        return df_reference
     except Exception as e:
-        print(f"Fout bij het converteren van datumtijd voor referentiesensor: {e}")
-        df_reference['Datetime'] = pd.to_datetime(df_reference['Datetime'], errors='coerce')
-    return df_reference
+        print(f"Fout bij het lezen van referentiedrukbestand: {e}")
+        return pd.DataFrame()
 
 
 def main():
-    selected_directory = select_directory()
-    if not selected_directory:
-        messagebox.showwarning("Geen Directory Geselecteerd", "Er is geen directory geselecteerd.")
+    use_wave, use_mon, use_ref = dataset_selection_gui()
+    if not any([use_wave, use_mon, use_ref]):
+        messagebox.showwarning("Geen keuze", "Geen datasets geselecteerd.")
         return
 
-    files = [f for f in os.listdir(selected_directory)
-             if f.lower().endswith('.csv') and not f.endswith('_filtered.csv')
-             and f != 'combined_data_filtered.csv']
-    if not files:
-        messagebox.showwarning("Geen CSV-bestanden",
-                               "Geen CSV-bestanden gevonden in de geselecteerde directory (geen ongefilterde .csv bestanden).")
+    df_wave = pd.DataFrame()
+    df_mon = pd.DataFrame()
+    df_reference = pd.DataFrame()
+    selected_directory = ""
+
+    if use_wave:
+        selected_directory = select_directory("Selecteer HF druksensor directory")
+        if selected_directory:
+            files = [f for f in os.listdir(selected_directory)
+                     if f.lower().endswith('.csv') and not f.endswith('_filtered.csv')
+                     and f != 'combined_data_filtered.csv']
+            if not files:
+                messagebox.showwarning("Geen CSV-bestanden",
+                                       "Geen CSV-bestanden gevonden in de geselecteerde directory (geen ongefilterde .csv bestanden).")
+                use_wave = False
+            else:
+                all_measurements = []
+                all_timestamps = []
+                wave_pressure_offset = get_offset_input('HF druksonde druk')
+                for file in files:
+                    file_path = os.path.join(selected_directory, file)
+                    measurements = process_wave_file(file_path, wave_pressure_offset)
+                    if measurements is not None:
+                        creation_time = get_file_creation_time(file_path)
+                        timestamps = [creation_time + timedelta(seconds=i/8)
+                                      for i in range(len(measurements))]
+                        all_measurements.extend(measurements)
+                        all_timestamps.extend(timestamps)
+                df_wave = pd.DataFrame({'Datetime': all_timestamps, 'Pressure': all_measurements})
+        else:
+            messagebox.showwarning("Geen Directory Geselecteerd", "Er is geen directory geselecteerd.")
+            use_wave = False
+
+    if use_mon:
+        mon_file = filedialog.askopenfilename(title="Selecteer een .mon bestand (Diver)",
+                                              filetypes=[("MON bestanden", "*.mon")])
+        if mon_file:
+            mon_pressure_offset = get_offset_input('Diver druk')
+            mon_time_offset = get_offset_input('Diver tijd (in seconden)')
+            data_lines = read_mon_file(mon_file)
+            if data_lines:
+                df_mon = parse_mon_data(data_lines, mon_pressure_offset, mon_time_offset)
+                if df_mon.empty:
+                    messagebox.showerror("Geen Data", "Geen geldige data geparsed uit het .mon bestand.")
+                    use_mon = False
+            else:
+                messagebox.showerror("Geen Data", "Geen data gevonden in het .mon bestand.")
+                use_mon = False
+        else:
+            messagebox.showwarning("Geen Bestand Geselecteerd", "Er is geen .mon bestand geselecteerd.")
+            use_mon = False
+
+    if use_ref:
+        ref_file = filedialog.askopenfilename(title="Selecteer DDR referentiedruk bestand",
+                                              filetypes=[("CSV bestanden", "*.csv"), ("Alle bestanden", "*.*")])
+        if ref_file:
+            df_reference = load_reference_sensor_data(ref_file)
+            if df_reference.empty:
+                messagebox.showerror("Geen Data", "Kon referentiedrukbestand niet inlezen.")
+                use_ref = False
+        else:
+            messagebox.showwarning("Geen bestand geselecteerd", "Er is geen DDR bestand geselecteerd.")
+            use_ref = False
+
+    if df_wave.empty and df_mon.empty and df_reference.empty:
+        messagebox.showerror("Geen Data", "Er kon geen data worden geladen.")
         return
 
-    all_measurements = []
-    all_timestamps = []
-    wave_pressure_offset = get_offset_input('HF druksonde druk')
-
-    for file in files:
-        file_path = os.path.join(selected_directory, file)
-        measurements = process_wave_file(file_path, wave_pressure_offset)
-        if measurements is not None:
-            creation_time = get_file_creation_time(file_path)
-            timestamps = [creation_time + timedelta(seconds=i/8)
-                          for i in range(len(measurements))]
-            all_measurements.extend(measurements)
-            all_timestamps.extend(timestamps)
-
-    df_wave = pd.DataFrame({'Datetime': all_timestamps, 'Pressure': all_measurements})
-
-    mon_file = filedialog.askopenfilename(title="Selecteer een .mon bestand",
-                                          filetypes=[("MON bestanden", "*.mon")])
-    if not mon_file:
-        messagebox.showwarning("Geen Bestand Geselecteerd", "Er is geen .mon bestand geselecteerd.")
-        return
-
-    mon_pressure_offset = get_offset_input('Diver druk')
-    mon_time_offset = get_offset_input('Diver tijd (in seconden)')
-
-    data_lines = read_mon_file(mon_file)
-    if not data_lines:
-        messagebox.showerror("Geen Data", "Geen data gevonden in het .mon bestand.")
-        return
-
-    df_mon = parse_mon_data(data_lines, mon_pressure_offset, mon_time_offset)
-    if df_mon.empty:
-        messagebox.showerror("Geen Data", "Geen geldige data geparsed uit het .mon bestand.")
-        return
-
-    df_reference = load_reference_sensor_data()
     display_pressure_summary(df_wave, df_mon, df_reference)
 
-    def update_plot_with_time_range(start, end, use_wave, use_mon):
+    def update_plot_with_time_range(start, end, show_wave_choice, show_mon_choice):
         plot_combined_graph(df_wave, df_mon, df_reference,
-                            start, end, use_wave, use_mon)
+                            start, end, show_wave_choice, show_mon_choice)
         plot_xy_regression_with_slider(df_wave, df_mon,
-                                       start, end, use_wave, use_mon)
+                                       start, end, show_wave_choice, show_mon_choice)
 
-    def export_and_close(start, end, use_wave, use_mon):
+    def export_and_close(start, end, show_wave_choice, show_mon_choice):
         plot_combined_graph(df_wave, df_mon, df_reference,
-                            start, end, use_wave, use_mon)
+                            start, end, show_wave_choice, show_mon_choice)
         plot_xy_regression_with_slider(df_wave, df_mon,
-                                       start, end, use_wave, use_mon)
+                                       start, end, show_wave_choice, show_mon_choice)
         export_data(df_wave, df_mon, selected_directory,
-                    start, end, use_wave, use_mon)
+                    start, end, show_wave_choice, show_mon_choice)
 
     create_time_selection_gui(df_wave, df_mon, df_reference,
                               selected_directory,
                               update_plot_with_time_range,
-                              export_and_close)
+                              export_and_close,
+                              show_wave=use_wave,
+                              show_mon=use_mon)
 
 
 if __name__ == "__main__":
