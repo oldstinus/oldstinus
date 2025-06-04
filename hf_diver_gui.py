@@ -494,16 +494,39 @@ def export_data(df_wave, df_mon, selected_directory,
             f"Er is een fout opgetreden bij het exporteren van de data:\n{e}")
 
 
-def load_reference_sensor_data(file_path):
-    """Lees een referentiedrukbestand met kolommen DatumTijd en Druk."""
+def load_reference_sensor_data(file_path, base_datetime=None):
+    """Lees een referentiedrukbestand dat mogelijk alleen relatieve tijd bevat."""
     try:
         df_reference = pd.read_csv(file_path)
-        if df_reference.shape[1] >= 2:
-            df_reference = df_reference.iloc[:, :2]
-            df_reference.columns = ['Datetime', 'Pressure']
-        df_reference['Datetime'] = pd.to_datetime(df_reference['Datetime'])
-        df_reference['Pressure'] = pd.to_numeric(df_reference['Pressure'], errors='coerce')
-        df_reference.dropna(inplace=True)
+        if df_reference.empty or df_reference.shape[1] < 2:
+            raise ValueError("Te weinig kolommen in referentiedrukbestand")
+
+        cols_lower = [c.lower() for c in df_reference.columns]
+
+        # Zoek de tijd- en drukkolom op basis van veelvoorkomende namen
+        time_col = None
+        pressure_col = None
+        for idx, col in enumerate(cols_lower):
+            if any(key in col for key in ['time', 'tijd', 'datetime', 'datum']):
+                time_col = df_reference.columns[idx]
+            elif any(key in col for key in ['press', 'druk', 'data']):
+                pressure_col = df_reference.columns[idx]
+
+        if time_col is None:
+            time_col = df_reference.columns[0]
+        if pressure_col is None:
+            pressure_col = df_reference.columns[1]
+
+        if 'datetime' in cols_lower or 'datum' in cols_lower:
+            df_reference['Datetime'] = pd.to_datetime(df_reference[time_col])
+        else:
+            if base_datetime is None:
+                base_datetime = datetime.now()
+            df_reference['Datetime'] = base_datetime + pd.to_timedelta(df_reference[time_col], unit='s')
+
+        df_reference['Pressure'] = pd.to_numeric(df_reference[pressure_col], errors='coerce')
+
+        df_reference = df_reference[['Datetime', 'Pressure']].dropna()
         return df_reference
     except Exception as e:
         print(f"Fout bij het lezen van referentiedrukbestand: {e}")
@@ -572,7 +595,12 @@ def main():
         ref_file = filedialog.askopenfilename(title="Selecteer DDR referentiedruk bestand",
                                               filetypes=[("CSV bestanden", "*.csv"), ("Alle bestanden", "*.*")])
         if ref_file:
-            df_reference = load_reference_sensor_data(ref_file)
+            base_dt = None
+            if not df_wave.empty:
+                base_dt = df_wave['Datetime'].min()
+            elif not df_mon.empty:
+                base_dt = df_mon['Datetime'].min()
+            df_reference = load_reference_sensor_data(ref_file, base_dt)
             if df_reference.empty:
                 messagebox.showerror("Geen Data", "Kon referentiedrukbestand niet inlezen.")
                 use_ref = False
