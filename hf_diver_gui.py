@@ -659,12 +659,18 @@ def main():
                                        start, end, show_wave_choice, show_mon_choice)
 
     def export_and_close(start, end, show_wave_choice, show_mon_choice, show_ref_choice):
-        plot_combined_graph(df_wave, df_mon, df_reference,
-                            start, end, show_wave_choice, show_mon_choice, show_ref_choice)
-        plot_xy_regression_with_slider(df_wave, df_mon,
-                                       start, end, show_wave_choice, show_mon_choice)
-        export_data(df_wave, df_mon, df_reference, selected_directory,
-                    start, end, show_wave_choice, show_mon_choice, show_ref_choice)
+        # Alleen data exporteren en daarna de GUI sluiten
+        export_data(
+            df_wave,
+            df_mon,
+            df_reference,
+            selected_directory,
+            start,
+            end,
+            show_wave_choice,
+            show_mon_choice,
+            show_ref_choice,
+        )
 
     create_time_selection_gui(df_wave, df_mon, df_reference,
                               selected_directory,
