@@ -1,33 +1,8 @@
-# # Controleer welke versie van Python wordt gebruikt
-# reticulate::use_python("C:/Users/claeysst/AppData/Local/Programs/Python/Python312/python.exe", required = TRUE)
-# # Navigeer naar de locatie waar je de virtual environment wilt maken
-# cd C:\Users\claeysst\AppData\Local\Programs\Python\Python312
-# 
-# # Maak een nieuwe virtual environment aan
-# python -m venv my_r_venv
-# 
-# # Activeer de virtual environment (Windows)
-# C:\Users\claeysst\AppData\Local\Programs\Python\Python312\my_r_venv\Scripts\activate.bat
-# 
-# # (Voor Mac/Linux zou dit zijn: source my_r_venv/bin/activate)
-Sys.setenv(RETICULATE_PYTHON = "C:/Users/claeysst/Documents/.virtualenvs/my_r_venv/Scripts/python.exe")
-library(reticulate)
-
-# Gebruik dubbele backslashes in het pad
-use_virtualenv("C:\\Users\\claeysst\\AppData\\Local\\Programs\\Python\\Python312\\my_r_venv", required = TRUE)
-
-# Controleer de Python-configuratie
-py_config()
-pd <- import("pandas")
-library(reticulate)
-
-# Specificeer het pad naar de virtual environment (pas het pad aan naar jouw venv locatie)
-reticulate::use_virtualenv("C:/Users/claeysst/AppData/Local/Programs/Python/Python312/my_r_venv/scripts", required = TRUE)
-
-# Controleer of de configuratie juist is
-py_config()
-
-
+"""Utility script to convert data from a YSI handheld logger to an interactive
+HTML chart.  The previous version of this file mixed in R `reticulate` setup
+code, which caused a syntax error when running the script with Python.  The R
+setup commands have been removed so that the file now contains valid Python
+only."""
 
 import pandas as pd
 import plotly.graph_objects as go
