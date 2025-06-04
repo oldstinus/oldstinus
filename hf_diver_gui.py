@@ -214,7 +214,8 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
                               update_plot_callback,
                               export_and_close_callback,
                               show_wave=True,
-                              show_mon=True):
+                              show_mon=True,
+                              show_ref=True):
     root = tk.Tk()
     root.title("Tijdselectie voor Grafiek")
 
@@ -247,6 +248,7 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
 
     use_wave_var = tk.BooleanVar(value=show_wave)
     use_mon_var = tk.BooleanVar(value=show_mon)
+    use_ref_var = tk.BooleanVar(value=show_ref)
 
     row_idx = 2
     if not df_wave.empty:
@@ -256,6 +258,10 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
     if not df_mon.empty:
         ttk.Checkbutton(root, text="Gebruik Diver gegevens",
                         variable=use_mon_var).grid(row=row_idx, column=0, sticky='w', padx=5)
+        row_idx += 1
+    if not df_reference.empty:
+        ttk.Checkbutton(root, text="Gebruik Referentie gegevens",
+                        variable=use_ref_var).grid(row=row_idx, column=0, sticky='w', padx=5)
         row_idx += 1
 
     def update_plot():
@@ -269,7 +275,7 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
                                      "Begin tijd moet voor eind tijd zijn.")
                 return
             update_plot_callback(start_time, end_time,
-                                 use_wave_var.get(), use_mon_var.get())
+                                 use_wave_var.get(), use_mon_var.get(), use_ref_var.get())
         except ValueError:
             messagebox.showerror("Ongeldige Invoer",
                                  "Gebruik het juiste formaat: YYYY-MM-DD HH:MM:SS")
@@ -285,7 +291,7 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
                                      "Begin tijd moet voor eind tijd zijn.")
                 return
             export_and_close_callback(start_time, end_time,
-                                      use_wave_var.get(), use_mon_var.get())
+                                      use_wave_var.get(), use_mon_var.get(), use_ref_var.get())
             root.destroy()
         except ValueError:
             messagebox.showerror("Ongeldige Invoer",
@@ -301,7 +307,7 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
 
 def plot_combined_graph(df_wave, df_mon, df_reference,
                         start_time=None, end_time=None,
-                        show_wave=True, show_mon=True):
+                        show_wave=True, show_mon=True, show_ref=True):
     try:
         fig, ax = plt.subplots(figsize=(12, 6))
 
@@ -331,7 +337,7 @@ def plot_combined_graph(df_wave, df_mon, df_reference,
                     label='Diver druk', color='blue', marker='x',
                     markersize=2, linewidth=0.5)
 
-        if not df_ref_plot.empty:
+        if show_ref and not df_ref_plot.empty:
             ax.plot(df_ref_plot['Datetime'], df_ref_plot['Pressure'],
                     label='Referentie sensor', color='green', marker='s',
                     markersize=6, linestyle='--')
@@ -454,18 +460,21 @@ def plot_xy_regression_with_slider(df_wave, df_mon,
         print(f"Fout in plot_xy_regression_with_slider: {e}")
 
 
-def export_data(df_wave, df_mon, selected_directory,
+def export_data(df_wave, df_mon, df_reference, selected_directory,
                 start_time, end_time,
-                use_wave=True, use_mon=True):
+                use_wave=True, use_mon=True, use_ref=True):
     try:
         mask_wave = (df_wave['Datetime'] >= start_time) & (df_wave['Datetime'] <= end_time)
         mask_mon = (df_mon['Datetime'] >= start_time) & (df_mon['Datetime'] <= end_time)
 
         df_wave_filtered = df_wave[mask_wave]
         df_mon_filtered = df_mon[mask_mon]
+        mask_ref = (df_reference['Datetime'] >= start_time) & (df_reference['Datetime'] <= end_time)
+        df_ref_filtered = df_reference[mask_ref]
 
         df_wave_filtered = df_wave_filtered[df_wave_filtered['Pressure'] <= 2100]
         df_mon_filtered = df_mon_filtered[df_mon_filtered['Pressure'] <= 2100]
+        df_ref_filtered = df_ref_filtered[df_ref_filtered['Pressure'] <= 2100]
 
         merged_df = pd.merge_asof(df_wave_filtered.sort_values('Datetime'),
                                   df_mon_filtered.sort_values('Datetime'),
@@ -481,9 +490,14 @@ def export_data(df_wave, df_mon, selected_directory,
             df_mon_filtered.to_csv(diver_filename, index=False)
             print(f"Diver druk data geëxporteerd naar {diver_filename}")
 
-        combined_filename = os.path.join(selected_directory, 'combined_data_filtered.csv')
-        merged_df.to_csv(combined_filename, index=False)
-        print(f"Gecombineerde data geëxporteerd naar {combined_filename}")
+        if use_ref:
+            ref_filename = os.path.join(selected_directory, 'ref_druk_data_filtered.csv')
+            df_ref_filtered.to_csv(ref_filename, index=False)
+            print(f"Referentiedruk data geëxporteerd naar {ref_filename}")
+        if use_wave and use_mon:
+            combined_filename = os.path.join(selected_directory, 'combined_data_filtered.csv')
+            merged_df.to_csv(combined_filename, index=False)
+            print(f"Gecombineerde data geëxporteerd naar {combined_filename}")
 
         messagebox.showinfo(
             "Export Succesvol",
@@ -638,26 +652,27 @@ def main():
 
     display_pressure_summary(df_wave, df_mon, df_reference)
 
-    def update_plot_with_time_range(start, end, show_wave_choice, show_mon_choice):
+    def update_plot_with_time_range(start, end, show_wave_choice, show_mon_choice, show_ref_choice):
         plot_combined_graph(df_wave, df_mon, df_reference,
-                            start, end, show_wave_choice, show_mon_choice)
+                            start, end, show_wave_choice, show_mon_choice, show_ref_choice)
         plot_xy_regression_with_slider(df_wave, df_mon,
                                        start, end, show_wave_choice, show_mon_choice)
 
-    def export_and_close(start, end, show_wave_choice, show_mon_choice):
+    def export_and_close(start, end, show_wave_choice, show_mon_choice, show_ref_choice):
         plot_combined_graph(df_wave, df_mon, df_reference,
-                            start, end, show_wave_choice, show_mon_choice)
+                            start, end, show_wave_choice, show_mon_choice, show_ref_choice)
         plot_xy_regression_with_slider(df_wave, df_mon,
                                        start, end, show_wave_choice, show_mon_choice)
-        export_data(df_wave, df_mon, selected_directory,
-                    start, end, show_wave_choice, show_mon_choice)
+        export_data(df_wave, df_mon, df_reference, selected_directory,
+                    start, end, show_wave_choice, show_mon_choice, show_ref_choice)
 
     create_time_selection_gui(df_wave, df_mon, df_reference,
                               selected_directory,
                               update_plot_with_time_range,
                               export_and_close,
                               show_wave=use_wave,
-                              show_mon=use_mon)
+                              show_mon=use_mon,
+                              show_ref=use_ref)
 
 
 if __name__ == "__main__":
