@@ -3,12 +3,13 @@ import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, simpledialog, ttk, messagebox
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Slider, RectangleSelector
 from datetime import datetime, timedelta
 import re
 import chardet
 from scipy.stats import linregress
 import numpy as np
+import io
 
 plt.ion()
 
@@ -308,46 +309,121 @@ def create_time_selection_gui(df_wave, df_mon, df_reference,
 def plot_combined_graph(df_wave, df_mon, df_reference,
                         start_time=None, end_time=None,
                         show_wave=True, show_mon=True, show_ref=True):
+    """Interactive tijdreeksplot met RectangleSelector en slider."""
     try:
-        fig, ax = plt.subplots(figsize=(12, 6))
+        current_shift = {'value': 0.0}
 
-        if start_time and end_time:
-            mask_wave = (df_wave['Datetime'] >= start_time) & (df_wave['Datetime'] <= end_time)
-            mask_mon = (df_mon['Datetime'] >= start_time) & (df_mon['Datetime'] <= end_time)
-            mask_ref = (df_reference['Datetime'] >= start_time) & (df_reference['Datetime'] <= end_time)
-            df_wave_plot = df_wave[mask_wave]
-            df_mon_plot = df_mon[mask_mon]
-            df_ref_plot = df_reference[mask_ref]
-        else:
-            df_wave_plot = df_wave
-            df_mon_plot = df_mon
-            df_ref_plot = df_reference
+        def draw_lines(ax_plot):
+            if start_time and end_time:
+                mask_wave = (df_wave['Datetime'] >= start_time) & (df_wave['Datetime'] <= end_time)
+                mask_mon = (df_mon['Datetime'] >= start_time) & (df_mon['Datetime'] <= end_time)
+                mask_ref = (df_reference['Datetime'] >= start_time) & (df_reference['Datetime'] <= end_time)
+                df_wave_plot = df_wave.loc[mask_wave].copy()
+                df_mon_shift = df_mon.loc[mask_mon].copy()
+                df_ref_plot = df_reference.loc[mask_ref].copy()
+            else:
+                df_wave_plot = df_wave.copy()
+                df_mon_shift = df_mon.copy()
+                df_ref_plot = df_reference.copy()
 
-        df_wave_plot = df_wave_plot[df_wave_plot['Pressure'] <= 2100]
-        df_mon_plot = df_mon_plot[df_mon_plot['Pressure'] <= 2100]
-        df_ref_plot = df_ref_plot[df_ref_plot['Pressure'] <= 2100]
+            if show_mon and not df_mon_shift.empty:
+                df_mon_shift['Datetime'] = df_mon_shift['Datetime'] + timedelta(seconds=current_shift['value'])
 
-        if show_wave:
-            ax.plot(df_wave_plot['Datetime'], df_wave_plot['Pressure'],
-                    label='HF druksonde druk', color='red', marker='o',
-                    markersize=2, linewidth=0.5)
+            if not df_wave_plot.empty:
+                df_wave_plot = df_wave_plot[df_wave_plot['Pressure'] <= 2100]
+            if not df_mon_shift.empty:
+                df_mon_shift = df_mon_shift[df_mon_shift['Pressure'] <= 2100]
+            if not df_ref_plot.empty:
+                df_ref_plot = df_ref_plot[df_ref_plot['Pressure'] <= 2100]
 
-        if show_mon:
-            ax.plot(df_mon_plot['Datetime'], df_mon_plot['Pressure'],
-                    label='Diver druk', color='blue', marker='x',
-                    markersize=2, linewidth=0.5)
+            if show_wave and not df_wave_plot.empty:
+                ax_plot.plot(df_wave_plot['Datetime'], df_wave_plot['Pressure'],
+                             label='HF druksonde', color='red', marker='o',
+                             markersize=2, linewidth=0.5, picker=5)
+            if show_mon and not df_mon_shift.empty:
+                ax_plot.plot(df_mon_shift['Datetime'], df_mon_shift['Pressure'],
+                             label='Diver', color='blue', marker='x',
+                             markersize=2, linewidth=0.5, picker=5)
+            if show_ref and not df_ref_plot.empty:
+                ax_plot.plot(df_ref_plot['Datetime'], df_ref_plot['Pressure'],
+                             label='Referentie', color='green', marker='s',
+                             markersize=4, linestyle='--', picker=5)
 
-        if show_ref and not df_ref_plot.empty:
-            ax.plot(df_ref_plot['Datetime'], df_ref_plot['Pressure'],
-                    label='Referentie sensor', color='green', marker='s',
-                    markersize=6, linestyle='--')
+            ax_plot.set_xlabel('Tijd')
+            ax_plot.set_ylabel('Druk (Pa)')
+            ax_plot.set_title('Tijdreeks drukmetingen')
+            ax_plot.legend()
+            ax_plot.grid(True)
 
-        ax.set_title('HF druksonde druk vs Diver druk over Tijd')
-        ax.set_xlabel('Tijd')
-        ax.set_ylabel('Druk (Pa)')
-        ax.legend()
-        ax.grid(True)
-        plt.gcf().autofmt_xdate()
+            if start_time and end_time:
+                ax_plot.set_xlim(start_time, end_time)
+
+            ys = []
+            for dfp, show in [(df_wave_plot, show_wave), (df_mon_shift, show_mon), (df_ref_plot, show_ref)]:
+                if show and not dfp.empty:
+                    ys.append(dfp['Pressure'].dropna().values)
+            if ys:
+                arr = np.concatenate(ys)
+                y0 = arr.min(); y1 = arr.max()
+                span = y1 - y0
+                if span == 0:
+                    ax_plot.set_ylim(y0 * 0.95, y1 * 1.05)
+                else:
+                    ax_plot.set_ylim(y0 - 0.05*span, y1 + 0.05*span)
+
+        def onselect(eclick, erelease):
+            x1, y1 = eclick.xdata, eclick.ydata
+            x2, y2 = erelease.xdata, erelease.ydata
+            if None in (x1, x2, y1, y2):
+                return
+            x_min, x_max = sorted([x1, x2])
+            y_min, y_max = sorted([y1, y2])
+
+            if show_wave and not df_wave.empty:
+                mask = (df_wave['Datetime'] >= x_min) & (df_wave['Datetime'] <= x_max) & \
+                       (df_wave['Pressure'] >= y_min) & (df_wave['Pressure'] <= y_max)
+                df_wave.loc[mask, 'Pressure'] = np.nan
+
+            if show_mon and not df_mon.empty:
+                shift = current_shift['value']
+                adj_min = x_min - timedelta(seconds=shift)
+                adj_max = x_max - timedelta(seconds=shift)
+                mask = (df_mon['Datetime'] >= adj_min) & (df_mon['Datetime'] <= adj_max) & \
+                       (df_mon['Pressure'] >= y_min) & (df_mon['Pressure'] <= y_max)
+                df_mon.loc[mask, 'Pressure'] = np.nan
+
+            if show_ref and not df_reference.empty:
+                mask = (df_reference['Datetime'] >= x_min) & (df_reference['Datetime'] <= x_max) & \
+                       (df_reference['Pressure'] >= y_min) & (df_reference['Pressure'] <= y_max)
+                df_reference.loc[mask, 'Pressure'] = np.nan
+
+            ax_plot.clear()
+            draw_lines(ax_plot)
+            fig.canvas.draw_idle()
+
+        def on_slider(val):
+            current_shift['value'] = val
+            ax_plot.clear()
+            draw_lines(ax_plot)
+            fig.canvas.draw_idle()
+
+        fig, (ax_plot, ax_slider) = plt.subplots(
+            nrows=2, ncols=1,
+            gridspec_kw={'height_ratios': [9, 1]},
+            figsize=(10, 6),
+            constrained_layout=True
+        )
+
+        draw_lines(ax_plot)
+
+        rect = RectangleSelector(ax_plot, onselect, useblit=True,
+                                 button=[1], minspanx=5, minspany=5,
+                                 spancoords='data', interactive=True)
+
+        slider = Slider(ax_slider, 'Shift Diver (sec)', -60.0, 60.0,
+                        valinit=current_shift['value'], valstep=0.5)
+        slider.on_changed(on_slider)
+
         plt.show(block=False)
         plt.pause(0.001)
     except Exception as e:
@@ -547,7 +623,7 @@ def load_reference_sensor_data(file_path, base_datetime=None):
             raise ValueError("Onvoldoende datarijen")
 
         csv_content = "\n".join(lines[header_idx:])
-        df_reference = pd.read_csv(pd.compat.StringIO(csv_content))
+        df_reference = pd.read_csv(io.StringIO(csv_content))
 
         if df_reference.empty or df_reference.shape[1] < 2:
             raise ValueError("Te weinig kolommen in referentiedrukbestand")
