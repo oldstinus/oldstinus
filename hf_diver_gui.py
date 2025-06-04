@@ -5,6 +5,7 @@ from tkinter import filedialog, simpledialog, ttk, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from datetime import datetime, timedelta
+import re
 import chardet
 from scipy.stats import linregress
 import numpy as np
@@ -495,36 +496,59 @@ def export_data(df_wave, df_mon, selected_directory,
 
 
 def load_reference_sensor_data(file_path, base_datetime=None):
-    """Lees een referentiedrukbestand dat mogelijk alleen relatieve tijd bevat."""
+    """Lees een DDR referentiedrukbestand. Dit bestand heeft vaak in de eerste
+    regel de bestandsnaam met datum en tijd en vanaf de derde regel de kolommen
+    ``time[sec],data``. Wanneer alleen relatieve tijd beschikbaar is, wordt deze
+    omgezet naar echte datums gebaseerd op ``base_datetime`` of de datum in het
+    bestand zelf.
+    """
     try:
-        df_reference = pd.read_csv(file_path)
+        with open(file_path, "r") as f:
+            lines = [line.strip() for line in f.readlines() if line.strip()]
+
+        if not lines:
+            raise ValueError("Bestand is leeg")
+
+        # Probeer een datumtijd te halen uit de eerste regel of uit de bestandsnaam
+        first_line = lines[0]
+        dt_match = re.search(r"(\d{8}_\d{6})", first_line)
+        if not dt_match:
+            fname = os.path.basename(file_path)
+            dt_match = re.search(r"(\d{8}_\d{6})", fname)
+
+        file_dt = None
+        if dt_match:
+            try:
+                file_dt = datetime.strptime(dt_match.group(1), "%Y%m%d_%H%M%S")
+            except Exception:
+                file_dt = None
+
+        header_idx = 0
+        for i, line in enumerate(lines):
+            if "," in line and any(key in line.lower() for key in ["time", "seconde", "druk", "data"]):
+                header_idx = i
+                break
+
+        if header_idx + 1 >= len(lines):
+            raise ValueError("Onvoldoende datarijen")
+
+        csv_content = "\n".join(lines[header_idx:])
+        df_reference = pd.read_csv(pd.compat.StringIO(csv_content))
+
         if df_reference.empty or df_reference.shape[1] < 2:
             raise ValueError("Te weinig kolommen in referentiedrukbestand")
 
-        cols_lower = [c.lower() for c in df_reference.columns]
-
-        # Zoek de tijd- en drukkolom op basis van veelvoorkomende namen
-        time_col = None
-        pressure_col = None
-        for idx, col in enumerate(cols_lower):
-            if any(key in col for key in ['time', 'tijd', 'datetime', 'datum']):
-                time_col = df_reference.columns[idx]
-            elif any(key in col for key in ['press', 'druk', 'data']):
-                pressure_col = df_reference.columns[idx]
-
-        if time_col is None:
-            time_col = df_reference.columns[0]
-        if pressure_col is None:
-            pressure_col = df_reference.columns[1]
-
-        if 'datetime' in cols_lower or 'datum' in cols_lower:
-            df_reference['Datetime'] = pd.to_datetime(df_reference[time_col])
-        else:
-            if base_datetime is None:
-                base_datetime = datetime.now()
-            df_reference['Datetime'] = base_datetime + pd.to_timedelta(df_reference[time_col], unit='s')
+        time_col = df_reference.columns[0]
+        pressure_col = df_reference.columns[1]
 
         df_reference['Pressure'] = pd.to_numeric(df_reference[pressure_col], errors='coerce')
+
+        if file_dt is None and base_datetime is None:
+            base_dt = datetime.now()
+        else:
+            base_dt = file_dt if file_dt is not None else base_datetime
+
+        df_reference['Datetime'] = base_dt + pd.to_timedelta(df_reference[time_col], unit='s')
 
         df_reference = df_reference[['Datetime', 'Pressure']].dropna()
         return df_reference
