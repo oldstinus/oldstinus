@@ -3,6 +3,11 @@
 
 Public LoggerSN As String * 20
 Public Locatie_code As String * 50
+'table of location codes indexed by datalogger number 1..4
+Public Locatie_table(4) As String * 10
+
+'array to hold output filenames per sensor
+Public RemoteFileName(4) As String * 100
 
 ' Example arrays to hold sensor data
 Public Sensor_ID(4) As String * 50
@@ -11,18 +16,23 @@ Public Sensor_SN(4) As String * 20
 
 Const SDI12_port = C1
 
+'Define location table mapping datalogger numbers to codes
+Locatie_table(1) = "S7468"
+Locatie_table(2) = "S7470"
+Locatie_table(3) = "S7472"
+Locatie_table(4) = "S7469"
+
 BeginProg
     'Read logger serial number
     LoggerSN = Status.SerialNumber(1,1)
 
-    'Lookup location code based on serial number
-    If LoggerSN = "12345" Then
-        Locatie_code = "test/S7468"
-    ElseIf LoggerSN = "67890" Then
-        Locatie_code = "test/S8123"
-    Else
-        Locatie_code = "test/unknown"
+    'Lookup location code based on datalogger number
+    Dim logger_num
+    logger_num = ASCII(Right(LoggerSN,1)) - 48
+    If logger_num < 1 OR logger_num > 4 Then
+        logger_num = 1
     EndIf
+    Locatie_code = "test/" & Locatie_table(logger_num)
 
     'Detect sensor type for addresses 1..4
     Dim addr As String
@@ -34,13 +44,16 @@ BeginProg
             Sensor_SN(addr_num) = Right(Sensor_ID(addr_num),7)
         EndIf
         Delay(0,1,Sec)
+    Next addr_num
 
-    'Construct output filenames including location and sensor type
-    Dim Tijd_code As String * 30
-    Tijd_code = "_" & Status.Year & FormatFloat(Status.Month, "%02.0f") & FormatFloat(Status.Day, "%02.0f")
+    'Construct output filenames including location, logger serial and sensor info
+    Dim Tijd_code As String * 40
+    Dim rTime(9)
+    RealTime(rTime)
+    Tijd_code = "_" & rTime(1) & FormatFloat(rTime(2),"%02.0f") & FormatFloat(rTime(3),"%02.0f") & "_" & FormatFloat(rTime(4),"%02.0f") & FormatFloat(rTime(5),"%02.0f") & FormatFloat(rTime(6),"%02.0f")
     For i = 1 To 4
         If Sensor_SN(i) <> "" Then
-            RemoteFileName(i) = Locatie_code & "_AT" & Sensor_Type(i) & "_" & Sensor_SN(i) & Tijd_code & ".dat"
+            RemoteFileName(i) = Locatie_code & "_" & LoggerSN & "_AT" & Sensor_Type(i) & "_" & Sensor_SN(i) & Tijd_code & ".dat"
         EndIf
     Next i
 
