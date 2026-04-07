@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YSI Realtime Studio</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="page-glow glow-a"></div>
+    <div class="page-glow glow-b"></div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Reverse Engineered YSI Workflow</p>
+        <h1>YSI Realtime Studio</h1>
+        <p class="subtitle">
+          Live sonde-aansturing, interactieve trending, DAT-naar-ASCII conversie en een volledige
+          instellingenstap op basis van de gereconstrueerde YSI workflow.
+        </p>
+      </div>
+      <div class="hero-side">
+        <div class="badge-row">
+          <span id="connectionBadge" class="badge offline">Offline</span>
+          <span id="sessionBadge" class="badge idle">Geen sessie</span>
+          <span id="recordBadge" class="badge passive">Opname uit</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Actief profiel</span>
+          <strong id="profileLabel">YSI preset laden...</strong>
+        </div>
+      </div>
+    </header>
+
+    <nav id="stepNav" class="step-nav" aria-label="Workflow stappen">
+      <button class="step-chip active" data-step-target="step-connect">1. Connect</button>
+      <button class="step-chip" data-step-target="step-live">2. Live</button>
+      <button class="step-chip" data-step-target="step-files">3. Bestand</button>
+      <button class="step-chip" data-step-target="step-settings">4. Instellingen</button>
+    </nav>
+
+    <main class="workflow">
+      <section id="step-connect" class="step-panel active">
+        <div class="panel-grid two-up">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Verbinding</h2>
+              <button id="refreshPortsBtn" class="btn ghost">Poorten verversen</button>
+            </div>
+            <div class="form-grid">
+              <label>Protocol
+                <select id="protocolSelect">
+                  <option value="RS-232">RS-232</option>
+                  <option value="SDI-12">SDI-12</option>
+                </select>
+              </label>
+              <label>COM poort
+                <select id="portSelect"></select>
+              </label>
+              <label>Baudrate
+                <select id="baudSelect"></select>
+              </label>
+              <label>Parity
+                <select id="paritySelect">
+                  <option value="N">N</option>
+                  <option value="E">E</option>
+                  <option value="O">O</option>
+                  <option value="M">M</option>
+                  <option value="S">S</option>
+                </select>
+              </label>
+              <label>Stopbits
+                <select id="stopbitsSelect">
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                </select>
+              </label>
+              <label>Max punten live
+                <input id="maxPointsInput" type="number" min="50" max="2000" value="240" />
+              </label>
+              <label>Delimiter
+                <select id="delimiterSelect">
+                  <option value="space">space</option>
+                  <option value="comma">comma</option>
+                  <option value="dot">dot</option>
+                  <option value="semicolon">semicolon</option>
+                  <option value="tab">tab</option>
+                </select>
+              </label>
+              <label>Decimaal
+                <select id="decimalSelect">
+                  <option value="point">point</option>
+                  <option value="comma">comma</option>
+                </select>
+              </label>
+              <label>Datetime detectie
+                <input id="datetimeDetected" type="text" readonly value="nog niet gedetecteerd" />
+              </label>
+            </div>
+            <div class="button-row">
+              <button id="connectBtn" class="btn prime">Connect</button>
+              <button id="disconnectBtn" class="btn danger">Disconnect</button>
+              <button id="startSessionBtn" class="btn prime">Start sessie</button>
+              <button id="stopSessionBtn" class="btn ghost">Stop sessie</button>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Besturing</h2>
+              <button id="openSettingsBtn" class="btn ghost">Alle instellingen</button>
+            </div>
+            <div class="command-stack">
+              <label>Direct commando
+                <div class="inline-combo">
+                  <input id="commandInput" type="text" placeholder="vb. menu of run" />
+                  <select id="cmdSuffixSelect">
+                    <option value="NONE">raw</option>
+                    <option value="CR" selected>+CR</option>
+                    <option value="LF">+LF</option>
+                    <option value="CRLF">+CRLF</option>
+                  </select>
+                </div>
+              </label>
+              <div class="button-row">
+                <button id="sendCmdBtn" class="btn prime">Verzend</button>
+                <button id="escBtn" class="btn ghost">ESC</button>
+                <button id="breakBtn" class="btn ghost">BREAK</button>
+              </div>
+              <label>Sonde-menu sequence
+                <div class="inline-combo">
+                  <input id="sequenceInput" type="text" value="menu;0;2" />
+                  <button id="sendSequenceBtn" class="btn ghost" type="button">Stuur</button>
+                </div>
+              </label>
+              <label>Programmeer-macro
+                <textarea id="macroProgramInput" rows="3">set interval 10; set mode log</textarea>
+              </label>
+              <div class="button-row">
+                <button id="runProgramMacroBtn" class="btn ghost">Macro uitvoeren</button>
+                <button id="buildProgrammingBtn" class="btn ghost">Macro opbouwen</button>
+                <button id="crawlMenuBtn" class="btn ghost">Menu scan</button>
+              </div>
+              <div class="program-preview-wrap">
+                <div class="small-label">Programmeervoorbeeld</div>
+                <textarea id="programPreview" rows="8" readonly></textarea>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Log & terminal</h2>
+            <div class="button-row compact">
+              <button id="clearLogBtn" class="btn ghost tiny">UI log leegmaken</button>
+              <button id="clearCmdBtn" class="btn ghost tiny">Terminal leegmaken</button>
+            </div>
+          </div>
+          <div class="panel-grid dual-log">
+            <pre id="logView" class="console"></pre>
+            <pre id="cmdView" class="console console-blue"></pre>
+          </div>
+        </article>
+      </section>
+
+      <section id="step-live" class="step-panel">
+        <div class="panel-grid live-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Realtime grafiek</h2>
+              <p class="panel-note">Muisover toont dichtstbijzijnde meetpunt per parameter.</p>
+            </div>
+            <div class="chart-toolbar">
+              <div id="liveLegend" class="legend"></div>
+              <label class="inline-field">Venster
+                <select id="liveWindowSelect">
+                  <option value="60">60 punten</option>
+                  <option value="120">120 punten</option>
+                  <option value="240" selected>240 punten</option>
+                  <option value="480">480 punten</option>
+                </select>
+              </label>
+            </div>
+            <div class="chart-shell">
+              <svg id="liveChart" class="chart" viewBox="0 0 1000 360" preserveAspectRatio="none"></svg>
+              <div id="liveTooltip" class="chart-tooltip hidden"></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Live parameters</h2>
+              <p class="panel-note">Vink parameters aan voor de grafiek en recente waarden.</p>
+            </div>
+            <div id="liveParamToggles" class="toggle-list"></div>
+            <div id="liveMetrics" class="metric-grid"></div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Opname & Kermit</h2>
+          </div>
+          <div class="panel-grid two-up">
+            <div class="stack">
+              <div class="button-row">
+                <button id="recordStartBtn" class="btn prime">Start opname</button>
+                <button id="recordStopBtn" class="btn danger">Stop opname</button>
+              </div>
+              <label>Pad voor CSV export
+                <div class="inline-combo">
+                  <input id="savePathInput" type="text" value="ysi_recording.csv" />
+                  <button id="saveCsvBtn" class="btn ghost" type="button">Opslaan</button>
+                </div>
+              </label>
+              <p class="info-line">Opgenomen rijen: <strong id="recordCount">0</strong></p>
+            </div>
+            <div class="stack">
+              <label>Verzend bestand naar sonde
+                <div class="inline-combo">
+                  <input id="kermitSendInput" type="text" placeholder="Pad naar bestand" />
+                  <button id="kermitSendBtn" class="btn ghost" type="button">Verzend</button>
+                </div>
+              </label>
+              <label>Ontvang bestand van sonde
+                <div class="inline-combo">
+                  <input id="kermitRecvInput" type="text" placeholder="Pad voor ontvangen bestand" />
+                  <button id="kermitRecvBtn" class="btn ghost" type="button">Ontvang</button>
+                </div>
+              </label>
+              <div class="info-card">
+                <div class="small-label">Kermit status</div>
+                <div id="kermitStatusText">Nog geen Kermit-activiteit.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="step-files" class="step-panel">
+        <div class="panel-grid file-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>DAT / ASCII conversie</h2>
+              <p class="panel-note">Ondersteunt tekstbestanden en best-effort binaire DAT-decodage.</p>
+            </div>
+            <div class="stack">
+              <label>Bronbestand
+                <input id="fileInput" type="file" accept=".dat,.txt,.prn,.csv,.cdf,.x" />
+              </label>
+              <div class="button-row">
+                <button id="loadDemoDatBtn" class="btn ghost">Laad geheugenvoorbeeld</button>
+                <button id="exportAsciiCsvBtn" class="btn prime">ASCII CSV</button>
+                <button id="exportAsciiTxtBtn" class="btn ghost">ASCII TXT</button>
+              </div>
+              <div class="info-card">
+                <div class="small-label">Bestandsstatus</div>
+                <div id="fileStatus">Nog geen bestand geladen.</div>
+              </div>
+              <div class="small-label">ASCII preview</div>
+              <textarea id="asciiPreview" rows="12" readonly></textarea>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Interactie & selectie</h2>
+              <p class="panel-note">Hover op de grafiek of selecteer meerdere parameters.</p>
+            </div>
+            <div id="fileParamToggles" class="toggle-list"></div>
+            <div class="metric-grid slim" id="fileStats"></div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Historische grafiek</h2>
+            <p class="panel-note">Geconverteerde data uit DAT/PRN/TXT/CSV/CDF.</p>
+          </div>
+          <div class="chart-shell">
+            <svg id="fileChart" class="chart" viewBox="0 0 1000 360" preserveAspectRatio="none"></svg>
+            <div id="fileTooltip" class="chart-tooltip hidden"></div>
+          </div>
+        </article>
+      </section>
+
+      <section id="step-settings" class="step-panel">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Instellingenstap</h2>
+            <p class="panel-note">Alle wijzigbare instellingen uit de reverse-engineerde YSI workflow.</p>
+          </div>
+
+          <div class="settings-layout">
+            <section class="settings-card">
+              <h3>Communicatie</h3>
+              <div class="form-grid">
+                <label>Protocol
+                  <select id="settingProtocol">
+                    <option value="RS-232">RS-232</option>
+                    <option value="SDI-12">SDI-12</option>
+                  </select>
+                </label>
+                <label>Instrument ID
+                  <input id="settingInstrumentId" type="text" value="YSI Sonde Python" />
+                </label>
+                <label>GLP filename
+                  <input id="settingGlpFilename" type="text" value="GLP00001" />
+                </label>
+                <label>Circuit board SN
+                  <input id="settingBoardSn" type="text" value="01234567" />
+                </label>
+                <label>SDI-12 adres
+                  <input id="settingSdiAddress" type="number" min="0" max="9" value="0" />
+                </label>
+                <label>Paginelengte
+                  <input id="settingPageLength" type="number" min="5" max="100" value="25" />
+                </label>
+              </div>
+            </section>
+
+            <section class="settings-card">
+              <h3>Logging & parsing</h3>
+              <div class="form-grid">
+                <label>Date format
+                  <input id="settingDateFormat" type="text" value="m/d/y" />
+                </label>
+                <label>Log interval (sec)
+                  <input id="settingIntervalSec" type="number" min="1" max="3600" value="10" />
+                </label>
+                <label>DO warmup (sec)
+                  <input id="settingDoWarmupSec" type="number" min="0" max="600" value="40" />
+                </label>
+                <label>Datetime fallback
+                  <input id="settingDatetimeFallback" type="text" value="%d/%m/%Y %H:%M:%S" />
+                </label>
+                <label class="check-row">
+                  <input id="settingAutoSleep" type="checkbox" checked />
+                  <span>Autosleep</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingTurbidityFilter" type="checkbox" />
+                  <span>Turbidity filter</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingWiperActive" type="checkbox" checked />
+                  <span>Wiper actief</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingSyncClock" type="checkbox" checked />
+                  <span>Synchroniseer klok met pc</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingLoggingEnabled" type="checkbox" checked />
+                  <span>Logging actief</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingFileEnabled" type="checkbox" checked />
+                  <span>File output actief</span>
+                </label>
+                <label class="check-row">
+                  <input id="settingAutoStart" type="checkbox" />
+                  <span>Auto start sampling</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="settings-card">
+              <h3>Sensors</h3>
+              <div id="sensorToggles" class="chip-list"></div>
+            </section>
+
+            <section class="settings-card">
+              <h3>Report parameters</h3>
+              <div id="reportToggles" class="chip-list"></div>
+            </section>
+
+            <section class="settings-card">
+              <h3>Programmeerprofiel</h3>
+              <div class="form-grid">
+                <label>Bestandsnaam op toestel
+                  <input id="settingDeviceFileName" type="text" value="ysi_log.csv" />
+                </label>
+                <label>Site naam
+                  <input id="settingSiteName" type="text" value="" />
+                </label>
+                <label>Menu root path
+                  <input id="settingMenuRootPath" type="text" value="menu;0;2" />
+                </label>
+                <label>ESC naar home
+                  <input id="settingMenuEscCount" type="number" min="1" max="10" value="3" />
+                </label>
+                <label>Menu delay (ms)
+                  <input id="settingMenuDelayMs" type="number" min="60" max="2000" value="280" />
+                </label>
+                <label>Max menudiepte
+                  <input id="settingMenuDepth" type="number" min="1" max="5" value="1" />
+                </label>
+                <label>Custom menu actions
+                  <textarea id="settingCustomActions" rows="4" placeholder="2 => 15&#10;4 => SITE-A&#10;1"></textarea>
+                </label>
+                <label>Extra tekstcommando's
+                  <textarea id="settingCustomTextCommands" rows="4" placeholder="save setup&#10;show setup"></textarea>
+                </label>
+              </div>
+            </section>
+          </div>
+
+          <div class="button-row">
+            <button id="saveSettingsBtn" class="btn prime">Instellingen opslaan</button>
+            <button id="restoreSettingsBtn" class="btn ghost">Standaard herstellen</button>
+            <button id="applySettingsToConnectBtn" class="btn ghost">Toepassen op connectiestap</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

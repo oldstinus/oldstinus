@@ -1,0 +1,12 @@
+{
+    "port": "COM22",
+    "baudrate": "9600",
+    "parity": "N",
+    "stopbits": "1",
+    "datetime_format": "%Y/%m/%d %H:%M:%S",
+    "delimiter": "space",
+    "decimal_sep": "point",
+    "directory": "C:\\Users\\claeysst",
+    "filename": "",
+    "csv_delimiter": "semicolon"
+}

@@ -1,0 +1,138 @@
+he MATLAB output is ordered into a series of structures each containing their related parameters and settings. The tables below describe each structure and its contents. It is current as of
+version 3.90 of the RiverSurveyor Live software. From the toolbar, there are two options:
+“MATLAB export” and “MATLAB export all”. “MATLAB export” exports the currently viewed transect and “MATLAB export all” exports all currently opened transects. All *.mat files are saved
+using the same file name as the source *.riv or *.rivr file in the same directory in which they are
+stored.
+IMPORTANT NOTES:
+• The term “sample” refers to a single vertical profile, taken over a period of 1 s.
+• For the four parameters containing Velocity data (BottomTrack.BT_Vel, Summary.Mean_Vel, Summary.Boat_Vel, and WaterTrack.Velocity), the data is in the same
+coordinate system that was selected in the software when the .mat file was exported.
+For example:
+o BT_Vel when exported in ENU coordinates will be:
+1. East Velocity (i.e. velocity to the East)
+2. North Velocity
+3. Up Velocity
+4. Difference Velocity (aka Error Velocity; the difference between measuring the vertical component of the velocity from the two pairs of opposing beams)
+o BT_Vel when exported in XYZ coordinates will be:
+1. X Velocity
+2. Y Velocity
+3. Up Velocity
+4. Difference Velocity
+o BT_Vel when exported in Beam coordinates will be:
+1. Beam 1
+2. Beam 2
+3. Beam 3
+4. Beam 4
+• GPS Altitude (from the GGA string) is based on a proprietary, non-published geoid, and
+referenced to the bottom-center of the antenna.
+The basic order of the root structures is as follows. For the Size Column:
+• NS is the number of samples;
+• NC is the maximum number of cells;
+• If the structure contains another structure inside it, or the parameter is a scalar, the size
+is NA.
+Structure Name Description
+Bottom Track Bottom Track Velocity, Depth and Frequency variables (includes
+Vertical Beam).
+GPS GPS data and quality information.
+Processing Processing settings.
+RawGPSData The raw GPS data from either the internal GPS or an external serially connected GPS system. This data is stored in its raw format
+with the same frequency that was output from the GPS. For example, if the GPS outputs data at 10 Hz, then 10 GPS data values are stored for each ADP sample.
+Setup System settings, edge information and profile extrapolation
+ChatGPT zei:
+Je hebt de MATLAB structuurinformatie gedeeld. Ik zal het script aanpassen zodat het alle relevante structuren correct verwerkt en opslaat. Dit omvat:
+
+Ondersteuning voor extra structuren zoals GPS, Processing, RawGPSData, en Setup.
+Correcte extractie van Velocity-gegevens met coördinatensystemen (ENU, XYZ, Beam).
+Verbetering van de 3D-visualisatie om meerdere datasets tegelijk te kunnen tonen.
+Automatische CSV-export voor alle structuren in de directory van het ingeladen bestand.
+Ik pas het script nu aan. 🚀
+
+heeft bewerkt
+Het script is nu bijgewerkt om:
+
+Alle structuren op te slaan als CSV-bestanden in de map van het ingeladen bestand.
+De 3D-visualisatie correct weer te geven op basis van de BottomTrack-gegevens.
+Alle relevante MATLAB-structuren correct te extraheren en te verwerken.
+Probeer het uit en laat me weten of verdere aanpassingen nodig zijn! 🚀
+
+
+
+
+
+
+Je zei:
+Stationary* Individual station data
+Summary Calculated discharge variables and the data used to compute
+them.
+System Core system related parameters: Compass, Temperature, Time,
+SNR, Voltage and Profiling settings
+Transformation_Matrices System frequencies and transformation matrices
+WaterTrack Water velocity and profiling variables in coordinates selected for
+output
+Compass Compass pitch, roll and magnetic error
+SystemHW Serial Number, Firmware Version, Beam Info
+*This structure is only exported from RiverSurveyor Stationary software
+Bottom Track structure
+Parameter
+Name
+Description Size
+VB_Depth Vertical Beam depth for each sample, including the Transducer
+Depth and compensation for tilt
+NS x
+1
+BT_Depth Mean Bottom Track depth for each sample, including the Transducer Depth and compensation for tilt. This is the mean of the
+depth measured by each active transducer and projected in vertically below of the ADP
+NS x
+1
+BT_Vel Bottom Track Velocity for each direction (or beam, if exported in
+Beam coordinates) for each sample
+NS x
+4
+BT_Beam_Depth Bottom Track depth for each beam for each sample, including
+the Transducer Depth and compensation for tilt
+NS x
+4
+BT_Frequency Frequency of Bottom Track data for each sample (correlate with
+Frequency parameter from Transformation_Matrices structure)
+NS x
+1
+Units Units for above parameters (BT_Frequency is kHz) NA
+GPS structure
+Parameter
+Name
+Description Size
+Longitude Last valid 10 Hz GGA sample
+Note: Only applicable when Track Reference is GGA
+NS x 1
+Latitude Last valid 10 Hz GGA sample
+Note: Only applicable when Track Reference is GGA
+NS x 1
+Utc Universal Time Coordinated (UTC) for each sample, in
+HHMMSS.S
+NS x 1
+Satellites Number of satellites in view for each sample NS x 1
+HDOP Horizontal Dilution of Precision for each sample NS x 1
+GPS_Age Time since the last corrected GPS signal received at the rover
+GPS antenna, whether from the RTK Base Station or from the
+satellite if using the SonTek DGPS option
+NS x 1
+Altitude Altitude above mean sea level for each sample NS x 1
+GPS_Quality GPS Quality for each sample
+(5 = RTK float, 4 = RTK fixed, 2 = Differential, 1 = Standard, 0 =
+Invalid)
+NS x 1
+GpsGeoid Gps Geoid Height is the distance between the geoid (mean sea
+level) and the WGS84 ellipsoid
+NS x 1
+UTM Universal Transverse Mercator (UTM) coordinate system in X
+and Y coordinates for each sample
+NS x 2
+Units Units for above parameters (GPS_Age are in seconds) NA
+ChatGPT zei:
+heeft bewerkt
+Het script is nu bijgewerkt om GPS, System, Summary, WaterTrack, Compass, SystemHW, en Transformation_Matrices structuren correct te verwerken en op te slaan als CSV. Laat me weten of je verdere uitbreidingen of aanpassingen nodig hebt! 🚀
+
+
+
+
+

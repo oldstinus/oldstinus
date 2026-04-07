@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interventieverslag - Weert PAR</title>
+  <style>
+    :root {
+      --ink: #17324d;
+      --accent: #2f6b7a;
+      --line: #cfd9e2;
+      --bg: #f4f7fa;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #1c2733;
+      background: var(--bg);
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: var(--card);
+      padding: 32px;
+      border: 1px solid var(--line);
+    }
+
+    h1, h2, h3 {
+      color: var(--ink);
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-top: 36px;
+      padding-top: 10px;
+      border-top: 2px solid var(--line);
+    }
+
+    p { margin: 0 0 14px; }
+
+    .lead {
+      background: #eef4f7;
+      border-left: 4px solid var(--accent);
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0 22px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      width: 28%;
+      background: #eef3f8;
+    }
+
+    ul {
+      margin: 0 0 18px 20px;
+      padding: 0;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      color: #46586c;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 18px 0 8px;
+    }
+
+    figure {
+      margin: 0;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      padding: 10px;
+    }
+
+    figure img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      background: #dde6ee;
+    }
+
+    figcaption {
+      margin-top: 8px;
+      font-size: 0.92rem;
+      color: #3d4e61;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+
+      main {
+        border: 0;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Interventieverslag - Weert PAR-sensoren</h1>
+
+    <div class="lead">
+      <p><strong>Locatie:</strong> Weert (ZES39C)</p>
+      <p><strong>Bronnen:</strong> <code>Verslagje.docx</code>, de aangeleverde foto's van <strong>22 oktober 2025</strong>, de lokale foto's van <strong>19 november 2025</strong> en het script <code>Weert_SF_YSI_PAR_FTP_20251119.cr8</code>.</p>
+      <p><strong>Samenvatting:</strong> het verslag bundelt de interventie aan de PAR-opstelling in Weert, het nazicht van sensoren, jumpers en bekabeling, de ingestelde loggerwaarden en de latere vaststelling op 26 november 2025 dat de kabelgeleiding en kabelschade mee de storing verklaren.</p>
+    </div>
+
+    <h2>1. Interventie van 21 en 22 oktober 2025</h2>
+    <p class="note">De tekst in <code>Verslagje.docx</code> noemt de interventie op <strong>21 oktober 2025</strong>, terwijl de gebruikte WhatsApp-foto's bestandsdatums van <strong>22 oktober 2025</strong> hebben. Daarom worden hier beide data samen vermeld.</p>
+
+    <table>
+      <tr><th>Onderwerp</th><td>Controle, herstart en sensorwissel van de PAR-opstelling in Weert.</td></tr>
+      <tr><th>Uitgevoerde handelingen</th><td>PAR-voeding losgekoppeld, sensoren losgemaakt, opstelling en connectoren gereinigd, wipers getest en configuratie aangepast.</td></tr>
+      <tr><th>Bijkomende controle</th><td>EXO nagezien, losgekoppeld en herstart. Daarna werd ook de datalogger van de voeding gehaald en opnieuw opgestart.</td></tr>
+      <tr><th>Afstemming</th><td>Telefonisch afgestemd met Andy; binnenkomende data werd lokaal nagezien op plausibiliteit.</td></tr>
+      <tr><th>Sensorwissel</th><td>Volgens de notitie werd <strong>PAR boven</strong> vervangen op basis van de combinatie <code>oude 10773 met 9803</code> en <strong>PAR onder</strong> op basis van <code>oude 10743 met 9802</code>. Dit gaf geen duidelijke verbetering.</td></tr>
+    </table>
+
+    <h3>Vaststellingen</h3>
+    <ul>
+      <li>Na het vervangen van de sensoren bleef het probleem bestaan.</li>
+      <li>Omdat ook de weerstanden al eerder vervangen waren, wijst de notitie op waarschijnlijk verlies op de kabel.</li>
+      <li>Het kabeltraject en de mechanische belasting van de coaxkabel verdienen daarom prioritaire opvolging.</li>
+    </ul>
+
+    <h2>2. Opvolging op 19 november 2025</h2>
+    <table>
+      <tr><th>Doel</th><td>Nazicht van de bekabeling, de ingestelde kalibratiewaarden, de jumperstand en de programmatie van de datalogger.</td></tr>
+      <tr><th>Programmatie</th><td>Het programma <code>Weert_SF_YSI_PAR_FTP_20251119.cr8</code> werd gecompileerd, naar de logger gestuurd en daarna als running program bevestigd.</td></tr>
+      <tr><th>Hardwarecontrole</th><td>Bekabeling, sensorhuizen, weerstandsmodules en jumperconfiguratie werden gefotografeerd en nagezien.</td></tr>
+      <tr><th>Resultaat</th><td>De foto's staven dat de loggerconfiguratie effectief geladen werd en dat de jumpers op een afzonderlijk interventiemoment gecontroleerd zijn.</td></tr>
+    </table>
+
+    <h3>Ingestelde coefficienten uit het cr8-script</h3>
+    <table>
+      <tr><th>Scriptbron</th><td><code>Weert_SF_YSI_PAR_FTP_20251119.cr8</code></td></tr>
+      <tr><th>Locatiecode</th><td><code>Def_Location_code = "zes39c"</code></td></tr>
+      <tr><th>PAR onder</th><td><code>Def_ParO_Coef = -163.61</code> met commentaar <code>'uwq9802</code></td></tr>
+      <tr><th>PAR boven</th><td><code>Def_ParB_Coef = -166.62</code> met commentaar <code>'uwq10384 (oud uit uwq9803)</code></td></tr>
+      <tr><th>RivStA-codes</th><td><code>Def_ParO_Code = "-1a1c-39v"</code> en <code>Def_ParB_Code = "-1a1d-39v"</code></td></tr>
+      <tr><th>Interpretatie</th><td>Deze waarden staven de configuratie zoals zichtbaar op de loggerfoto's en onderbouwen de in <code>Verslagje.docx</code> vermelde aanpassing van de waarden in het dataloggerscript.</td></tr>
+    </table>
+
+    <h3>Fotoreeks 19 november 2025</h3>
+    <div class="gallery">
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_logger_bekabeling.jpg" alt="Bekabeling in de dataloggerkast">
+        <figcaption>Bekabeling in de dataloggerkast.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_weerstandsmodules.jpg" alt="Geplaatste weerstandsmodules">
+        <figcaption>Geplaatste weerstandsmodules in de kast.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_jumpers_vastgemaakt.jpg" alt="Jumpers vastgemaakt">
+        <figcaption>Jumperconfiguratie met jumpers vastgemaakt.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_jumpers_losgemaakt.jpg" alt="Jumpers losgemaakt">
+        <figcaption>Referentiebeeld van de jumperconfiguratie losgemaakt.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_sensorhuis_opstelling_1.jpg" alt="Sensorhuis aan de opstelling">
+        <figcaption>Bovenste sensorhuis aan de opstelling, eerste overzicht.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_sensorhuis_detail.jpg" alt="Detail van de sensor in de houder">
+        <figcaption>Detail van de bovenste sensor in de houder; het sensornummer <code>10384</code> is afleesbaar.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_sensorhuis_opstelling_2.jpg" alt="Sensorhuis aan de opstelling tweede zicht">
+        <figcaption>Bovenste sensorhuis aan de opstelling, tweede overzicht.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_kalibratierapport.jpg" alt="Kalibratierapport">
+        <figcaption>Kalibratierapport gebruikt bij het nazicht van de ingestelde waarden.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_logger_configuratie.jpg" alt="Configuratie van de logger">
+        <figcaption>Configuratiescherm met de ingestelde PAR-coefficienten voor Weert: <code>ParO = -163.61</code> en <code>ParB = -166.62</code>.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_program_upload.jpg" alt="Upload van het loggerprogramma">
+        <figcaption>Bevestiging dat het programma naar de datalogger is gestuurd.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-19_program_running.jpg" alt="Running program in de logger">
+        <figcaption>Bevestiging dat <code>Weert_SF_YSI_PAR_FTP_20251119.cr8</code> draait op de logger.</figcaption>
+      </figure>
+    </div>
+
+    <h2>3. Interventie van 26 november 2025</h2>
+    <table>
+      <tr><th>Samenvatting</th><td>Na vervanging van de sensor, gebruik van een <strong>1210 Ohm</strong> weerstand en aanpassing van de waarden in het dataloggerscript werd de coaxkabel vervangen, maar enkel voor de bovenste sensor. Tijdens een ander interventiemoment werd ook nagezien dat de jumpers geplaatst waren.</td></tr>
+      <tr><th>Belangrijkste technische vaststelling</th><td>De coaxkabel was maar net lang genoeg om de sensor met de datalogger te verbinden. In Weert liggen beide fysiek ver uit elkaar.</td></tr>
+      <tr><th>Benodigd materiaal</th><td>Een nieuwe kabel van ongeveer 15 meter moet worden besteld en geinstalleerd.</td></tr>
+      <tr><th>Historiek</th><td>De vorige kabel was te lang en lag slordig opgeborgen onder de loopbrug van het ponton; de nieuwe situatie toont dat de huidige kabel net te kort is. Beide situaties vragen dus een correct kabeltraject.</td></tr>
+      <tr><th>Mechanische aandachtspunten</th><td>Openingen in de dataloggerkast hebben scherpe kanten en moeten ontbraamd worden. Scherpe kabelbochten en schuren over de constructie moeten vermeden worden.</td></tr>
+      <tr><th>Bescherming</th><td>Rond de coaxkabel wordt best een inox flexibele buis of een kunststofbuis aangebracht.</td></tr>
+      <tr><th>Datapatroon</th><td>Het ritmisch negatieve patroon tijdens de nacht wijst volgens de notitie op een elektrische storing; overdag wordt die storing waarschijnlijk gemaskeerd door de hogere werkelijke lichtwaarden.</td></tr>
+    </table>
+
+    <h3>Fotoreeks en grafieken uit Verslagje.docx</h3>
+    <div class="gallery">
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-26_kabeldoorvoer_braam.jpg" alt="Kabeldoorvoer met scherpe rand in de dataloggerkast">
+        <figcaption>Doorvoer in de dataloggerkast met scherpe rand of braam die moet worden weggewerkt.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-26_oude_coax_lus.jpg" alt="Te lange oude coaxkabel in lussen opgeborgen">
+        <figcaption>De vorige coaxkabel lag te lang en slordig in lussen opgeborgen onder de loopbrug.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-26_kabelschade_detail.jpg" alt="Beschadigde coaxkabel">
+        <figcaption>Detail van kabelschade door schuren of een ongunstig kabeltraject.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-26_grafiek_overzicht.png" alt="Grafiek met herstel van de PAR-metingen">
+        <figcaption>Overzichtsgrafiek uit het Word-verslag die het verloop en het herstel van de PAR-metingen staaft.</figcaption>
+      </figure>
+      <figure>
+        <img src="2025_10_22_2025_11_19_images/2025-11-26_grafiek_zoom.png" alt="Zoomgrafiek met herstel van de PAR-metingen">
+        <figcaption>Zoomgrafiek uit het Word-verslag die de storing en het daaropvolgende herstel verder onderbouwt.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Aanbevolen vervolgacties</h3>
+    <ul>
+      <li>Bestel en plaats een langere coaxkabel van ongeveer 15 meter.</li>
+      <li>Werk alle scherpe randen aan de kabeldoorvoer in de kast af.</li>
+      <li>Bescherm de coaxkabel over kritische trajecten met een buis of flexibele mantel.</li>
+      <li>Beperk scherpe bochten en contact met bewegende of schurende constructiedelen.</li>
+      <li>Blijf het nachtelijke negatieve patroon opvolgen als indicatie van elektrische storing.</li>
+    </ul>
+  </main>
+</body>
+</html>

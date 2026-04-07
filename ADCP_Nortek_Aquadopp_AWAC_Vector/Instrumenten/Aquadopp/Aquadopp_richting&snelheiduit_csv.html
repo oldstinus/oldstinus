@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Aquadopp – verticale profielen + attitude</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+    }
+    .controls {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      max-width: 900px;
+    }
+    label {
+      margin-right: 6px;
+    }
+    select {
+      margin-right: 10px;
+      margin-bottom: 4px;
+    }
+    #plots {
+      max-width: 1200px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Aquadopp – snelheid & richting over hoogte (kleurplots) + heave / roll / pitch</h2>
+
+  <div class="controls">
+    <div>
+      <label for="fileInput">Kies CSV bestand (<code>;</code>-gescheiden):</label>
+      <input type="file" id="fileInput" accept=".csv">
+    </div>
+    <div style="margin-top:8px;">
+      <strong>Kolom-detectie:</strong><br>
+      <label for="timeCol">Tijdkolom:</label>
+      <select id="timeCol"></select>
+
+      <label for="pressCol">Drukkolom:</label>
+      <select id="pressCol"></select>
+    </div>
+    <div style="margin-top:4px;">
+      <small>
+        <em>Speed#i(hoogte m)</em> en <em>Dir#i(hoogte m)</em> worden automatisch gedetecteerd,
+        bv. <code>Speed#1(0.10m)</code>, <code>Dir#1(0.10m)</code>.<br>
+        Kolommen met <code>Pitch</code>, <code>Roll</code>, <code>Heave</code> of <code>Analog</code> worden gebruikt
+        voor de attitude-grafiek.
+      </small>
+    </div>
+    <div style="margin-top:8px;">
+      <label for="colorscaleSelect">Kleurschaal:</label>
+      <select id="colorscaleSelect">
+        <option value="Viridis">Viridis</option>
+        <option value="Plasma">Plasma</option>
+        <option value="Cividis">Cividis</option>
+        <option value="Jet">Jet</option>
+        <option value="Portland">Portland</option>
+        <option value="RdBu">RdBu</option>
+        <option value="Picnic">Picnic</option>
+        <option value="Turbo">Turbo</option>
+        <option value="Earth">Earth</option>
+      </select>
+
+      <button id="plotBtn">Genereer plots</button>
+    </div>
+  </div>
+
+  <div id="plots">
+    <div id="speedPlot" style="height:450px;"></div>
+    <div id="dirPlot" style="height:450px;"></div>
+    <div id="attPlot" style="height:350px;"></div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    function parseCSV(text, sep) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length === 0) return {header: [], rows: []};
+      const header = lines[0].split(sep).map(s => s.trim());
+      const rows = lines.slice(1).map(line => line.split(sep));
+      return {header, rows};
+    }
+
+    function parseDateTime(s) {
+      if (!s) return null;
+      const parts = s.trim().split(" ");
+      if (parts.length < 2) return new Date(s); // fallback
+      const d = parts[0].split(/[-\/]/);
+      const t = parts[1].split(":");
+      if (d.length !== 3 || t.length < 2) return new Date(s);
+      const day = parseInt(d[0], 10);
+      const month = parseInt(d[1], 10) - 1;
+      const year = parseInt(d[2], 10);
+      const hh = parseInt(t[0], 10);
+      const mm = parseInt(t[1], 10);
+      const ss = t.length > 2 ? parseInt(t[2], 10) : 0;
+      return new Date(year, month, day, hh, mm, ss);
+    }
+
+    function detectColumns(header) {
+      let timeIdx = -1;
+      let pressIdx = -1;
+
+      for (let i = 0; i < header.length; i++) {
+        const h = header[i].toLowerCase();
+        if (timeIdx === -1 && (h.includes("datetime") || h.includes("date") || h.includes("time"))) {
+          timeIdx = i;
+        }
+        if (pressIdx === -1 && h.includes("press")) {
+          pressIdx = i;
+        }
+      }
+      return {timeIdx, pressIdx};
+    }
+
+    function getSpeedDirColumns(header) {
+      const speedCols = [];
+      const dirCols = [];
+      const speedHeights = [];
+      const dirHeights = [];
+      const speedRegex = /^speed#\d+\(([\d.]+)m\)/i;
+      const dirRegex   = /^dir#\d+\(([\d.]+)m\)/i;
+
+      for (let i = 0; i < header.length; i++) {
+        const name = header[i];
+        let m = name.match(speedRegex);
+        if (m) {
+          speedCols.push(i);
+          speedHeights.push(parseFloat(m[1]));
+        }
+        let m2 = name.match(dirRegex);
+        if (m2) {
+          dirCols.push(i);
+          dirHeights.push(parseFloat(m2[1]));
+        }
+      }
+      return {speedCols, dirCols, speedHeights, dirHeights};
+    }
+
+    function uniqueSorted(arr) {
+      const s = Array.from(new Set(arr));
+      s.sort((a,b) => a - b);
+      return s;
+    }
+
+    function fillSelectWithHeader(select, header, selectedIndex) {
+      select.innerHTML = "";
+      const opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "-- kies --";
+      select.appendChild(opt0);
+
+      header.forEach((h, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = h;
+        select.appendChild(opt);
+      });
+
+      if (selectedIndex !== null && selectedIndex >= 0 && selectedIndex < header.length) {
+        select.value = selectedIndex;
+      } else {
+        select.value = "";
+      }
+    }
+
+    // ---------- Globals ----------
+    let currentHeader = [];
+    let currentRows = [];
+
+    const fileInput = document.getElementById("fileInput");
+    const timeColSelect = document.getElementById("timeCol");
+    const pressColSelect = document.getElementById("pressCol");
+    const colorscaleSelect = document.getElementById("colorscaleSelect");
+    const plotBtn = document.getElementById("plotBtn");
+
+    fileInput.addEventListener("change", function(evt) {
+      const f = evt.target.files[0];
+      if (!f) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const {header, rows} = parseCSV(text, ";");
+        currentHeader = header;
+        currentRows = rows;
+
+        const det = detectColumns(header);
+
+        let defaultTimeIdx = null;
+        let defaultPressIdx = null;
+
+        if (det.pressIdx >= 0) {
+          defaultPressIdx = det.pressIdx;
+        }
+        if (det.timeIdx >= 0 && det.timeIdx !== det.pressIdx) {
+          defaultTimeIdx = det.timeIdx;
+        }
+
+        fillSelectWithHeader(timeColSelect, header, defaultTimeIdx);
+        fillSelectWithHeader(pressColSelect, header, defaultPressIdx);
+
+        alert("CSV geladen. Kies tijd- en drukkolom (of laat de autodetectie staan) en klik op 'Genereer plots'.");
+      };
+      reader.readAsText(f);
+    });
+
+    plotBtn.addEventListener("click", function() {
+      if (!currentHeader.length || !currentRows.length) {
+        alert("Geen data geladen. Kies eerst een CSV bestand.");
+        return;
+      }
+
+      const timeVal  = timeColSelect.value;
+      const pressVal = pressColSelect.value;
+
+      if (timeVal === "" || pressVal === "") {
+        alert("Selecteer zowel tijd- als drukkolom.");
+        return;
+      }
+
+      const timeIdx  = parseInt(timeVal, 10);
+      const pressIdx = parseInt(pressVal, 10);
+
+      const {speedCols, dirCols, speedHeights, dirHeights} = getSpeedDirColumns(currentHeader);
+      if (!speedCols.length && !dirCols.length) {
+        alert("Geen Speed#i(...) of Dir#i(...) kolommen gevonden in de header.");
+        return;
+      }
+
+      // Tijd en druk
+      const times = [];
+      const pressures = [];
+      currentRows.forEach(row => {
+        const t = parseDateTime(row[timeIdx]);
+        if (t && !isNaN(t.getTime())) {
+          times.push(t);
+        } else {
+          times.push(null);
+        }
+        const p = parseFloat(row[pressIdx]);
+        pressures.push(isNaN(p) ? NaN : p);
+      });
+
+      // Hoogtes boven bodem
+      const allHeights = uniqueSorted(speedHeights.concat(dirHeights));
+      const nTime = times.length;
+      const nZ = allHeights.length;
+
+      // Matrices
+      const speedMat = [];
+      const dirMat = [];
+      for (let i = 0; i < nTime; i++) {
+        speedMat.push(new Array(nZ).fill(NaN));
+        dirMat.push(new Array(nZ).fill(NaN));
+      }
+
+      const speedMap = {};
+      for (let i = 0; i < speedCols.length; i++) {
+        speedMap[speedHeights[i]] = speedCols[i];
+      }
+      const dirMap = {};
+      for (let i = 0; i < dirCols.length; i++) {
+        dirMap[dirHeights[i]] = dirCols[i];
+      }
+
+      // Vul matrices, knip op waterhoogte (Pressure ≈ waterhoogte in m)
+      for (let i = 0; i < nTime; i++) {
+        const H = pressures[i];
+        const row = currentRows[i];
+
+        for (let j = 0; j < nZ; j++) {
+          const h = allHeights[j]; // hoogte boven bodem
+          if (!isNaN(H) && h > H) continue; // boven water
+
+          if (h in speedMap) {
+            const val = parseFloat(row[speedMap[h]]);
+            speedMat[i][j] = isNaN(val) ? NaN : val;
+          }
+          if (h in dirMap) {
+            const val2 = parseFloat(row[dirMap[h]]);
+            dirMat[i][j] = isNaN(val2) ? NaN : val2;
+          }
+        }
+      }
+
+      // Transponeren naar z x t
+      const zSpeed = [];
+      const zDir = [];
+      for (let j = 0; j < nZ; j++) {
+        const rowS = [];
+        const rowD = [];
+        for (let i = 0; i < nTime; i++) {
+          rowS.push(speedMat[i][j]);
+          rowD.push(dirMat[i][j]);
+        }
+        zSpeed.push(rowS);
+        zDir.push(rowD);
+      }
+
+      const colorscale = colorscaleSelect.value || "Viridis";
+
+      // ---------- Speed heatmap ----------
+      const speedData = [{
+        x: times,
+        y: allHeights,
+        z: zSpeed,
+        type: "heatmap",
+        colorscale: colorscale,
+        colorbar: {title: "Speed (m/s)"},
+        zauto: true,
+        hovertemplate:
+          "Tijd: %{x}<br>" +
+          "Hoogte: %{y:.2f} m<br>" +
+          "Snelheid: %{z:.3f} m/s<br" +
+          "><extra></extra>"
+      }];
+
+      const speedLayout = {
+        title: "Snelheid over hoogte",
+        xaxis: {title: "Tijd", type: "date", rangeslider: {visible: true}},
+        yaxis: {title: "Hoogte boven bodem (m)", autorange: true}
+      };
+
+      Plotly.newPlot("speedPlot", speedData, speedLayout);
+
+      // ---------- Richting heatmap ----------
+      const dirData = [{
+        x: times,
+        y: allHeights,
+        z: zDir,
+        type: "heatmap",
+        colorscale: colorscale,
+        colorbar: {title: "Dir (°)"},
+        zauto: true,
+        hovertemplate:
+          "Tijd: %{x}<br>" +
+          "Hoogte: %{y:.2f} m<br>" +
+          "Richting: %{z:.1f} °<br>" +
+          "<extra></extra>"
+      }];
+
+      const dirLayout = {
+        title: "Richting over hoogte",
+        xaxis: {title: "Tijd", type: "date", rangeslider: {visible: true}},
+        yaxis: {title: "Hoogte boven bodem (m)", autorange: true}
+      };
+
+      Plotly.newPlot("dirPlot", dirData, dirLayout);
+
+      // ---------- Heave / Roll / Pitch tijdreeks ----------
+      // zoek indices voor pitch/roll/heave
+      let pitchIdx = -1, rollIdx = -1, heaveIdx = -1;
+      for (let i = 0; i < currentHeader.length; i++) {
+        const h = currentHeader[i].toLowerCase();
+        if (pitchIdx === -1 && h.includes("pitch")) pitchIdx = i;
+        if (rollIdx === -1 && h.includes("roll")) rollIdx = i;
+        if (heaveIdx === -1 && (h.includes("heave") || h.includes("analog"))) heaveIdx = i;
+      }
+
+      const attTraces = [];
+      if (pitchIdx >= 0) {
+        const pitch = currentRows.map(r => {
+          const v = parseFloat(r[pitchIdx]);
+          return isNaN(v) ? null : v;
+        });
+        attTraces.push({
+          x: times,
+          y: pitch,
+          mode: "lines",
+          name: currentHeader[pitchIdx] + " (deg)"
+        });
+      }
+      if (rollIdx >= 0) {
+        const roll = currentRows.map(r => {
+          const v = parseFloat(r[rollIdx]);
+          return isNaN(v) ? null : v;
+        });
+        attTraces.push({
+          x: times,
+          y: roll,
+          mode: "lines",
+          name: currentHeader[rollIdx] + " (deg)"
+        });
+      }
+      if (heaveIdx >= 0) {
+        const heave = currentRows.map(r => {
+          const v = parseFloat(r[heaveIdx]);
+          return isNaN(v) ? null : v;
+        });
+        attTraces.push({
+          x: times,
+          y: heave,
+          mode: "lines",
+          name: currentHeader[heaveIdx] + " (heave)"
+        });
+      }
+
+      if (attTraces.length > 0) {
+        const attLayout = {
+          title: "Heave / Roll / Pitch",
+          xaxis: {
+            title: "Tijd",
+            type: "date",
+            rangeslider: {visible: true}
+          },
+          yaxis: {
+            title: "° / m",
+            autorange: true
+          },
+          hovermode: "x unified"
+        };
+        Plotly.newPlot("attPlot", attTraces, attLayout);
+      } else {
+        document.getElementById("attPlot").innerHTML =
+          "<em>Geen heave/roll/pitch-kolommen gevonden.</em>";
+      }
+    });
+
+    // Kleurschaal live wijzigen
+    colorscaleSelect.addEventListener("change", function() {
+      const cs = colorscaleSelect.value;
+      Plotly.restyle("speedPlot", {colorscale: cs});
+      Plotly.restyle("dirPlot",   {colorscale: cs});
+    });
+  </script>
+</body>
+</html>

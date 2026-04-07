@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Inlezer en Visualisatie Tool</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Data Inlezer en Visualisatie Tool</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-warning" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Kies een TSV-bestand (.tsv of .txt):</label>
+                <input type="file" class="form-control-file" id="file" name="file" accept=".tsv,.txt" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload en Visualiseer</button>
+        </form>
+    </div>
+</body>
+</html>

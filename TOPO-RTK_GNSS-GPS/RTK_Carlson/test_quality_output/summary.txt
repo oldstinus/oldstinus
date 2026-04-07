@@ -1,0 +1,8 @@
+Input rijen: 28
+Geldige meetrijen: 28
+Na filtering: 28
+Geaggregeerde punten: 14
+Kwaliteitsverdeling: {'A': 5, 'B': 23}
+Initiale filter OK: 28
+Outlier filter toegepast: ja
+CRS naar WGS84: EPSG:31370 -> EPSG:4326

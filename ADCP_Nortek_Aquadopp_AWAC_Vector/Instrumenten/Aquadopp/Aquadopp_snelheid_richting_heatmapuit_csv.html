@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aquadopp – ultra-light viewer (anti-crash)</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 10px; }
+    .controls { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; max-width: 1250px; }
+    label { margin-right: 6px; }
+    select, input, button { margin-right: 10px; margin-bottom: 6px; }
+    .row { margin-top: 6px; }
+    .note { color: #444; font-size: 12px; }
+    .err { color: #b00020; font-size: 12px; white-space: pre-wrap; }
+    .ok  { color: #006400; font-size: 12px; white-space: pre-wrap; }
+    #plots { max-width: 1400px; }
+  </style>
+</head>
+<body>
+  <h2>Aquadopp – snelheid & richting (heatmaps) + pressure + attitude (ULTRA-light)</h2>
+
+  <div class="controls">
+    <div class="row">
+      <label for="fileInput">CSV bestand (;</label>
+      <input type="file" id="fileInput" accept=".csv" />
+      <span class="note" id="fileInfo"></span>
+    </div>
+
+    <div class="row">
+      <strong>Kolommen:</strong><br />
+      <label for="timeCol">Tijd:</label>
+      <select id="timeCol"></select>
+
+      <label for="pressCol">Pressure:</label>
+      <select id="pressCol"></select>
+
+      <span class="note" id="colDesc"></span>
+    </div>
+
+    <div class="row">
+      <label for="maxPoints">Max tijdpunten:</label>
+      <input id="maxPoints" type="number" min="200" step="100" value="1000" />
+
+      <label for="clipAboveWater">
+        <input id="clipAboveWater" type="checkbox" checked />
+        Knip cellen boven water (h &gt; Pressure)
+      </label>
+
+      <label for="colorscaleSelect">Kleurschaal:</label>
+      <select id="colorscaleSelect">
+        <option value="Viridis">Viridis</option>
+        <option value="Plasma">Plasma</option>
+        <option value="Cividis">Cividis</option>
+        <option value="Turbo">Turbo</option>
+        <option value="Jet">Jet</option>
+        <option value="Portland">Portland</option>
+        <option value="RdBu">RdBu</option>
+        <option value="Earth">Earth</option>
+      </select>
+
+      <button id="plotBtn">Genereer (ultra-light)</button>
+    </div>
+
+    <div class="row note">
+      Deze versie splitst <strong>alleen</strong> ~N bewaarde lijnen in kolommen (bv. 1000). Alle andere lijnen worden byte-wise geskipt.
+    </div>
+
+    <div class="row ok" id="statusBox"></div>
+    <div class="row err" id="errBox" style="display:none;"></div>
+  </div>
+
+  <div id="plots">
+    <div id="speedPlot" style="height:460px;"></div>
+    <div id="dirPlot" style="height:460px;"></div>
+    <div id="pressurePlot" style="height:320px;"></div>
+    <div id="attPlot" style="height:320px;"></div>
+  </div>
+
+<script>
+  const SEP = ";";
+
+  const fileInput = document.getElementById("fileInput");
+  const fileInfo = document.getElementById("fileInfo");
+  const timeCol = document.getElementById("timeCol");
+  const pressCol = document.getElementById("pressCol");
+  const colDesc = document.getElementById("colDesc");
+  const maxPoints = document.getElementById("maxPoints");
+  const clipAboveWater = document.getElementById("clipAboveWater");
+  const colorscaleSelect = document.getElementById("colorscaleSelect");
+  const plotBtn = document.getElementById("plotBtn");
+  const errBox = document.getElementById("errBox");
+  const statusBox = document.getElementById("statusBox");
+
+  let fileObj = null;
+  let headerGlobal = [];
+
+  function showError(msg) {
+    errBox.style.display = "block";
+    errBox.textContent = msg;
+  }
+  function clearError() {
+    errBox.style.display = "none";
+    errBox.textContent = "";
+  }
+  function setStatus(msg) {
+    statusBox.textContent = msg;
+  }
+
+  function fillSelect(select, header, defaultIdx) {
+    select.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = "-- kies --";
+    select.appendChild(opt0);
+
+    header.forEach((h, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = h;
+      select.appendChild(opt);
+    });
+
+    if (defaultIdx !== null && defaultIdx >= 0 && defaultIdx < header.length) {
+      select.value = String(defaultIdx);
+    } else {
+      select.value = "";
+    }
+  }
+
+  function updateColDesc() {
+    const tIdx = timeCol.value !== "" ? parseInt(timeCol.value, 10) : -1;
+    const pIdx = pressCol.value !== "" ? parseInt(pressCol.value, 10) : -1;
+    const tName = (tIdx >= 0 && headerGlobal[tIdx]) ? headerGlobal[tIdx] : "(geen)";
+    const pName = (pIdx >= 0 && headerGlobal[pIdx]) ? headerGlobal[pIdx] : "(geen)";
+    colDesc.textContent = `Tijd="${tName}", Pressure="${pName}"`;
+  }
+  timeCol.addEventListener("change", updateColDesc);
+  pressCol.addEventListener("change", updateColDesc);
+
+  function parseDateTime_ddmmyyyy(s) {
+    if (!s) return null;
+    const txt = String(s).trim();
+    const parts = txt.split(" ");
+    if (parts.length < 2) return null;
+
+    const d = parts[0].split(/[\/\-]/);
+    const t = parts[1].split(":");
+    if (d.length !== 3 || t.length < 2) return null;
+
+    const day = parseInt(d[0], 10);
+    const mon = parseInt(d[1], 10) - 1;
+    const yr  = parseInt(d[2], 10);
+    const hh  = parseInt(t[0], 10);
+    const mm  = parseInt(t[1], 10);
+    const ss  = t.length > 2 ? parseInt(t[2], 10) : 0;
+
+    const dt = new Date(yr, mon, day, hh, mm, ss);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  function detectSpeedDirFromHeader(header) {
+    const speedRegex = /^speed#\d+\(([\d.]+)m\)$/i;
+    const dirRegex   = /^dir#\d+\(([\d.]+)m\)$/i;
+
+    const speeds = [];
+    const dirs = [];
+
+    for (let i=0;i<header.length;i++){
+      const name = header[i] || "";
+      let m = name.match(speedRegex);
+      if (m) speeds.push({ idx: i, h: parseFloat(m[1]) });
+      let d = name.match(dirRegex);
+      if (d) dirs.push({ idx: i, h: parseFloat(d[1]) });
+    }
+
+    const heights = Array.from(new Set(speeds.map(x=>x.h).concat(dirs.map(x=>x.h))))
+      .filter(v => typeof v === "number" && !isNaN(v))
+      .sort((a,b)=>a-b);
+
+    const speedMap = {};
+    speeds.forEach(s => speedMap[s.h] = s.idx);
+    const dirMap = {};
+    dirs.forEach(d => dirMap[d.h] = d.idx);
+
+    return { heights, speedMap, dirMap };
+  }
+
+  function findAttitudeIndices(header) {
+    let heading=-1, pitch=-1, roll=-1;
+    for (let i=0;i<header.length;i++){
+      const h = (header[i]||"").toLowerCase();
+      if (heading === -1 && h.includes("heading")) heading = i;
+      if (pitch === -1 && h.includes("pitch")) pitch = i;
+      if (roll === -1 && h.includes("roll")) roll = i;
+    }
+    return { heading, pitch, roll };
+  }
+
+  async function countLinesFast(file) {
+    // telt '\n' in bytes, zeer licht
+    const reader = file.stream().getReader();
+    let count = 0;
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      // value is Uint8Array
+      for (let i=0;i<value.length;i++){
+        if (value[i] === 10) count++; // '\n'
+      }
+    }
+    return count; // aantal newline chars (≈ aantal regels)
+  }
+
+  async function readHeaderLine(file) {
+    // lees enkel tot eerste newline
+    const reader = file.stream().getReader();
+    const dec = new TextDecoder("utf-8");
+    let buf = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const idx = buf.indexOf("\n");
+      if (idx >= 0) {
+        const line = buf.slice(0, idx).replace(/\r$/, "");
+        return line;
+      }
+      // guard: als header uitzonderlijk lang is, toch niet onbeperkt bufferen
+      if (buf.length > 5e6) throw new Error("Header te lang (onverwacht).");
+    }
+    throw new Error("Kon geen headerlijn vinden.");
+  }
+
+  async function parseSelectedLines(file, stride, timeIdx, pressIdx) {
+    const dec = new TextDecoder("utf-8");
+    const reader = file.stream().getReader();
+
+    // 1) header verwerken
+    const headerLine = await readHeaderLine(file);
+    const header = headerLine.split(SEP).map(s => (s ?? "").trim()).filter((v,i,arr)=>!(i===arr.length-1 && v===""));
+    headerGlobal = header;
+
+    // detecteer profielen & attitude
+    const det = detectSpeedDirFromHeader(header);
+    if (!det.heights.length) throw new Error("Geen Speed#i(...) / Dir#i(...) kolommen gevonden.");
+    const heights = det.heights;
+    const speedMap = det.speedMap;
+    const dirMap = det.dirMap;
+
+    const att = findAttitudeIndices(header);
+
+    // output
+    const times = [];
+    const pressures = [];
+    const heading = [];
+    const pitch = [];
+    const roll = [];
+    const zSpeed = Array.from({length: heights.length}, () => []);
+    const zDir   = Array.from({length: heights.length}, () => []);
+
+    // 2) tweede stream: line-by-line, maar split alleen bij keep
+    //    => we openen opnieuw een reader op dezelfde file (nieuw stream)
+    const reader2 = file.stream().getReader();
+    let buffer = "";
+    let lineNo = -1;      // header = 0, data start at 1
+    let dataRow = 0;      // data rows only
+
+    // skip headerline in stream2
+    while (true) {
+      const { value, done } = await reader2.read();
+      if (done) return { times, pressures, heading, pitch, roll, heights, zSpeed, zDir, header };
+      buffer += dec.decode(value, { stream: true });
+      const idx = buffer.indexOf("\n");
+      if (idx >= 0) {
+        buffer = buffer.slice(idx+1);
+        lineNo = 0;
+        break;
+      }
+    }
+
+    const doClip = !!clipAboveWater.checked;
+
+    while (true) {
+      const { value, done } = await reader2.read();
+      if (done) break;
+
+      buffer += dec.decode(value, { stream: true });
+
+      let nl;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, nl).replace(/\r$/, "");
+        buffer = buffer.slice(nl + 1);
+
+        lineNo++;
+        if (lineNo <= 0) continue;
+        if (!line.trim()) continue;
+
+        dataRow++;
+
+        // KEEP?
+        if ((dataRow % stride) !== 0) {
+          // skip: GEEN split => super licht
+          continue;
+        }
+
+        // parse: split alleen hier
+        let parts = line.split(SEP);
+        if (parts.length && parts[parts.length-1] === "") parts.pop();
+
+        const t = parseDateTime_ddmmyyyy(parts[timeIdx]);
+        times.push(t ? t : null);
+
+        const p = parseFloat(parts[pressIdx]);
+        const H = isNaN(p) ? NaN : p;
+        pressures.push(isNaN(p) ? null : p);
+
+        if (att.heading >= 0) {
+          const v = parseFloat(parts[att.heading]); heading.push(isNaN(v) ? null : v);
+        }
+        if (att.pitch >= 0) {
+          const v = parseFloat(parts[att.pitch]); pitch.push(isNaN(v) ? null : v);
+        }
+        if (att.roll >= 0) {
+          const v = parseFloat(parts[att.roll]); roll.push(isNaN(v) ? null : v);
+        }
+
+        for (let j=0;j<heights.length;j++){
+          const h = heights[j];
+
+          if (doClip && !isNaN(H) && h > H) {
+            zSpeed[j].push(null);
+            zDir[j].push(null);
+            continue;
+          }
+
+          if (speedMap[h] !== undefined) {
+            const vs = parseFloat(parts[speedMap[h]]);
+            zSpeed[j].push(isNaN(vs) ? null : vs);
+          } else zSpeed[j].push(null);
+
+          if (dirMap[h] !== undefined) {
+            const vd = parseFloat(parts[dirMap[h]]);
+            zDir[j].push(isNaN(vd) ? null : vd);
+          } else zDir[j].push(null);
+        }
+      }
+    }
+
+    return { times, pressures, heading, pitch, roll, heights, zSpeed, zDir, header };
+  }
+
+  function plotAll(out, timeIdx, pressIdx, stride) {
+    const colorscale = colorscaleSelect.value || "Viridis";
+
+    Plotly.newPlot("speedPlot", [{
+      x: out.times, y: out.heights, z: out.zSpeed,
+      type: "heatmap",
+      colorscale,
+      colorbar: { title: "Speed (m/s)" },
+      hovertemplate: "Tijd: %{x}<br>Hoogte: %{y:.2f} m<br>Snelheid: %{z:.3f} m/s<extra></extra>"
+    }], {
+      title: `Snelheid over hoogte (stride=${stride}, punten=${out.times.length})`,
+      xaxis: { title: "Tijd", type: "date", rangeslider: { visible: false } },
+      yaxis: { title: "Hoogte boven bodem (m)" }
+    }, { responsive: true });
+
+    Plotly.newPlot("dirPlot", [{
+      x: out.times, y: out.heights, z: out.zDir,
+      type: "heatmap",
+      colorscale,
+      colorbar: { title: "Dir (°)" },
+      hovertemplate: "Tijd: %{x}<br>Hoogte: %{y:.2f} m<br>Richting: %{z:.1f} °<extra></extra>"
+    }], {
+      title: `Richting over hoogte (stride=${stride}, punten=${out.times.length})`,
+      xaxis: { title: "Tijd", type: "date", rangeslider: { visible: false } },
+      yaxis: { title: "Hoogte boven bodem (m)" }
+    }, { responsive: true });
+
+    Plotly.newPlot("pressurePlot", [{
+      x: out.times, y: out.pressures, mode: "lines",
+      name: out.header[pressIdx] || "Pressure"
+    }], {
+      title: "Pressure (apart deelfiguur)",
+      xaxis: { title: "Tijd", type: "date", rangeslider: { visible: false } },
+      yaxis: { title: out.header[pressIdx] || "Pressure" },
+      hovermode: "x unified"
+    }, { responsive: true });
+
+    const attTraces = [];
+    if (out.heading.length) attTraces.push({ x: out.times, y: out.heading, mode:"lines", name:"Heading (deg)" });
+    if (out.pitch.length)   attTraces.push({ x: out.times, y: out.pitch,   mode:"lines", name:"Pitch (deg)" });
+    if (out.roll.length)    attTraces.push({ x: out.times, y: out.roll,    mode:"lines", name:"Roll (deg)" });
+
+    if (attTraces.length) {
+      Plotly.newPlot("attPlot", attTraces, {
+        title: "Attitude (Heading/Pitch/Roll)",
+        xaxis: { title: "Tijd", type: "date", rangeslider: { visible: false } },
+        yaxis: { title: "deg" },
+        hovermode: "x unified"
+      }, { responsive: true });
+    } else {
+      document.getElementById("attPlot").innerHTML = "<em>Geen attitude-kolommen gevonden.</em>";
+    }
+  }
+
+  fileInput.addEventListener("change", async () => {
+    clearError();
+    setStatus("");
+    fileObj = fileInput.files[0] || null;
+    headerGlobal = [];
+
+    if (!fileObj) return;
+    fileInfo.textContent = `(${fileObj.name}, ${(fileObj.size/1024/1024).toFixed(1)} MB)`;
+
+    try {
+      setStatus("Header lezen…");
+      const headerLine = await readHeaderLine(fileObj);
+      headerGlobal = headerLine.split(SEP).map(s => (s ?? "").trim()).filter((v,i,arr)=>!(i===arr.length-1 && v===""));
+
+      // autodetecteer tijd/pressure (conservatief)
+      let timeIdx = -1, pressIdx = -1;
+      for (let i=0;i<headerGlobal.length;i++){
+        const h = headerGlobal[i].toLowerCase();
+        if (timeIdx === -1 && (h.includes("datetime") || (h.includes("date") && h.includes("time")))) timeIdx = i;
+        if (pressIdx === -1 && h.includes("pressure")) pressIdx = i;
+      }
+
+      fillSelect(timeCol, headerGlobal, timeIdx >= 0 ? timeIdx : null);
+      fillSelect(pressCol, headerGlobal, pressIdx >= 0 ? pressIdx : null);
+      updateColDesc();
+      setStatus("Header OK. Kies kolommen (indien nodig) en klik ‘Genereer’.");
+    } catch (e) {
+      showError(String(e && e.stack ? e.stack : e));
+    }
+  });
+
+  plotBtn.addEventListener("click", async () => {
+    clearError();
+    if (!fileObj) return alert("Kies eerst een CSV.");
+    if (timeCol.value === "" || pressCol.value === "") return alert("Selecteer tijd- en pressurekolom.");
+
+    const timeIdx = parseInt(timeCol.value, 10);
+    const pressIdx = parseInt(pressCol.value, 10);
+    const maxPts = Math.max(200, parseInt(maxPoints.value || "1000", 10));
+
+    try {
+      setStatus("Pass 1: regels tellen (byte-scan)…");
+      const nlCount = await countLinesFast(fileObj);
+
+      // nlCount ≈ aantal regels incl header (meestal)
+      const nData = Math.max(1, nlCount - 1);
+      const stride = Math.max(1, Math.ceil(nData / maxPts));
+
+      setStatus(`Pass 1 OK: ~${nData} datarijen. Stride=${stride}. Pass 2: geselecteerde lijnen parsen…`);
+      const out = await parseSelectedLines(fileObj, stride, timeIdx, pressIdx);
+
+      setStatus(`Pass 2 OK: ${out.times.length} tijdpunten. Plotten…`);
+      plotAll(out, timeIdx, pressIdx, stride);
+
+      setStatus(`Klaar. (${out.times.length} punten, stride=${stride})`);
+    } catch (e) {
+      showError(String(e && e.stack ? e.stack : e));
+      setStatus("");
+      alert("Fout tijdens verwerken. Zie rood foutvak.");
+    }
+  });
+
+  colorscaleSelect.addEventListener("change", () => {
+    const cs = colorscaleSelect.value || "Viridis";
+    try { Plotly.restyle("speedPlot", { colorscale: cs }); } catch(e){}
+    try { Plotly.restyle("dirPlot",   { colorscale: cs }); } catch(e){}
+  });
+</script>
+</body>
+</html>

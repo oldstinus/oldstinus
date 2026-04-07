@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Aquadopp – speed/dir viewer + range-mean + slices (synced zoom)</title>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 10px; }
+    h2 { margin: 6px 0 10px 0; }
+    .controls{
+      margin-bottom: 10px; padding: 10px;
+      border: 1px solid #ccc; border-radius: 6px; max-width: 1600px;
+    }
+    label { margin-right: 6px; }
+    select, input, button { margin-right: 10px; margin-bottom: 6px; }
+    .row { margin-top: 8px; }
+    .note { color: #444; font-size: 12px; line-height: 1.25; }
+    .err { color: #b00020; font-size: 12px; white-space: pre-wrap; }
+    .ok  { color: #136f2d; font-size: 12px; white-space: pre-wrap; }
+    #plots { max-width: 1700px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 10px;
+    }
+    .plotbox { border: 1px solid #eee; border-radius: 6px; padding: 6px; }
+    .plotTitle { font-size: 12px; color: #333; margin: 0 0 4px 0; }
+    .inline { display:inline-block; margin-right: 14px; }
+    code { background: #f6f6f6; padding: 0px 4px; border-radius: 4px; }
+  </style>
+</head>
+
+<body>
+  <h2>Aquadopp – Heatmaps (speed/dir) + pressure/attitude + cel-range vector-mean + horizontale/verticale slices + gesynchroniseerd inzoomen</h2>
+
+  <div class="controls">
+    <div class="row">
+      <label for="fileInput"><strong>CSV bestand:</strong></label>
+      <input type="file" id="fileInput" accept=".csv" />
+      <span class="note" id="fileInfo"></span>
+    </div>
+
+    <div class="row note" id="sniffInfo"></div>
+
+    <div class="row">
+      <strong>Kolommen:</strong><br />
+      <label for="timeCol">Tijd:</label>
+      <select id="timeCol"></select>
+
+      <label for="pressCol">Pressure/extra:</label>
+      <select id="pressCol"></select>
+
+      <label for="headingCol">Heading:</label>
+      <select id="headingCol"></select>
+
+      <label for="pitchCol">Pitch:</label>
+      <select id="pitchCol"></select>
+
+      <label for="rollCol">Roll:</label>
+      <select id="rollCol"></select>
+
+      <span class="note" id="colDesc"></span>
+    </div>
+
+    <div class="row">
+      <label for="maxPoints">Max tijdpunten:</label>
+      <input id="maxPoints" type="number" min="200" step="100" value="3000" />
+
+      <label class="inline" for="clipAboveWater">
+        <input id="clipAboveWater" type="checkbox" checked />
+        Knip cellen boven water (hoogte &gt; Pressure)
+      </label>
+
+      <label class="inline" for="showRangeSlider">
+        <input id="showRangeSlider" type="checkbox" />
+        Rangeslider (zwaar)
+      </label>
+
+      <label for="colorscaleSelect">Kleurschaal:</label>
+      <select id="colorscaleSelect">
+        <option value="Viridis">Viridis</option>
+        <option value="Plasma">Plasma</option>
+        <option value="Cividis">Cividis</option>
+        <option value="Turbo">Turbo</option>
+        <option value="Jet">Jet</option>
+        <option value="Portland">Portland</option>
+        <option value="RdBu">RdBu</option>
+        <option value="Earth">Earth</option>
+      </select>
+
+      <button id="plotBtn">Genereer (streaming)</button>
+      <button id="resetSlicesBtn">Reset lijnen</button>
+    </div>
+
+    <div class="row">
+      <strong>Cel-range (vector-mean):</strong><br/>
+      <label class="inline" for="useCellRange">
+        <input id="useCellRange" type="checkbox" />
+        Vector-gemiddelde snelheid &amp; richting over cellen (Start..Eind)
+      </label>
+
+      <label for="cellStart">Start cel #:</label>
+      <input id="cellStart" type="number" min="1" step="1" value="1" style="width:90px;" />
+
+      <label for="cellEnd">Eind cel #:</label>
+      <input id="cellEnd" type="number" min="1" step="1" value="1" style="width:90px;" />
+
+      <label class="inline" for="addMeanAsTraces">
+        <input id="addMeanAsTraces" type="checkbox" checked />
+        Voeg mean-serie toe aan attitude-plot
+      </label>
+
+      <button id="downloadMeanBtn" disabled>Download mean CSV</button>
+    </div>
+
+    <div class="row">
+      <strong>Lijnselectie (klik in heatmap):</strong><br/>
+      <label class="inline" for="sliceModeH">
+        <input id="sliceModeH" name="sliceMode" type="radio" checked />
+        Horizontaal (kies hoogte/cel → tijdreeks)
+      </label>
+
+      <label class="inline" for="sliceModeV">
+        <input id="sliceModeV" name="sliceMode" type="radio" />
+        Verticaal (kies tijd → profiel over hoogte/cellen)
+      </label>
+
+      <span class="note" id="sliceInfo"></span>
+    </div>
+
+    <div class="row note">
+      <div>Belangrijk:</div>
+      <ul style="margin:6px 0 0 20px;">
+        <li>Datum/tijd wordt expliciet als <code>dd/mm/yyyy hh:mm:ss</code> geparsed (geen browser-locale ambiguïteit).</li>
+        <li>Inzoomen/pannen op één plot synchroniseert de andere tijd-gebaseerde plots (x-range).</li>
+        <li>Klik in <em>snelheid</em>-heatmap → slice op snelheid; klik in <em>richting</em>-heatmap → slice op richting.</li>
+      </ul>
+    </div>
+
+    <div class="row err" id="errBox" style="display:none;"></div>
+    <div class="row ok" id="okBox" style="display:none;"></div>
+  </div>
+
+  <div id="plots" class="grid">
+    <div class="plotbox">
+      <div class="plotTitle">Heatmap snelheid</div>
+      <div id="speedPlot" style="height:460px;"></div>
+    </div>
+    <div class="plotbox">
+      <div class="plotTitle">Heatmap richting</div>
+      <div id="dirPlot" style="height:460px;"></div>
+    </div>
+
+    <div class="plotbox">
+      <div class="plotTitle">Pressure / extra kanaal</div>
+      <div id="pressurePlot" style="height:320px;"></div>
+    </div>
+    <div class="plotbox">
+      <div class="plotTitle">Attitude + vector-mean</div>
+      <div id="tsPlot" style="height:320px;"></div>
+    </div>
+
+    <div class="plotbox" style="grid-column: 1 / span 2;">
+      <div class="plotTitle">Slice-plot (tijdreeks of profiel) op basis van lijn in heatmap</div>
+      <div id="slicePlot" style="height:360px;"></div>
+    </div>
+  </div>
+
+<script>
+/* ================= UI helpers ================= */
+function showError(msg) {
+  const box = document.getElementById("errBox");
+  box.style.display = "block";
+  box.textContent = msg;
+}
+function clearError() {
+  const box = document.getElementById("errBox");
+  box.style.display = "none";
+  box.textContent = "";
+}
+function showOK(msg){
+  const box = document.getElementById("okBox");
+  box.style.display = "block";
+  box.textContent = msg;
+}
+function clearOK(){
+  const box = document.getElementById("okBox");
+  box.style.display = "none";
+  box.textContent = "";
+}
+
+function fillSelect(select, header, guessIdx) {
+  select.innerHTML = "";
+  const opt0 = document.createElement("option");
+  opt0.value = "";
+  opt0.textContent = "-- kies --";
+  select.appendChild(opt0);
+
+  header.forEach((h, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = h;
+    select.appendChild(opt);
+  });
+
+  if (guessIdx !== null && guessIdx >= 0 && guessIdx < header.length) {
+    select.value = String(guessIdx);
+  } else {
+    select.value = "";
+  }
+}
+
+function normHeader(s){
+  return String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g,"");
+}
+
+function autodetect(header){
+  let time=-1, press=-1, heading=-1, pitch=-1, roll=-1;
+  for (let i=0;i<header.length;i++){
+    const h = normHeader(header[i]);
+    if (time === -1 && (h.includes("datetime") || h.includes("timestamp") || (h.includes("date") && h.includes("time")) || h === "time" || h === "tijd")) time = i;
+    if (press === -1 && (h.includes("pressure") || h.includes("prs") || h.includes("heave") || h.includes("analog1") || h.includes("analog2") || h.includes("an1") || h.includes("an2"))) press = i;
+    if (heading === -1 && h.includes("heading")) heading = i;
+    if (pitch === -1 && h.includes("pitch")) pitch = i;
+    if (roll === -1 && h.includes("roll")) roll = i;
+  }
+  return {time, press, heading, pitch, roll};
+}
+
+function updateColDesc() {
+  const tIdx = timeCol.value !== "" ? parseInt(timeCol.value, 10) : -1;
+  const pIdx = pressCol.value !== "" ? parseInt(pressCol.value, 10) : -1;
+  const hIdx = headingCol.value !== "" ? parseInt(headingCol.value, 10) : -1;
+  const piIdx = pitchCol.value !== "" ? parseInt(pitchCol.value, 10) : -1;
+  const rIdx = rollCol.value !== "" ? parseInt(rollCol.value, 10) : -1;
+
+  const tName = (tIdx >= 0 && headerGlobal[tIdx]) ? headerGlobal[tIdx] : "(geen)";
+  const pName = (pIdx >= 0 && headerGlobal[pIdx]) ? headerGlobal[pIdx] : "(geen)";
+  const hName = (hIdx >= 0 && headerGlobal[hIdx]) ? headerGlobal[hIdx] : "(geen)";
+  const piName = (piIdx >= 0 && headerGlobal[piIdx]) ? headerGlobal[piIdx] : "(geen)";
+  const rName = (rIdx >= 0 && headerGlobal[rIdx]) ? headerGlobal[rIdx] : "(geen)";
+  colDesc.textContent = `Tijd="${tName}", Extra="${pName}", Heading="${hName}", Pitch="${piName}", Roll="${rName}"`;
+}
+
+/* ============ Sniff delimiter & decimal ============ */
+function sniffSepDecimal(text){
+  const sample = text.slice(0, 20000);
+  const seps = [";","\t",","];
+  const counts = {};
+  seps.forEach(s => counts[s] = (sample.split(s).length-1));
+  let sep = ";", best = -1;
+  seps.forEach(s => { if (counts[s] > best){ best = counts[s]; sep = s; } });
+
+  const commaHits = (sample.match(/\d+,\d+/g) || []).length;
+  const dotHits   = (sample.match(/\d+\.\d+/g) || []).length;
+  const decimal = commaHits > dotHits ? "," : ".";
+  return {sep, decimal, counts, commaHits, dotHits};
+}
+
+function toNumber(s, decimal){
+  if (s === null || s === undefined) return NaN;
+  let t = String(s).trim();
+  if (t === "") return NaN;
+  if (decimal === ","){
+    t = t.replace(/\.(?=\d{3}(\D|$))/g,"");
+    t = t.replace(",", ".");
+  } else {
+    t = t.replace(/,(?=\d{3}(\D|$))/g,"");
+  }
+  const v = parseFloat(t);
+  return isNaN(v) ? NaN : v;
+}
+
+/* ============ ROBUST datetime parsing (dd/mm/yyyy) ============ */
+function parseDateTimeRobust(s){
+  if (!s) return null;
+  const txt = String(s).trim();
+
+  // 1) Explicit dd/mm/yyyy hh:mm:ss (or dd-mm)
+  let m = txt.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (m){
+    const day = parseInt(m[1],10);
+    const mon = parseInt(m[2],10)-1;
+    const yr  = parseInt(m[3],10);
+    const hh  = parseInt(m[4],10);
+    const mmn = parseInt(m[5],10);
+    const ss  = m[6] ? parseInt(m[6],10) : 0;
+    const dt = new Date(yr, mon, day, hh, mmn, ss);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  // 2) ISO or other unambiguous formats
+  const d0 = new Date(txt);
+  if (!isNaN(d0.getTime())) return d0;
+
+  return null;
+}
+
+/* ============ Detect Speed#N / Dir#N + optional (height)m ============ */
+function detectCellCols(header){
+  const speedRe = /(?:^|[^a-z0-9])speed\s*#\s*(\d+)\s*(?:\(\s*([\d.,]+)\s*m\s*\))?/i;
+  const dirRe   = /(?:^|[^a-z0-9])dir\s*#\s*(\d+)\s*(?:\(\s*([\d.,]+)\s*m\s*\))?/i;
+
+  const speed = [];
+  const dir   = [];
+
+  for (let i=0;i<header.length;i++){
+    const name = String(header[i] ?? "");
+    let m = name.match(speedRe);
+    if (m){
+      const cell = parseInt(m[1], 10);
+      const h = (m[2] !== undefined) ? m[2] : null;
+      speed.push({cell, idx:i, hRaw:h});
+    }
+    let d = name.match(dirRe);
+    if (d){
+      const cell = parseInt(d[1], 10);
+      const h = (d[2] !== undefined) ? d[2] : null;
+      dir.push({cell, idx:i, hRaw:h});
+    }
+  }
+
+  const speedByCell = {};
+  speed.forEach(s => speedByCell[s.cell] = s.idx);
+  const dirByCell = {};
+  dir.forEach(d => dirByCell[d.cell] = d.idx);
+
+  const heightsByCell = {};
+  const heightVals = [];
+  speed.forEach(s=>{
+    if (s.hRaw !== null){
+      const v = parseFloat(String(s.hRaw).replace(",", "."));
+      if (!isNaN(v)){
+        heightsByCell[s.cell] = v;
+        heightVals.push(v);
+      }
+    }
+  });
+
+  const commonCells = Array.from(new Set(Object.keys(speedByCell).map(x=>parseInt(x,10))))
+    .filter(c => dirByCell[c] !== undefined)
+    .sort((a,b)=>a-b);
+
+  let useHeights = false;
+  if (heightVals.length >= Math.max(3, Math.floor(commonCells.length*0.5))){
+    useHeights = true;
+  }
+
+  let yAxis = [];
+  let cellOrder = [];
+  if (useHeights){
+    cellOrder = commonCells.slice().sort((a,b)=>{
+      const ha = heightsByCell[a] ?? a;
+      const hb = heightsByCell[b] ?? b;
+      return ha - hb;
+    });
+    yAxis = cellOrder.map(c => heightsByCell[c] ?? c);
+  } else {
+    cellOrder = commonCells;
+    yAxis = commonCells.slice();
+  }
+
+  const cellMin = cellOrder.length ? cellOrder[0] : null;
+  const cellMax = cellOrder.length ? cellOrder[cellOrder.length-1] : null;
+
+  return {speedByCell, dirByCell, heightsByCell, cellOrder, yAxis, useHeights, cellMin, cellMax};
+}
+
+/* ============ Vector mean (0°=N, 90°=E) ============ */
+function vectorMeanSpeedDir(speedMat, dirMat){
+  const nT = speedMat.length;
+  const meanSpeed = new Array(nT).fill(null);
+  const meanDir = new Array(nT).fill(null);
+
+  for (let i=0;i<nT;i++){
+    let sumU=0, sumV=0, n=0;
+    const spRow = speedMat[i];
+    const diRow = dirMat[i];
+    for (let j=0;j<spRow.length;j++){
+      const s = spRow[j], d = diRow[j];
+      if (s === null || d === null || !isFinite(s) || !isFinite(d)) continue;
+      const th = (d * Math.PI/180.0);
+      const u = s * Math.sin(th);
+      const v = s * Math.cos(th);
+      sumU += u; sumV += v; n++;
+    }
+    if (n === 0){ meanSpeed[i]=null; meanDir[i]=null; }
+    else {
+      const uMean = sumU / n;
+      const vMean = sumV / n;
+      const sp = Math.sqrt(uMean*uMean + vMean*vMean);
+      let ang = Math.atan2(uMean, vMean) * 180.0/Math.PI;
+      ang = (ang + 360.0) % 360.0;
+      meanSpeed[i]=sp; meanDir[i]=ang;
+    }
+  }
+  return {meanSpeed, meanDir};
+}
+
+/* ================= Globals ================= */
+const fileInput = document.getElementById("fileInput");
+const fileInfo = document.getElementById("fileInfo");
+const sniffInfo = document.getElementById("sniffInfo");
+
+const timeCol = document.getElementById("timeCol");
+const pressCol = document.getElementById("pressCol");
+const headingCol = document.getElementById("headingCol");
+const pitchCol = document.getElementById("pitchCol");
+const rollCol = document.getElementById("rollCol");
+const colDesc = document.getElementById("colDesc");
+
+const maxPoints = document.getElementById("maxPoints");
+const clipAboveWater = document.getElementById("clipAboveWater");
+const showRangeSlider = document.getElementById("showRangeSlider");
+const colorscaleSelect = document.getElementById("colorscaleSelect");
+const plotBtn = document.getElementById("plotBtn");
+const resetSlicesBtn = document.getElementById("resetSlicesBtn");
+
+const useCellRange = document.getElementById("useCellRange");
+const cellStart = document.getElementById("cellStart");
+const cellEnd = document.getElementById("cellEnd");
+const addMeanAsTraces = document.getElementById("addMeanAsTraces");
+const downloadMeanBtn = document.getElementById("downloadMeanBtn");
+
+const sliceModeH = document.getElementById("sliceModeH");
+const sliceModeV = document.getElementById("sliceModeV");
+const sliceInfo = document.getElementById("sliceInfo");
+
+let fileObj = null;
+let headerGlobal = [];
+let sniff = {sep:";", decimal:"."};
+
+let state = {
+  times: [],
+  pressures: [],
+  heading: [],
+  pitch: [],
+  roll: [],
+  yAxis: [],
+  cellOrder: [],
+  zSpeed: [],
+  zDir: [],
+  cellMaps: null,
+  mean: null,
+  idx: {time:-1, press:-1, heading:-1, pitch:-1, roll:-1},
+  stride: 1
+};
+
+let slice = { have:false, mode:"H", heatmap:"speed", yIdx:null, xIdx:null };
+
+timeCol.addEventListener("change", updateColDesc);
+pressCol.addEventListener("change", updateColDesc);
+headingCol.addEventListener("change", updateColDesc);
+pitchCol.addEventListener("change", updateColDesc);
+rollCol.addEventListener("change", updateColDesc);
+
+colorscaleSelect.addEventListener("change", () => {
+  const cs = colorscaleSelect.value || "Viridis";
+  try { Plotly.restyle("speedPlot", { colorscale: cs }); } catch(e){}
+  try { Plotly.restyle("dirPlot",   { colorscale: cs }); } catch(e){}
+});
+
+/* enable/disable range controls */
+function enableRangeInputs(){
+  const en = !!useCellRange.checked;
+  cellStart.disabled = !en;
+  cellEnd.disabled = !en;
+  addMeanAsTraces.disabled = !en;
+}
+useCellRange.addEventListener("change", enableRangeInputs);
+enableRangeInputs();
+
+/* Reset slices */
+resetSlicesBtn.addEventListener("click", () => {
+  slice.have = false;
+  slice.yIdx = null;
+  slice.xIdx = null;
+  sliceInfo.textContent = "";
+  try { Plotly.relayout("speedPlot", {shapes: []}); } catch(e){}
+  try { Plotly.relayout("dirPlot", {shapes: []}); } catch(e){}
+  Plotly.newPlot("slicePlot", [], {
+    title: "Slice-plot",
+    xaxis: {title: ""}, yaxis: {title:""},
+    annotations: [{text:"Klik in een heatmap om een lijn te plaatsen.", x:0.5, y:0.5, xref:"paper", yref:"paper", showarrow:false}]
+  }, {responsive:true});
+});
+
+/* ================= Load header ================= */
+fileInput.addEventListener("change", async () => {
+  clearError(); clearOK();
+  fileObj = fileInput.files[0] || null;
+  headerGlobal = [];
+  state.mean = null;
+  downloadMeanBtn.disabled = true;
+
+  if (!fileObj) return;
+  fileInfo.textContent = `(${fileObj.name}, ${(fileObj.size/1024/1024).toFixed(1)} MB)`;
+
+  const text = await fileObj.slice(0, 120000).text();
+  sniff = sniffSepDecimal(text);
+
+  sniffInfo.textContent =
+    `Auto-detect: delimiter="${sniff.sep === "\t" ? "\\t" : sniff.sep}", decimal="${sniff.decimal}"`;
+
+  Papa.parse(fileObj, {
+    delimiter: sniff.sep,
+    preview: 1,
+    skipEmptyLines: true,
+    worker: true,
+    complete: (res) => {
+      const row0 = (res.data && res.data[0]) ? res.data[0] : [];
+      if (!row0.length) { showError("Kon header niet lezen."); return; }
+
+      headerGlobal = row0.map(s => (s ?? "").toString().trim())
+        .filter((v,i,arr) => !(i === arr.length-1 && v === ""));
+
+      const guess = autodetect(headerGlobal);
+
+      fillSelect(timeCol, headerGlobal, guess.time >= 0 ? guess.time : null);
+      fillSelect(pressCol, headerGlobal, guess.press >= 0 ? guess.press : null);
+      fillSelect(headingCol, headerGlobal, guess.heading >= 0 ? guess.heading : null);
+      fillSelect(pitchCol, headerGlobal, guess.pitch >= 0 ? guess.pitch : null);
+      fillSelect(rollCol, headerGlobal, guess.roll >= 0 ? guess.roll : null);
+
+      updateColDesc();
+
+      const cellMaps = detectCellCols(headerGlobal);
+      if (!cellMaps.cellOrder.length){
+        showError("Geen Speed#N / Dir#N kolommen gevonden in header.");
+        return;
+      }
+      state.cellMaps = cellMaps;
+
+      if (cellMaps.cellMin !== null){
+        cellStart.value = String(cellMaps.cellMin);
+        cellEnd.value = String(cellMaps.cellMax);
+        cellStart.min = String(cellMaps.cellMin);
+        cellStart.max = String(cellMaps.cellMax);
+        cellEnd.min = String(cellMaps.cellMin);
+        cellEnd.max = String(cellMaps.cellMax);
+      }
+      showOK(`Kolommen geladen. Cellen: ${cellMaps.cellMin}–${cellMaps.cellMax}. Y-as = ${cellMaps.useHeights ? "hoogte (m)" : "celnummer"}.`);
+    },
+    error: (err) => showError("Header parse error: " + err)
+  });
+});
+
+/* ================= Streaming count ================= */
+function countRowsStreaming(file, sep, onDone) {
+  let n = 0;
+  let isHeader = true;
+  Papa.parse(file, {
+    delimiter: sep,
+    skipEmptyLines: true,
+    worker: true,
+    step: () => {
+      if (isHeader) { isHeader = false; return; }
+      n++;
+    },
+    complete: () => onDone(n),
+    error: (err) => showError("Parse error (count pass): " + err)
+  });
+}
+
+/* ================= Build all data (stride) ================= */
+function buildAll(file, sep, decimal, stride, idx){
+  clearError(); clearOK();
+  const colorscale = colorscaleSelect.value || "Viridis";
+  const useSlider = !!showRangeSlider.checked;
+  const doClip = !!clipAboveWater.checked;
+
+  const cellMaps = state.cellMaps;
+  const yAxis = cellMaps.yAxis.slice();
+  const cellOrder = cellMaps.cellOrder.slice();
+
+  const times = [];
+  const pressures = [];
+  const heading = [];
+  const pitch = [];
+  const roll = [];
+
+  const zSpeed = Array.from({length: yAxis.length}, () => []);
+  const zDir   = Array.from({length: yAxis.length}, () => []);
+
+  const doMean = !!useCellRange.checked;
+  const meanStart = parseInt(cellStart.value || "1", 10);
+  const meanEnd   = parseInt(cellEnd.value || "1", 10);
+
+  const meanCells = [];
+  if (doMean){
+    for (let c=meanStart; c<=meanEnd; c++){
+      if (cellMaps.speedByCell[c] !== undefined && cellMaps.dirByCell[c] !== undefined){
+        meanCells.push(c);
+      }
+    }
+    if (!meanCells.length){
+      showError("Cel-range aan, maar geen Speed/Dir kolommen in die range.");
+      return;
+    }
+  }
+  const meanSpeedMat = [];
+  const meanDirMat   = [];
+
+  let rowCounter = 0;
+  let isHeader = true;
+
+  Papa.parse(file, {
+    delimiter: sep,
+    skipEmptyLines: true,
+    worker: true,
+
+    step: (results) => {
+      const row = results.data || [];
+      if (row.length && row[row.length-1] === "") row.pop();
+      if (isHeader){ isHeader = false; return; }
+
+      rowCounter++;
+      if ((rowCounter % stride) !== 0) return;
+
+      const t = parseDateTimeRobust(row[idx.time]);
+      times.push(t);
+
+      const p = (idx.press >= 0) ? toNumber(row[idx.press], decimal) : NaN;
+      const H = isNaN(p) ? NaN : p;
+      pressures.push(isNaN(p) ? null : p);
+
+      if (idx.heading >= 0){
+        const v = toNumber(row[idx.heading], decimal);
+        heading.push(isNaN(v) ? null : v);
+      }
+      if (idx.pitch >= 0){
+        const v = toNumber(row[idx.pitch], decimal);
+        pitch.push(isNaN(v) ? null : v);
+      }
+      if (idx.roll >= 0){
+        const v = toNumber(row[idx.roll], decimal);
+        roll.push(isNaN(v) ? null : v);
+      }
+
+      for (let j=0;j<cellOrder.length;j++){
+        const cell = cellOrder[j];
+        const y = yAxis[j];
+
+        if (doClip && cellMaps.useHeights && !isNaN(H) && (y > H)){
+          zSpeed[j].push(null);
+          zDir[j].push(null);
+          continue;
+        }
+
+        const si = cellMaps.speedByCell[cell];
+        const di = cellMaps.dirByCell[cell];
+        const vs = (si !== undefined) ? toNumber(row[si], decimal) : NaN;
+        const vd = (di !== undefined) ? toNumber(row[di], decimal) : NaN;
+
+        zSpeed[j].push(isNaN(vs) ? null : vs);
+        zDir[j].push(isNaN(vd) ? null : vd);
+      }
+
+      if (doMean){
+        const srow = [];
+        const drow = [];
+        for (let k=0;k<meanCells.length;k++){
+          const c = meanCells[k];
+          const si = cellMaps.speedByCell[c];
+          const di = cellMaps.dirByCell[c];
+          const vs = toNumber(row[si], decimal);
+          const vd = toNumber(row[di], decimal);
+          srow.push(isNaN(vs) ? null : vs);
+          drow.push(isNaN(vd) ? null : vd);
+        }
+        meanSpeedMat.push(srow);
+        meanDirMat.push(drow);
+      }
+    },
+
+    complete: () => {
+      state.times = times;
+      state.pressures = pressures;
+      state.heading = heading;
+      state.pitch = pitch;
+      state.roll = roll;
+      state.yAxis = yAxis;
+      state.cellOrder = cellOrder;
+      state.zSpeed = zSpeed;
+      state.zDir = zDir;
+      state.stride = stride;
+
+      state.mean = null;
+      if (doMean){
+        const m = vectorMeanSpeedDir(meanSpeedMat, meanDirMat);
+        state.mean = { meanSpeed:m.meanSpeed, meanDir:m.meanDir, cells:meanCells, start:meanStart, end:meanEnd };
+        downloadMeanBtn.disabled = false;
+      } else {
+        downloadMeanBtn.disabled = true;
+      }
+
+      plotAll(colorscale, useSlider);
+      attachHeatmapClickHandlers();
+      attachSyncZoomHandlers();
+
+      // sanity info for datetime
+      const tValid = state.times.filter(x=>x && !isNaN(x.getTime()));
+      if (!tValid.length){
+        showError("Alle tijdstempels konden niet geparsed worden. Controleer tijdkolom.");
+        return;
+      }
+      const t0 = tValid[0].toLocaleString();
+      const t1 = tValid[tValid.length-1].toLocaleString();
+      showOK(`Klaar: ${state.times.length} punten (stride=${stride}). Tijd: ${t0} → ${t1}`);
+    },
+
+    error: (err) => showError("Parse error (build pass): " + err)
+  });
+}
+
+function plotAll(colorscale, useSlider){
+  const yTitle = state.cellMaps.useHeights ? "Hoogte boven bodem (m)" : "Cel #";
+  const xAxis = { title: "Tijd", type: "date", rangeslider: { visible: useSlider } };
+
+  Plotly.newPlot("speedPlot", [{
+    x: state.times, y: state.yAxis, z: state.zSpeed,
+    type: "heatmap",
+    colorscale,
+    colorbar: { title: "Speed (m/s)" },
+    hovertemplate: "Tijd: %{x}<br>"+yTitle+": %{y}<br>Snelheid: %{z:.3f} m/s<extra></extra>"
+  }], { title: "Snelheid (heatmap)", xaxis:xAxis, yaxis:{title:yTitle} }, { responsive:true });
+
+  Plotly.newPlot("dirPlot", [{
+    x: state.times, y: state.yAxis, z: state.zDir,
+    type: "heatmap",
+    colorscale,
+    colorbar: { title: "Dir (°)" },
+    hovertemplate: "Tijd: %{x}<br>"+yTitle+": %{y}<br>Richting: %{z:.1f} °<extra></extra>"
+  }], { title: "Richting (heatmap)", xaxis:xAxis, yaxis:{title:yTitle} }, { responsive:true });
+
+  const yPressTitle = (state.idx.press >= 0) ? (headerGlobal[state.idx.press] || "Pressure") : "Pressure";
+  const pressTraces = [];
+  if (state.idx.press >= 0){
+    pressTraces.push({ x: state.times, y: state.pressures, mode:"lines", name: yPressTitle });
+  }
+  Plotly.newPlot("pressurePlot", pressTraces, {
+    title: "Pressure / extra kanaal",
+    xaxis:xAxis,
+    yaxis:{title:yPressTitle},
+    hovermode:"x unified"
+  }, {responsive:true});
+
+  const traces = [];
+  if (state.heading.length) traces.push({ x: state.times, y: state.heading, mode:"lines", name:"Heading (deg)" });
+  if (state.pitch.length)   traces.push({ x: state.times, y: state.pitch,   mode:"lines", name:"Pitch (deg)" });
+  if (state.roll.length)    traces.push({ x: state.times, y: state.roll,    mode:"lines", name:"Roll (deg)" });
+
+  if (state.mean && addMeanAsTraces.checked){
+    traces.push({ x: state.times, y: state.mean.meanSpeed, mode:"lines", name:`Mean Speed (cells ${state.mean.start}-${state.mean.end})`, yaxis:"y2" });
+    traces.push({ x: state.times, y: state.mean.meanDir,   mode:"lines", name:`Mean Dir (cells ${state.mean.start}-${state.mean.end})` });
+  }
+
+  Plotly.newPlot("tsPlot", traces, {
+    title:"Attitude + vector-mean",
+    xaxis:xAxis,
+    yaxis:{title:"deg / dir (deg)"},
+    yaxis2:{title:"speed (m/s)", overlaying:"y", side:"right", showgrid:false},
+    hovermode:"x unified",
+    legend:{orientation:"h"}
+  }, {responsive:true});
+
+  Plotly.newPlot("slicePlot", [], {
+    title: "Slice-plot",
+    xaxis: {title: ""}, yaxis: {title:""},
+    annotations: [{text:"Klik in een heatmap om een lijn te plaatsen.", x:0.5, y:0.5, xref:"paper", yref:"paper", showarrow:false}]
+  }, {responsive:true});
+}
+
+/* ================= Click → slice selection ================= */
+function removeClickHandlers(div){
+  if (div && typeof div.removeAllListeners === "function"){
+    div.removeAllListeners("plotly_click");
+  }
+}
+
+function attachHeatmapClickHandlers(){
+  const speedDiv = document.getElementById("speedPlot");
+  const dirDiv = document.getElementById("dirPlot");
+  removeClickHandlers(speedDiv);
+  removeClickHandlers(dirDiv);
+
+  function onClick(ev, which){
+    if (!ev || !ev.points || !ev.points.length) return;
+    const pt = ev.points[0];
+    const xVal = pt.x;
+    const yVal = pt.y;
+
+    slice.heatmap = which; // use clicked plot
+    slice.mode = sliceModeH.checked ? "H" : "V";
+
+    const xIdx = nearestIndexTime(state.times, xVal);
+    const yIdx = nearestIndexNumber(state.yAxis, yVal);
+
+    if (slice.mode === "H"){
+      slice.yIdx = yIdx;
+      slice.xIdx = null;
+      slice.have = true;
+      const yLabel = state.cellMaps.useHeights ? `${state.yAxis[yIdx]} m` : `cel ${state.cellOrder[yIdx]}`;
+      sliceInfo.textContent = `Horizontale lijn op ${yLabel} (klik op heatmap = ${which}).`;
+    } else {
+      slice.xIdx = xIdx;
+      slice.yIdx = null;
+      slice.have = true;
+      const tLabel = state.times[xIdx] ? state.times[xIdx].toLocaleString() : "onbekend";
+      sliceInfo.textContent = `Verticale lijn op tijd ${tLabel} (klik op heatmap = ${which}).`;
+    }
+
+    drawCrosshair();
+    updateSlicePlot();
+  }
+
+  speedDiv.on('plotly_click', (ev)=>onClick(ev,"speed"));
+  dirDiv.on('plotly_click', (ev)=>onClick(ev,"dir"));
+}
+
+function nearestIndexTime(arr, value){
+  const d = (value instanceof Date) ? value : new Date(value);
+  const v = isNaN(d.getTime()) ? 0 : d.getTime();
+  let bestI=0, best=Infinity;
+  for (let i=0;i<arr.length;i++){
+    const t = arr[i] ? arr[i].getTime() : NaN;
+    if (!isFinite(t)) continue;
+    const dist = Math.abs(t - v);
+    if (dist < best){ best=dist; bestI=i; }
+  }
+  return bestI;
+}
+function nearestIndexNumber(arr, value){
+  const v = (typeof value === "number") ? value : parseFloat(String(value));
+  if (!isFinite(v)) return 0;
+  let bestI=0, best=Infinity;
+  for (let i=0;i<arr.length;i++){
+    const a = arr[i];
+    const dist = Math.abs(a - v);
+    if (dist < best){ best=dist; bestI=i; }
+  }
+  return bestI;
+}
+
+function drawCrosshair(){
+  const shapes = [];
+  if (slice.have){
+    if (slice.mode === "H" && slice.yIdx !== null){
+      const y = state.yAxis[slice.yIdx];
+      shapes.push({ type:"line", xref:"paper", x0:0, x1:1, yref:"y", y0:y, y1:y, line:{width:2} });
+    }
+    if (slice.mode === "V" && slice.xIdx !== null){
+      const x = state.times[slice.xIdx];
+      shapes.push({ type:"line", xref:"x", x0:x, x1:x, yref:"paper", y0:0, y1:1, line:{width:2} });
+    }
+  }
+  try { Plotly.relayout("speedPlot", {shapes}); } catch(e){}
+  try { Plotly.relayout("dirPlot", {shapes}); } catch(e){}
+}
+
+function updateSlicePlot(){
+  if (!slice.have) return;
+  const yTitle = state.cellMaps.useHeights ? "Hoogte boven bodem (m)" : "Cel #";
+  const hm = slice.heatmap;
+
+  if (slice.mode === "H" && slice.yIdx !== null){
+    const yIdx = slice.yIdx;
+    const yVal = state.yAxis[yIdx];
+    const cell = state.cellOrder[yIdx];
+
+    const z = (hm === "speed") ? state.zSpeed[yIdx] : state.zDir[yIdx];
+    const name = (hm === "speed") ? "Snelheid" : "Richting";
+    const unit = (hm === "speed") ? "m/s" : "°";
+
+    Plotly.newPlot("slicePlot", [{
+      x: state.times,
+      y: z,
+      mode:"lines",
+      name: `${name} op ${state.cellMaps.useHeights ? (yVal+" m") : ("cel "+cell)}`
+    }], {
+      title: `${name} – tijdreeks (horizontale slice)`,
+      xaxis: {title:"Tijd", type:"date"},
+      yaxis: {title: `${name} (${unit})`},
+      hovermode: "x unified"
+    }, {responsive:true});
+
+  } else if (slice.mode === "V" && slice.xIdx !== null){
+    const xIdx = slice.xIdx;
+    const tVal = state.times[xIdx] ? state.times[xIdx].toLocaleString() : "";
+
+    const prof = [];
+    for (let j=0;j<state.yAxis.length;j++){
+      const zcol = (hm === "speed") ? state.zSpeed[j] : state.zDir[j];
+      prof.push(zcol[xIdx]);
+    }
+    const name = (hm === "speed") ? "Snelheid" : "Richting";
+    const unit = (hm === "speed") ? "m/s" : "°";
+
+    Plotly.newPlot("slicePlot", [{
+      x: prof,
+      y: state.yAxis,
+      mode:"lines+markers",
+      name: `${name} profiel @ ${tVal}`
+    }], {
+      title: `${name} – profiel over ${state.cellMaps.useHeights ? "hoogte" : "cellen"} (verticale slice)`,
+      xaxis: {title: `${name} (${unit})`},
+      yaxis: {title: yTitle, autorange: true},
+      hovermode: "closest"
+    }, {responsive:true});
+  }
+}
+
+/* ================= Download mean ================= */
+downloadMeanBtn.addEventListener("click", () => {
+  if (!state.mean) return;
+  const rows = [];
+  rows.push(["time","mean_speed_mps","mean_dir_deg","cells"].join(","));
+  for (let i=0;i<state.times.length;i++){
+    const t = state.times[i] ? state.times[i].toISOString() : "";
+    const ms = state.mean.meanSpeed[i];
+    const md = state.mean.meanDir[i];
+    rows.push([t, ms ?? "", md ?? "", `"${state.mean.cells.join("-")}"`].join(","));
+  }
+  const blob = new Blob([rows.join("\n")], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `aquadopp_mean_cells_${state.mean.start}_${state.mean.end}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+/* ================= Sync zoom (x-range) ================= */
+let _syncing = false;
+
+function attachSyncZoomHandlers(){
+  const ids = ["speedPlot","dirPlot","pressurePlot","tsPlot","slicePlot"];
+
+  ids.forEach(id => {
+    const div = document.getElementById(id);
+    if (!div) return;
+    if (typeof div.removeAllListeners === "function"){
+      div.removeAllListeners("plotly_relayout");
+    }
+    div.on("plotly_relayout", (ev) => {
+      if (_syncing) return;
+      if (!ev) return;
+
+      // We sync x-axis only for time-based plots.
+      const hasX0 = ev["xaxis.range[0]"] !== undefined && ev["xaxis.range[1]"] !== undefined;
+      const hasAuto = ev["xaxis.autorange"] !== undefined;
+
+      if (!hasX0 && !hasAuto) return;
+
+      // slicePlot is not time-based in vertical mode; skip syncing FROM slicePlot in that mode.
+      if (id === "slicePlot" && slice.have && slice.mode === "V") return;
+
+      _syncing = true;
+      try{
+        if (hasAuto && ev["xaxis.autorange"]){
+          ids.forEach(other => {
+            if (other === id) return;
+            // skip setting slicePlot in vertical mode
+            if (other === "slicePlot" && slice.have && slice.mode === "V") return;
+            Plotly.relayout(other, {"xaxis.autorange": true});
+          });
+        } else if (hasX0){
+          const r0 = ev["xaxis.range[0]"];
+          const r1 = ev["xaxis.range[1]"];
+          ids.forEach(other => {
+            if (other === id) return;
+            if (other === "slicePlot" && slice.have && slice.mode === "V") return;
+            Plotly.relayout(other, {"xaxis.range":[r0,r1]});
+          });
+        }
+      } finally {
+        _syncing = false;
+      }
+    });
+  });
+}
+
+/* ================= Main plot button ================= */
+plotBtn.addEventListener("click", () => {
+  clearError(); clearOK();
+
+  if (!fileObj){ alert("Kies eerst een CSV bestand."); return; }
+  if (!headerGlobal.length){ alert("Header nog niet ingelezen."); return; }
+  if (timeCol.value === ""){ alert("Selecteer tijdkolom."); return; }
+
+  const idx = {
+    time: parseInt(timeCol.value, 10),
+    press: pressCol.value !== "" ? parseInt(pressCol.value,10) : -1,
+    heading: headingCol.value !== "" ? parseInt(headingCol.value,10) : -1,
+    pitch: pitchCol.value !== "" ? parseInt(pitchCol.value,10) : -1,
+    roll: rollCol.value !== "" ? parseInt(rollCol.value,10) : -1,
+  };
+  state.idx = idx;
+
+  const maxPts = Math.max(200, parseInt(maxPoints.value || "3000", 10));
+
+  countRowsStreaming(fileObj, sniff.sep, (nRows) => {
+    if (!nRows || nRows < 10){ showError("Te weinig datarijen gevonden."); return; }
+    const stride = Math.max(1, Math.ceil(nRows / maxPts));
+    try { buildAll(fileObj, sniff.sep, sniff.decimal, stride, idx); }
+    catch(e){ showError(String(e && e.stack ? e.stack : e)); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+Disclaimer voor www.waterinfo.be
+De toegang tot de informatie op deze website is kosteloos, doch houdt de aanvaarding in door de gebruiker van de hierna volgende voorwaarden.
+De gegevens van deze website zijn bedoeld voor informatieve en niet-commerciele doeleinden en worden aangeboden door de Vlaamse waterbeheerders en kennisinstituten. De partners van Waterinfo.be zijn:
+ Vlaamse Milieumaatschappij
+ Waterbouwkundig Laboratorium (Hydrologisch Informatiecentrum)
+ De Vlaamse Waterweg NV
+ Agentschap Maritieme Dienstverlening en Kust
+
+Gebruik van de website
+Het gebruik ervan is op eigen risico en de partners van Waterinfo.be kunnen niet aansprakelijk gesteld worden voor onjuistheden of onvolledigheden in de verstrekte informatie. De partners van Waterinfo.be spannen zich eveneens in om onderbrekingen van technische aard zo veel mogelijk te voorkomen. We kunnen echter niet garanderen dat de website volledig vrij is van onderbrekingen en andere technische problemen. De partners van Waterinfo.be kunnen in geen geval tegenover wie dan ook, op rechtstreekse of onrechtstreekse wijze, aansprakelijk gesteld worden door schade te wijten aan het gebruik van deze website en bijgevolg evenmin voor informatie die via hyperlinks wordt aangeboden.
+
+Intellectuele eigendomsrechten
+Je hebt het recht om de informatie op deze website te consulteren, voor persoonlijk gebruik te downloaden en te reproduceren mits u de bron vermeldt, overeenkomstig de bepalingen van de wet van 30 juni 1994 betreffende het auteursrecht en de naburige rechten.
+Deze toestemming geldt echter niet voor de teksten waarbij er expliciet beperkingen van het gebruik worden vermeld. Voor de reproductie of het gebruik van multimedia-informatie (geluid, beeld, software, e.d.) is altijd voorafgaande toestemming vereist. 
+De partners behouden alle intellectuele eigendomsrechten op de website zelf en op de ter beschikking gestelde informatie. 
+
+Downloaden van historische gegevens en kaarten
+Voor meer informatie over historische gegevens en kaarten aangeboden op de website kan je de dataleverancier (Vlaamse Milieumaatschappij of Waterbouwkundig Laboratorium) contacteren via het contactformulier.
+
+Bescherming persoonlijke levenssfeer
+We hechten veel belang aan de bescherming van jouw persoonlijke levenssfeer. De meeste informatie is op of via de website beschikbaar zonder dat je persoonsgegevens moet verstrekken. In bepaalde gevallen word je toch persoonlijke informatie gevraagd. Jouw gegevens worden dan behandeld in overeenstemming met de wet van 8 december 1992 tot bescherming van de persoonlijke levenssfeer ten opzichte van de verwerking van persoonsgegevens.
+
+VMM Quality Code Interpretation
+10/110 - Excellent
+30/100/130 - Good
+50/150 - Moderate
+70/170 - Poor
+80/180 - Estimated
+90/190 - Suspect
+220 - Default - Unchecked
+-1 - Missing
+
+HIC Quality Code Interpretation
+6-8 External validated data (6=good, 7=estimated, 8=suspect)
+10-19 Good measurements
+20-29 Good calculations
+30-39 Estimate measurements
+40-49 Estimate calculations
+60-69 Suspect measurements
+70-79 Suspect calculations
+
+110-179 Unchecked
+
+221-223 Unknown (import)
+255 of -1 Missing

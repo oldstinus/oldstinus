@@ -1,0 +1,13 @@
+{
+  "tijdstappen": 47849,
+  "start": "2006-05-15T00:00:00",
+  "einde": "2007-09-25T10:00:00",
+  "ssc_in_formule_mgL": "15.688660 + 20.618557 * Q_in",
+  "totale_in_kg": 797817.83,
+  "totale_uit_kg": 563119.183,
+  "netto_balans_kg": 234698.648,
+  "netto_balans_ton": 234.699,
+  "eindopslag_kg": 234698.648,
+  "gemiddelde_ssc_out_mgL": 14.785,
+  "mode": "astronomical-storage"
+}

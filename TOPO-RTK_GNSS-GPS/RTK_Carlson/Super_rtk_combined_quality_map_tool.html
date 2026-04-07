@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RTK Combined Quality Map Tool</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --panel: rgba(255, 252, 245, 0.92);
+      --line: #d8ccba;
+      --ink: #1f2933;
+      --muted: #5f6c76;
+      --accent: #bb4d00;
+      --accent-2: #167c80;
+      --good: #1a9850;
+      --mid: #fdae61;
+      --bad: #d73027;
+      --shadow: 0 18px 40px rgba(54, 37, 17, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(22,124,128,0.12), transparent 38%),
+        radial-gradient(circle at top right, rgba(187,77,0,0.12), transparent 28%),
+        linear-gradient(180deg, #f9f6ef, #ece4d7);
+    }
+    .wrap {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+    .hero {
+      background: linear-gradient(140deg, rgba(255,252,245,0.96), rgba(248,242,231,0.92));
+      border: 1px solid rgba(191,173,146,0.45);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px 26px;
+    }
+    h1, h2 { margin: 0 0 10px; font-weight: 600; }
+    p { margin: 0; line-height: 1.5; color: var(--muted); }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(191,173,146,0.45);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      backdrop-filter: blur(10px);
+    }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .fields {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 14px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    input, select, button, textarea {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.88);
+      color: var(--ink);
+    }
+    button {
+      cursor: pointer;
+      border: 0;
+      background: linear-gradient(135deg, #bc5a10, #8f3f00);
+      color: #fff9f1;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(143, 63, 0, 0.2);
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #21777a, #14565b);
+      box-shadow: 0 10px 20px rgba(20, 86, 91, 0.18);
+    }
+    button.ghost {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .note {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    canvas {
+      width: 100%;
+      height: 320px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,241,233,0.95));
+      border: 1px solid rgba(191,173,146,0.45);
+    }
+    #map {
+      width: 100%;
+      height: 420px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(191,173,146,0.45);
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.45;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(191,173,146,0.35);
+      padding: 9px 8px;
+      text-align: left;
+    }
+    .pill {
+      display: inline-block;
+      min-width: 24px;
+      text-align: center;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: white;
+      font-weight: 700;
+    }
+    .pill.A { background: var(--good); }
+    .pill.B { background: var(--mid); color: #3c2a00; }
+    .pill.C { background: var(--bad); }
+    .chart-tooltip {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      max-width: 320px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 252, 245, 0.97);
+      border: 1px solid rgba(191,173,146,0.85);
+      box-shadow: 0 16px 36px rgba(54, 37, 17, 0.18);
+      font-size: 0.88rem;
+      line-height: 1.4;
+      color: var(--ink);
+      display: none;
+      white-space: pre-line;
+    }
+    @media (max-width: 960px) {
+      .span-4, .span-6, .span-8, .span-12 { grid-column: span 12; }
+      .wrap { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>RTK Combined Quality Map Tool</h1>
+      <p>Laad een Carlson TXT/CSV, detecteer 9 kolommen, analyseer kwaliteit, projecteer naar WGS84 en download CSV, KML, DAE of KMZ. Deze HTML-versie draait in de browser; kaarttegels en externe libraries komen via CDN.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel span-6">
+        <h2>Input</h2>
+        <div class="fields">
+          <label>Bestand
+            <input id="fileInput" type="file" accept=".txt,.csv,.dat,.log">
+          </label>
+          <label>Input CRS
+            <select id="crsSelect">
+              <option>EPSG:31370</option>
+              <option>EPSG:25831</option>
+              <option>EPSG:32631</option>
+              <option>EPSG:4326</option>
+            </select>
+          </label>
+          <label>Output basisnaam
+            <input id="outputBase" type="text" value="rtk_combined_output">
+          </label>
+          <label>Detectie
+            <input id="detectInfo" type="text" readonly value="Nog geen bestand geladen">
+          </label>
+        </div>
+        <div class="note">Tab-gescheiden Carlson-bestanden met decimale komma's worden eerst op consistente delimiters beoordeeld, zodat ze niet per ongeluk als komma-CSV gelezen worden.</div>
+      </div>
+
+      <div class="panel span-6">
+        <h2>Kolommen</h2>
+        <div class="fields">
+          <label>Puntnaam<select id="colName"></select></label>
+          <label>Setup/groep<select id="colGroup"></select></label>
+          <label>X / Easting<select id="colX"></select></label>
+          <label>Y / Northing<select id="colY"></select></label>
+          <label>Z / Hoogte<select id="colZ"></select></label>
+          <label>SigmaXY<select id="colSigmaXY"></select></label>
+          <label>SigmaZ<select id="colSigmaZ"></select></label>
+          <label>Tijd<select id="colTime"></select></label>
+          <label>Datum<select id="colDate"></select></label>
+        </div>
+      </div>
+
+      <div class="panel span-8">
+        <h2>Filtering en Export</h2>
+        <div class="fields">
+          <label>A max SigmaXY<input id="sigmaXYA" type="number" step="0.0001" value="0.005"></label>
+          <label>A max SigmaZ<input id="sigmaZA" type="number" step="0.0001" value="0.010"></label>
+          <label>B max SigmaXY<input id="sigmaXYB" type="number" step="0.0001" value="0.010"></label>
+          <label>B max SigmaZ<input id="sigmaZB" type="number" step="0.0001" value="0.020"></label>
+          <label>Slechtste klasse<select id="worstQuality"><option>A</option><option>B</option><option selected>C</option></select></label>
+          <label>Max SigmaXY<input id="maxSigmaXY" type="number" step="0.0001" placeholder="optioneel"></label>
+          <label>Max SigmaZ<input id="maxSigmaZ" type="number" step="0.0001" placeholder="optioneel"></label>
+          <label>Outlier sigma Z<input id="outlierSigma" type="number" step="0.1" value="2.0"></label>
+          <label>Outlier filter<select id="applyOutlier"><option value="yes" selected>ja</option><option value="no">nee</option></select></label>
+          <label>Kaart elke n punten<input id="mapEvery" type="number" step="1" min="1" value="1"></label>
+          <label>DAE elke n punten<input id="daeEvery" type="number" step="1" min="1" value="1"></label>
+          <label>Cube size (m)<input id="cubeSize" type="number" step="0.05" value="0.75"></label>
+          <label>Ribbon breedte (m)<input id="ribbonWidth" type="number" step="0.05" value="0.30"></label>
+          <label>Ribbon<select id="useRibbon"><option value="yes" selected>ja</option><option value="no">nee</option></select></label>
+          <label>Gebruik hoogte in DAE<select id="useHeight"><option value="no" selected>nee</option><option value="yes">ja</option></select></label>
+          <label>Model boven maaiveld (m)<input id="lift" type="number" step="0.1" value="1.5"></label>
+        </div>
+        <div class="actions">
+          <button id="analyzeBtn">Analyseer</button>
+          <button id="downloadCsvBtn" class="secondary">Download aggregated CSV</button>
+          <button id="downloadKmlBtn" class="secondary">Download KML</button>
+          <button id="downloadDaeBtn" class="secondary">Download DAE</button>
+          <button id="downloadKmzBtn" class="secondary">Download KMZ</button>
+          <button id="downloadSummaryBtn" class="ghost">Download summary</button>
+        </div>
+      </div>
+
+      <div class="panel span-4">
+        <h2>Samenvatting</h2>
+        <pre id="summaryBox">Nog geen analyse uitgevoerd.</pre>
+      </div>
+
+      <div class="panel span-6">
+        <h2>Kwaliteitsplot</h2>
+        <canvas id="qualityCanvas" width="720" height="360"></canvas>
+      </div>
+
+      <div class="panel span-6">
+        <h2>Z-stabiliteit</h2>
+        <canvas id="zCanvas" width="720" height="360"></canvas>
+      </div>
+
+      <div class="panel span-8">
+        <h2>WGS84-kaart</h2>
+        <div id="map"></div>
+      </div>
+
+      <div class="panel span-4">
+        <h2>Aggregatie</h2>
+        <div style="max-height:420px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Punt</th>
+                <th>Q</th>
+                <th>N</th>
+                <th>Z</th>
+                <th>SigmaZ</th>
+              </tr>
+            </thead>
+            <tbody id="aggTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="chartTooltip" class="chart-tooltip"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/proj4/dist/proj4.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const state = {
+      columns: [],
+      rawRows: [],
+      rawTable: [],
+      results: null,
+      map: null,
+      mapLayer: null,
+      pointLayer: null,
+      chartHitRegions: { quality: [], z: [] },
+    };
+
+    proj4.defs("EPSG:31370", "+proj=lcc +lat_0=90 +lon_0=4.36748666666667 +lat_1=51.1666672333333 +lat_2=49.8333339 +x_0=150000.013 +y_0=5400088.438 +ellps=intl +towgs84=-106.8686,52.2978,-103.7239,0.3366,-0.457,1.8422,-1.2747 +units=m +no_defs +type=crs");
+    proj4.defs("EPSG:25831", "+proj=utm +zone=31 +ellps=GRS80 +units=m +no_defs +type=crs");
+    proj4.defs("EPSG:32631", "+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +type=crs");
+
+    const el = (id) => document.getElementById(id);
+    const colSelectIds = ["colName", "colGroup", "colX", "colY", "colZ", "colSigmaXY", "colSigmaZ", "colTime", "colDate"];
+
+    function clean(value) {
+      if (value === null || value === undefined) return "";
+      const text = String(value).trim();
+      return text.toLowerCase() === "nan" ? "" : text;
+    }
+
+    function measurementTooltip(row) {
+      const lines = [
+        `Naam: ${row.pointName || "-"}`,
+        `Setup: ${row.groupName || "-"}`,
+        `Basisnaam: ${row.baseName || "-"}`,
+        `Kwaliteit: ${row.quality || "-"}`,
+        `X: ${row.x.toFixed(4)}`,
+        `Y: ${row.y.toFixed(4)}`,
+        `Z: ${row.z.toFixed(4)}`,
+        `SigmaXY: ${row.sigmaXY.toFixed(4)}`,
+        `SigmaZ: ${row.sigmaZ.toFixed(4)}`,
+      ];
+      if (row.time) lines.push(`Tijd: ${row.time}`);
+      if (row.date) lines.push(`Datum: ${row.date}`);
+      return lines.join("\n");
+    }
+
+    function aggTooltip(row) {
+      return [
+        `Punt: ${row.baseName}`,
+        `Kwaliteit: ${row.quality}`,
+        `Aantal: ${row.n}`,
+        `X: ${row.x.toFixed(4)}`,
+        `Y: ${row.y.toFixed(4)}`,
+        `Z: ${row.z.toFixed(4)}`,
+        `SigmaXY: ${row.sigmaXY.toFixed(4)}`,
+        `SigmaZ: ${row.sigmaZ.toFixed(4)}`,
+      ].join("\n");
+    }
+
+    function toNum(value) {
+      const text = clean(value).replace(",", ".");
+      if (!text) return Number.NaN;
+      const num = Number(text);
+      return Number.isFinite(num) ? num : Number.NaN;
+    }
+
+    function sniffDelimiter(text) {
+      const lines = text.split(/\r?\n/).filter((line) => line.trim()).slice(0, 50);
+      const candidates = ["\t", ";", "|", ","];
+      let best = ";";
+      let bestScore = null;
+      for (const delim of candidates) {
+        const counts = lines.map((line) => (line.match(new RegExp(delim === "\t" ? "\\t" : "\\" + delim, "g")) || []).length);
+        const positive = counts.filter((count) => count > 0);
+        if (positive.length < 2) continue;
+        const mean = positive.reduce((a, b) => a + b, 0) / positive.length;
+        const variance = positive.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / positive.length;
+        const std = Math.sqrt(variance);
+        const consistency = positive.length / Math.max(lines.length, 1);
+        const score = [consistency, mean, -std];
+        if (!bestScore || compareScore(score, bestScore) > 0) {
+          best = delim;
+          bestScore = score;
+        }
+      }
+      return best;
+    }
+
+    function compareScore(a, b) {
+      for (let i = 0; i < a.length; i += 1) {
+        if (a[i] > b[i]) return 1;
+        if (a[i] < b[i]) return -1;
+      }
+      return 0;
+    }
+
+    function splitRows(text, delim) {
+      return text.split(/\r?\n/).filter((line) => line.trim()).map((line) => line.split(delim).map((part) => clean(part)));
+    }
+
+    function isNum(value) {
+      return Number.isFinite(toNum(value));
+    }
+
+    function detectHeader(rows) {
+      if (rows.length < 2) return true;
+      const hdr = new Set(["pt id", "point id", "id", "name", "desc", "description", "setup", "x", "y", "z", "e", "n", "sigmaxy", "sigmaz", "time", "date", "datum"]);
+      if (rows[0].some((value) => hdr.has(clean(value).toLowerCase()))) return true;
+      const a = rows[0].filter(isNum).length / Math.max(rows[0].length, 1);
+      const b = rows[1].filter(isNum).length / Math.max(rows[1].length, 1);
+      return a < 0.35 && b >= 0.35;
+    }
+
+    function lookupGuess(columns, names) {
+      const map = new Map(columns.map((col) => [clean(col).toLowerCase(), col]));
+      for (const name of names) {
+        if (map.has(name.toLowerCase())) return map.get(name.toLowerCase());
+      }
+      return "";
+    }
+
+    function guessColumns(columns, hasHeader) {
+      const guess = {
+        name: lookupGuess(columns, ["pt id", "point id", "id", "name"]),
+        group: lookupGuess(columns, ["desc", "description", "omschrijving", "groep", "setup"]),
+        x: lookupGuess(columns, ["x", "e", "east", "easting"]),
+        y: lookupGuess(columns, ["y", "n", "north", "northing"]),
+        z: lookupGuess(columns, ["z", "h", "height", "hoogte"]),
+        sigmaXY: lookupGuess(columns, ["sigmaxy", "sigma xy", "hz precision", "precisionxy", "rmsxy"]),
+        sigmaZ: lookupGuess(columns, ["sigmaz", "sigma z", "sigmah", "vertical precision", "precisionz", "rmsz"]),
+        time: lookupGuess(columns, ["time", "tijd", "timestamp"]),
+        date: lookupGuess(columns, ["date", "datum"]),
+      };
+      if (guess.x || guess.y || guess.name) return guess;
+      if (!hasHeader && columns.length >= 9) {
+        return { name: columns[0], group: columns[1], x: columns[2], y: columns[3], z: columns[4], sigmaXY: columns[5], sigmaZ: columns[6], time: columns[7], date: columns[8] };
+      }
+      return guess;
+    }
+
+    function setSelectOptions(selectId, columns, includeNone) {
+      const select = el(selectId);
+      const items = includeNone ? ["(none)", ...columns] : columns;
+      select.innerHTML = items.map((value) => `<option>${value}</option>`).join("");
+    }
+
+    function applyGuesses(guess) {
+      el("colName").value = guess.name || "(none)";
+      el("colGroup").value = guess.group || "(none)";
+      el("colX").value = guess.x || state.columns[0] || "";
+      el("colY").value = guess.y || state.columns[1] || "";
+      el("colZ").value = guess.z || state.columns[2] || "";
+      el("colSigmaXY").value = guess.sigmaXY || state.columns[3] || "";
+      el("colSigmaZ").value = guess.sigmaZ || state.columns[4] || "";
+      el("colTime").value = guess.time || "(none)";
+      el("colDate").value = guess.date || "(none)";
+    }
+
+    function loadFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const delim = sniffDelimiter(text);
+        const rows = splitRows(text, delim);
+        const hasHeader = detectHeader(rows);
+        const columns = hasHeader ? rows[0].map((value, idx) => clean(value) || `col${idx + 1}`) : rows[0].map((_, idx) => `col${idx + 1}`);
+        const dataRows = hasHeader ? rows.slice(1) : rows;
+        state.columns = columns;
+        state.rawRows = dataRows;
+        state.rawTable = dataRows.map((row) => Object.fromEntries(columns.map((col, idx) => [col, clean(row[idx] || "")])));
+        colSelectIds.forEach((id) => setSelectOptions(id, columns, id === "colName" || id === "colGroup" || id === "colTime" || id === "colDate"));
+        applyGuesses(guessColumns(columns, hasHeader));
+        el("detectInfo").value = `${hasHeader ? "header" : "geen header"} | delim ${JSON.stringify(delim)} | ${dataRows.length} rijen | ${columns.length} kolommen`;
+        if (!el("outputBase").value || el("outputBase").value === "rtk_combined_output") {
+          el("outputBase").value = (file.name || "rtk_input").replace(/\.[^.]+$/, "") + "_html";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function parseDateTime(dateText, timeText) {
+      const d = clean(dateText);
+      const t = clean(timeText);
+      if (!d && !t) return null;
+      const dm = d.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+      const ym = d.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      let y = 1970, m = 1, day = 1;
+      if (dm) {
+        day = Number(dm[1]);
+        m = Number(dm[2]);
+        y = Number(dm[3].length === 2 ? `20${dm[3]}` : dm[3]);
+      } else if (ym) {
+        y = Number(ym[1]);
+        m = Number(ym[2]);
+        day = Number(ym[3]);
+      }
+      const tm = t.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+      const hh = tm ? Number(tm[1]) : 0;
+      const mm = tm ? Number(tm[2]) : 0;
+      const ss = tm ? Number(tm[3] || 0) : 0;
+      return new Date(y, m - 1, day, hh, mm, ss);
+    }
+
+    function baseName(name, group) {
+      const source = clean(name) || clean(group) || "Onbekend punt";
+      return source.replace(/[-_\s]*\d+$/, "").replace(/[-_\s]+$/, "").trim() || "Onbekend punt";
+    }
+
+    function qualityFlag(xy, z, cfg) {
+      if (Number.isNaN(xy) || Number.isNaN(z)) return "?";
+      if (xy <= cfg.sigmaXYA && z <= cfg.sigmaZA) return "A";
+      if (xy <= cfg.sigmaXYB && z <= cfg.sigmaZB) return "B";
+      return "C";
+    }
+
+    function projectPoint(crs, x, y) {
+      if (crs === "EPSG:4326") return [x, y];
+      return proj4(crs, "EPSG:4326", [x, y]);
+    }
+
+    function getConfig() {
+      return {
+        crs: el("crsSelect").value,
+        outputBase: clean(el("outputBase").value) || "rtk_combined_output",
+        sigmaXYA: Number(el("sigmaXYA").value),
+        sigmaZA: Number(el("sigmaZA").value),
+        sigmaXYB: Number(el("sigmaXYB").value),
+        sigmaZB: Number(el("sigmaZB").value),
+        worstQuality: el("worstQuality").value,
+        maxSigmaXY: el("maxSigmaXY").value ? Number(el("maxSigmaXY").value) : null,
+        maxSigmaZ: el("maxSigmaZ").value ? Number(el("maxSigmaZ").value) : null,
+        outlierSigma: Number(el("outlierSigma").value),
+        applyOutlier: el("applyOutlier").value === "yes",
+        mapEvery: Math.max(1, Number(el("mapEvery").value) || 1),
+        daeEvery: Math.max(1, Number(el("daeEvery").value) || 1),
+        cubeSize: Number(el("cubeSize").value),
+        ribbonWidth: Number(el("ribbonWidth").value),
+        useRibbon: el("useRibbon").value === "yes",
+        useHeight: el("useHeight").value === "yes",
+        lift: Number(el("lift").value),
+      };
+    }
+
+    function selectedColumn(selectId) {
+      const value = el(selectId).value;
+      return value === "(none)" ? "" : value;
+    }
+
+    function analyze() {
+      if (!state.rawTable.length) {
+        alert("Laad eerst een bestand.");
+        return;
+      }
+      const cfg = getConfig();
+      const cols = {
+        name: selectedColumn("colName"),
+        group: selectedColumn("colGroup"),
+        x: selectedColumn("colX"),
+        y: selectedColumn("colY"),
+        z: selectedColumn("colZ"),
+        sigmaXY: selectedColumn("colSigmaXY"),
+        sigmaZ: selectedColumn("colSigmaZ"),
+        time: selectedColumn("colTime"),
+        date: selectedColumn("colDate"),
+      };
+      if (!cols.x || !cols.y || !cols.z || !cols.sigmaXY || !cols.sigmaZ) {
+        alert("Selecteer kolommen voor X, Y, Z, SigmaXY en SigmaZ.");
+        return;
+      }
+
+      const prepared = state.rawTable.map((row, index) => {
+        const x = toNum(row[cols.x]);
+        const y = toNum(row[cols.y]);
+        const z = toNum(row[cols.z]);
+        const sigmaXY = toNum(row[cols.sigmaXY]);
+        const sigmaZ = toNum(row[cols.sigmaZ]);
+        if ([x, y, z, sigmaXY, sigmaZ].some((value) => Number.isNaN(value))) return null;
+        const [lon, lat] = projectPoint(cfg.crs, x, y);
+        return {
+          pointName: cols.name ? clean(row[cols.name]) : "",
+          groupName: cols.group ? clean(row[cols.group]) : "",
+          time: cols.time ? clean(row[cols.time]) : "",
+          date: cols.date ? clean(row[cols.date]) : "",
+          x,
+          y,
+          z,
+          sigmaXY,
+          sigmaZ,
+          lon,
+          lat,
+          rowOrder: index,
+        };
+      }).filter(Boolean);
+
+      prepared.forEach((row) => {
+        row.baseName = baseName(row.pointName, row.groupName);
+        row.datetime = parseDateTime(row.date, row.time);
+        row.quality = qualityFlag(row.sigmaXY, row.sigmaZ, cfg);
+        row.filterReason = "";
+      });
+
+      const qualityRank = { A: 0, B: 1, C: 2, "?": 99 };
+      prepared.forEach((row) => {
+        if (cfg.maxSigmaXY !== null && row.sigmaXY > cfg.maxSigmaXY) row.filterReason += (row.filterReason ? "; " : "") + `SigmaXY>${cfg.maxSigmaXY.toFixed(4)}`;
+        if (cfg.maxSigmaZ !== null && row.sigmaZ > cfg.maxSigmaZ) row.filterReason += (row.filterReason ? "; " : "") + `SigmaZ>${cfg.maxSigmaZ.toFixed(4)}`;
+        if (qualityRank[row.quality] > qualityRank[cfg.worstQuality]) row.filterReason += (row.filterReason ? "; " : "") + `Kwaliteit>${cfg.worstQuality}`;
+      });
+
+      let filtered = prepared.filter((row) => !row.filterReason);
+      if (cfg.applyOutlier) {
+        const keep = new Set();
+        const groups = groupBy(filtered, (row) => row.baseName);
+        for (const rows of groups.values()) {
+          const mean = rows.reduce((sum, row) => sum + row.z, 0) / rows.length;
+          const variance = rows.reduce((sum, row) => sum + Math.pow(row.z - mean, 2), 0) / Math.max(rows.length, 1);
+          const std = Math.sqrt(variance);
+          if (!std) {
+            rows.forEach((row) => keep.add(row));
+            continue;
+          }
+          rows.forEach((row) => {
+            if (Math.abs(row.z - mean) <= cfg.outlierSigma * std) keep.add(row);
+          });
+        }
+        filtered = filtered.filter((row) => keep.has(row));
+      }
+      filtered.sort((a, b) => {
+        const ta = a.datetime ? a.datetime.getTime() : Number.MAX_SAFE_INTEGER;
+        const tb = b.datetime ? b.datetime.getTime() : Number.MAX_SAFE_INTEGER;
+        return ta - tb || a.rowOrder - b.rowOrder;
+      });
+
+      const agg = [];
+      for (const [key, rows] of groupBy(filtered, (row) => row.baseName).entries()) {
+        const n = rows.length;
+        const avg = (field) => rows.reduce((sum, row) => sum + row[field], 0) / Math.max(n, 1);
+        const counts = rows.reduce((out, row) => {
+          out[row.quality] = (out[row.quality] || 0) + 1;
+          return out;
+        }, {});
+        const quality = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "?";
+        const x = avg("x");
+        const y = avg("y");
+        const z = avg("z");
+        const sigmaXY = avg("sigmaXY");
+        const sigmaZ = avg("sigmaZ");
+        const [lon, lat] = projectPoint(cfg.crs, x, y);
+        agg.push({ baseName: key, x, y, z, sigmaXY, sigmaZ, sigmaZReduced: sigmaZ / Math.sqrt(Math.max(n, 1)), n, quality, lon, lat });
+      }
+      agg.sort((a, b) => a.baseName.localeCompare(b.baseName));
+
+      const qualityCounts = prepared.reduce((out, row) => {
+        out[row.quality] = (out[row.quality] || 0) + 1;
+        return out;
+      }, {});
+      const summary = [
+        `Input rijen: ${state.rawTable.length}`,
+        `Geldige meetrijen: ${prepared.length}`,
+        `Na filtering: ${filtered.length}`,
+        `Geaggregeerde punten: ${agg.length}`,
+        `Kwaliteitsverdeling: ${JSON.stringify(qualityCounts)}`,
+        `Outlier filter toegepast: ${cfg.applyOutlier ? "ja" : "nee"}`,
+        `CRS naar WGS84: ${cfg.crs} -> EPSG:4326`,
+      ];
+
+      state.results = { cfg, cols, prepared, filtered, agg, summary };
+      renderSummary(summary);
+      drawQualityPlot(prepared, cfg);
+      drawZPlot(filtered);
+      renderMap(filtered, agg, cfg.mapEvery);
+      renderAggTable(agg);
+    }
+
+    function groupBy(items, keyFn) {
+      const map = new Map();
+      for (const item of items) {
+        const key = keyFn(item);
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item);
+      }
+      return map;
+    }
+
+    function renderSummary(lines) {
+      el("summaryBox").textContent = lines.join("\n");
+    }
+
+    function showChartTooltip(clientX, clientY, text) {
+      const tooltip = el("chartTooltip");
+      tooltip.textContent = text;
+      tooltip.style.display = "block";
+      tooltip.style.left = `${clientX + 14}px`;
+      tooltip.style.top = `${clientY + 14}px`;
+    }
+
+    function hideChartTooltip() {
+      el("chartTooltip").style.display = "none";
+    }
+
+    function canvasPointer(canvas, event) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY,
+      };
+    }
+
+    function nearestHit(regions, pointer, radius = 10) {
+      let best = null;
+      let bestDist = radius;
+      regions.forEach((item) => {
+        const dist = Math.hypot(pointer.x - item.x, pointer.y - item.y);
+        if (dist <= bestDist) {
+          best = item;
+          bestDist = dist;
+        }
+      });
+      return best;
+    }
+
+    function drawAxes(ctx, width, height, padding, title, xLabel, yLabel) {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#24333d";
+      ctx.font = "16px Georgia";
+      ctx.fillText(title, padding.left, 24);
+      ctx.strokeStyle = "#cbbca7";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, height - padding.bottom);
+      ctx.lineTo(width - padding.right, height - padding.bottom);
+      ctx.lineTo(width - padding.right, padding.top);
+      ctx.stroke();
+      ctx.fillStyle = "#5f6c76";
+      ctx.font = "12px Segoe UI";
+      ctx.fillText(xLabel, width / 2 - 20, height - 10);
+      ctx.save();
+      ctx.translate(16, height / 2 + 20);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(yLabel, 0, 0);
+      ctx.restore();
+    }
+
+    function drawQualityPlot(rows, cfg) {
+      const canvas = el("qualityCanvas");
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      const padding = { left: 56, right: 22, top: 42, bottom: 42 };
+      state.chartHitRegions.quality = [];
+      drawAxes(ctx, width, height, padding, "RTK kwaliteit", "Sigma XY", "Sigma Z");
+      if (!rows.length) return;
+      const maxX = Math.max(...rows.map((row) => row.sigmaXY), cfg.sigmaXYB, cfg.maxSigmaXY || 0) * 1.15;
+      const maxY = Math.max(...rows.map((row) => row.sigmaZ), cfg.sigmaZB, cfg.maxSigmaZ || 0) * 1.15;
+      const sx = (value) => padding.left + (value / Math.max(maxX, 1e-6)) * (width - padding.left - padding.right);
+      const sy = (value) => height - padding.bottom - (value / Math.max(maxY, 1e-6)) * (height - padding.top - padding.bottom);
+      [["#1a9850", cfg.sigmaXYA, "v"], ["#d95f02", cfg.sigmaXYB, "v"], ["#1a9850", cfg.sigmaZA, "h"], ["#d95f02", cfg.sigmaZB, "h"]].forEach(([color, value, type]) => {
+        ctx.strokeStyle = color;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        if (type === "v") {
+          ctx.moveTo(sx(value), padding.top);
+          ctx.lineTo(sx(value), height - padding.bottom);
+        } else {
+          ctx.moveTo(padding.left, sy(value));
+          ctx.lineTo(width - padding.right, sy(value));
+        }
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      rows.forEach((row) => {
+        const px = sx(row.sigmaXY);
+        const py = sy(row.sigmaZ);
+        ctx.fillStyle = row.quality === "A" ? "#1a9850" : row.quality === "B" ? "#fdae61" : "#d73027";
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+        state.chartHitRegions.quality.push({ x: px, y: py, text: measurementTooltip(row) });
+      });
+    }
+
+    function drawZPlot(rows) {
+      const canvas = el("zCanvas");
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      const padding = { left: 56, right: 22, top: 42, bottom: 42 };
+      state.chartHitRegions.z = [];
+      drawAxes(ctx, width, height, padding, "Z stabiliteit", "Meting / Tijd", "Z");
+      if (!rows.length) return;
+      const zValues = rows.map((row) => row.z);
+      const minZ = Math.min(...zValues);
+      const maxZ = Math.max(...zValues);
+      const xScale = (index, total) => padding.left + (index / Math.max(total - 1, 1)) * (width - padding.left - padding.right);
+      const yScale = (value) => height - padding.bottom - ((value - minZ) / Math.max(maxZ - minZ || 1, 1e-6)) * (height - padding.top - padding.bottom);
+      const palette = ["#14565b", "#8f3f00", "#5b7c12", "#9b1b30", "#386cb0", "#7b3294", "#c51b7d", "#4d9221"];
+      Array.from(groupBy(rows, (row) => row.baseName).entries()).forEach(([name, group], idx) => {
+        ctx.strokeStyle = palette[idx % palette.length];
+        ctx.fillStyle = palette[idx % palette.length];
+        ctx.beginPath();
+        group.forEach((row, pointIdx) => {
+          const x = xScale(pointIdx, group.length);
+          const y = yScale(row.z);
+          if (pointIdx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        group.forEach((row, pointIdx) => {
+          const x = xScale(pointIdx, group.length);
+          const y = yScale(row.z);
+          ctx.beginPath();
+          ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          state.chartHitRegions.z.push({ x, y, text: measurementTooltip(row) });
+        });
+      });
+    }
+
+    function renderMap(filtered, agg, every) {
+      if (!state.map) {
+        state.map = L.map("map");
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+          maxZoom: 20,
+          subdomains: "abcd",
+          attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+        }).addTo(state.map);
+      }
+      if (state.mapLayer) state.map.removeLayer(state.mapLayer);
+      if (state.pointLayer) state.map.removeLayer(state.pointLayer);
+      const track = filtered.filter((_, idx) => idx % every === 0);
+      const latlngs = track.map((row) => [row.lat, row.lon]);
+      state.mapLayer = L.layerGroup();
+      state.pointLayer = L.layerGroup();
+      if (latlngs.length >= 2) L.polyline(latlngs, { color: "#bb4d00", weight: 4, opacity: 0.9 }).addTo(state.mapLayer);
+      track.forEach((row) => {
+        L.circleMarker([row.lat, row.lon], {
+          radius: 5,
+          color: row.quality === "A" ? "#1a9850" : row.quality === "B" ? "#fdae61" : "#d73027",
+          fillOpacity: 0.9,
+        }).bindPopup(`<b>${row.pointName || row.baseName}</b><br>Q=${row.quality}<br>X=${row.x.toFixed(4)}<br>Y=${row.y.toFixed(4)}<br>Z=${row.z.toFixed(4)}`).addTo(state.mapLayer);
+      });
+      agg.forEach((row) => {
+        L.circleMarker([row.lat, row.lon], {
+          radius: 7,
+          color: row.quality === "A" ? "#1a9850" : row.quality === "B" ? "#fdae61" : "#d73027",
+          fillOpacity: 0.95,
+          weight: 2,
+        }).bindTooltip(`${row.baseName} | ${row.quality}`).addTo(state.pointLayer);
+      });
+      state.mapLayer.addTo(state.map);
+      state.pointLayer.addTo(state.map);
+      if (latlngs.length) state.map.fitBounds(L.latLngBounds(latlngs), { padding: [20, 20] });
+    }
+
+    function renderAggTable(agg) {
+      el("aggTable").innerHTML = agg.map((row) => `
+        <tr>
+          <td>${escapeHtml(row.baseName)}</td>
+          <td><span class="pill ${row.quality}">${row.quality}</span></td>
+          <td>${row.n}</td>
+          <td>${row.z.toFixed(4)}</td>
+          <td>${row.sigmaZ.toFixed(4)}</td>
+        </tr>`).join("");
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch]));
+    }
+
+    function downloadBlob(name, content, type) {
+      const blob = content instanceof Blob ? content : new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function aggregatedCsv() {
+      const { agg } = state.results;
+      const rows = [["BaseName", "X", "Y", "Z", "SigmaXY", "SigmaZ", "SigmaZ_reduced", "N", "Quality", "Longitude", "Latitude"]];
+      agg.forEach((row) => rows.push([row.baseName, row.x, row.y, row.z, row.sigmaXY, row.sigmaZ, row.sigmaZReduced, row.n, row.quality, row.lon, row.lat]));
+      return rows.map((row) => row.map((value) => String(value).replace(".", ",")).join(";")).join("\n");
+    }
+
+    function daeContent() {
+      const { filtered, cfg } = state.results;
+      const step = Math.max(1, cfg.daeEvery);
+      const track = filtered.filter((_, idx) => idx % step === 0);
+      if (!track.length) return "";
+      const x0 = track[0].x;
+      const y0 = track[0].y;
+      const z0 = cfg.useHeight ? track[0].z : 0;
+      const s2 = cfg.cubeSize / 2;
+      const cube = [[-s2,-s2,-s2],[s2,-s2,-s2],[s2,s2,-s2],[-s2,s2,-s2],[-s2,-s2,s2],[s2,-s2,s2],[s2,s2,s2],[-s2,s2,s2]];
+      const faces = [[0,1,2],[0,2,3],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]];
+      const verts = [];
+      const tris = [];
+      let off = 0;
+      track.forEach((row) => {
+        const rel = [row.x - x0, row.y - y0, cfg.useHeight ? row.z - z0 : 0];
+        cube.forEach((v) => verts.push([v[0] + rel[0], v[1] + rel[1], v[2] + rel[2]]));
+        faces.forEach((f) => tris.push(f.map((idx) => idx + off)));
+        off += 8;
+      });
+      if (cfg.useRibbon && track.length >= 2) {
+        for (let i = 0; i < track.length - 1; i += 1) {
+          const p0 = [track[i].x - x0, track[i].y - y0, cfg.useHeight ? track[i].z - z0 : 0];
+          const p1 = [track[i + 1].x - x0, track[i + 1].y - y0, cfg.useHeight ? track[i + 1].z - z0 : 0];
+          const dx = p1[0] - p0[0];
+          const dy = p1[1] - p0[1];
+          const length = Math.hypot(dx, dy);
+          if (!length) continue;
+          const ox = -dy / length * (cfg.ribbonWidth / 2);
+          const oy = dx / length * (cfg.ribbonWidth / 2);
+          const ribbon = [[p0[0]-ox,p0[1]-oy,p0[2]],[p0[0]+ox,p0[1]+oy,p0[2]],[p1[0]+ox,p1[1]+oy,p1[2]],[p1[0]-ox,p1[1]-oy,p1[2]]];
+          ribbon.forEach((v) => verts.push(v));
+          tris.push([off, off + 1, off + 2], [off, off + 2, off + 3]);
+          off += 4;
+        }
+      }
+      const pos = verts.flat().map((v) => v.toFixed(6)).join(" ");
+      const tri = tris.map((t) => t.join(" ")).join(" ");
+      return `<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset><contributor><authoring_tool>rtk_combined_quality_map_tool.html</authoring_tool></contributor><unit name="meter" meter="1"/><up_axis>Z_UP</up_axis></asset>
+  <library_effects><effect id="track-effect"><profile_COMMON><technique sid="common"><lambert><ambient><color>0.20 0.12 0.04 1</color></ambient><diffuse><color>0.96 0.49 0.08 1</color></diffuse></lambert></technique></profile_COMMON></effect></library_effects>
+  <library_materials><material id="track-material" name="track-material"><instance_effect url="#track-effect"/></material></library_materials>
+  <library_geometries><geometry id="trackGeom" name="Track"><mesh>
+    <source id="trackGeom-positions"><float_array id="trackGeom-positions-array" count="${verts.length * 3}">${pos}</float_array><technique_common><accessor source="#trackGeom-positions-array" count="${verts.length}" stride="3"><param name="X" type="float"/><param name="Y" type="float"/><param name="Z" type="float"/></accessor></technique_common></source>
+    <vertices id="trackGeom-vertices"><input semantic="POSITION" source="#trackGeom-positions"/></vertices>
+    <triangles material="track-symbol" count="${tris.length}"><input semantic="VERTEX" source="#trackGeom-vertices" offset="0"/><p>${tri}</p></triangles>
+  </mesh></geometry></library_geometries>
+  <library_visual_scenes><visual_scene id="Scene" name="Scene"><node id="TrackNode" name="TrackNode"><instance_geometry url="#trackGeom"><bind_material><technique_common><instance_material symbol="track-symbol" target="#track-material"/></technique_common></bind_material></instance_geometry></node></visual_scene></library_visual_scenes>
+  <scene><instance_visual_scene url="#Scene"/></scene>
+</COLLADA>`;
+    }
+
+    function kmlContent() {
+      const { filtered, cfg } = state.results;
+      if (!filtered.length) return "";
+      const line = filtered.map((row) => `${row.lon.toFixed(10)},${row.lat.toFixed(10)},${cfg.useHeight ? row.z.toFixed(3) : "0.000"}`).join(" ");
+      const points = filtered.filter((_, idx) => idx % cfg.mapEvery === 0).map((row) => `
+    <Placemark><name>${escapeHtml(row.pointName || row.baseName)}</name><description><![CDATA[Q=${row.quality}<br>X=${row.x.toFixed(4)}<br>Y=${row.y.toFixed(4)}<br>Z=${row.z.toFixed(4)}]]></description>
+      <Point><altitudeMode>${cfg.useHeight ? "absolute" : "clampToGround"}</altitudeMode><coordinates>${row.lon.toFixed(10)},${row.lat.toFixed(10)},${cfg.useHeight ? row.z.toFixed(3) : "0.000"}</coordinates></Point>
+    </Placemark>`).join("");
+      const first = filtered[0];
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+  <Style id="track-line"><LineStyle><color>ff1478ff</color><width>4</width></LineStyle></Style>
+  <Folder><name>Tracklijn</name><Placemark><name>Track</name><styleUrl>#track-line</styleUrl>
+    <LineString><tessellate>1</tessellate><altitudeMode>${cfg.useHeight ? "absolute" : "clampToGround"}</altitudeMode><coordinates>${line}</coordinates></LineString>
+  </Placemark></Folder>
+  <Folder><name>Punten</name>${points}</Folder>
+  <Folder><name>Model</name><Placemark><name>DAE-model</name>
+    <Model><altitudeMode>relativeToGround</altitudeMode><Location><longitude>${first.lon.toFixed(10)}</longitude><latitude>${first.lat.toFixed(10)}</latitude><altitude>${cfg.lift.toFixed(3)}</altitude></Location><Link><href>${state.results.cfg.outputBase}_track.dae</href></Link></Model>
+  </Placemark></Folder>
+</Document></kml>`;
+    }
+
+    async function downloadKmz() {
+      if (!state.results) return alert("Analyseer eerst.");
+      const zip = new JSZip();
+      zip.file("doc.kml", kmlContent());
+      zip.file(`${state.results.cfg.outputBase}_track.dae`, daeContent());
+      const blob = await zip.generateAsync({ type: "blob" });
+      downloadBlob(`${state.results.cfg.outputBase}_track.kmz`, blob, "application/vnd.google-earth.kmz");
+    }
+
+    function bindCanvasHover(canvasId, key) {
+      const canvas = el(canvasId);
+      canvas.addEventListener("mousemove", (event) => {
+        const hit = nearestHit(state.chartHitRegions[key], canvasPointer(canvas, event));
+        if (!hit) {
+          hideChartTooltip();
+          return;
+        }
+        showChartTooltip(event.clientX, event.clientY, hit.text);
+      });
+      canvas.addEventListener("mouseleave", hideChartTooltip);
+    }
+
+    el("fileInput").addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+      if (file) loadFile(file);
+    });
+    bindCanvasHover("qualityCanvas", "quality");
+    bindCanvasHover("zCanvas", "z");
+    el("analyzeBtn").addEventListener("click", analyze);
+    el("downloadCsvBtn").addEventListener("click", () => {
+      if (!state.results) return alert("Analyseer eerst.");
+      downloadBlob(`${state.results.cfg.outputBase}_aggregated_with_WGS84.csv`, aggregatedCsv(), "text/csv;charset=utf-8");
+    });
+    el("downloadKmlBtn").addEventListener("click", () => {
+      if (!state.results) return alert("Analyseer eerst.");
+      downloadBlob(`${state.results.cfg.outputBase}_track.kml`, kmlContent(), "application/vnd.google-earth.kml+xml");
+    });
+    el("downloadDaeBtn").addEventListener("click", () => {
+      if (!state.results) return alert("Analyseer eerst.");
+      downloadBlob(`${state.results.cfg.outputBase}_track.dae`, daeContent(), "model/vnd.collada+xml");
+    });
+    el("downloadKmzBtn").addEventListener("click", downloadKmz);
+    el("downloadSummaryBtn").addEventListener("click", () => {
+      if (!state.results) return alert("Analyseer eerst.");
+      downloadBlob(`${state.results.cfg.outputBase}_summary.txt`, state.results.summary.join("\n") + "\n", "text/plain;charset=utf-8");
+    });
+  </script>
+</body>
+</html>

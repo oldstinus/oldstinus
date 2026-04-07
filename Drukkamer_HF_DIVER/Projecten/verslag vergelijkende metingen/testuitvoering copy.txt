@@ -1,0 +1,3 @@
+De test bestond uit het programmeren en instellen van de meetapparatuur. De TD-Diver werd ingesteld via DiverOffice, terwijl de metingen van de hoogfrequente druksensor real-time via Bluetooth werden weergegeven op een laptop via het programma Wave Gauge Blue.
+
+De TD-Diver kan druk meten tot maximaal 10 mH₂O, terwijl de druk tijdens de test verhoogd werd tot 20 mH₂O. Waarden boven de 10 mH₂O konden daarom niet vergeleken worden en werden gefilterd. Bij het uitschakelen van de compressor trad telkens een drukval op, zoals zichtbaar in de onderstaande grafieken.

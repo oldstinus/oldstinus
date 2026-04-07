@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aquadopp – streaming viewer (anti-crash)</title>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <!-- PapaParse (streaming CSV parsing) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 10px; }
+    .controls {
+      margin-bottom: 10px; padding: 10px;
+      border: 1px solid #ccc; border-radius: 4px; max-width: 1200px;
+    }
+    label { margin-right: 6px; }
+    select, input, button { margin-right: 10px; margin-bottom: 6px; }
+    .row { margin-top: 6px; }
+    .note { color: #444; font-size: 12px; }
+    .err { color: #b00020; font-size: 12px; white-space: pre-wrap; }
+    #plots { max-width: 1400px; }
+  </style>
+</head>
+
+<body>
+  <h2>Aquadopp – snelheid & richting (heatmaps) + pressure + attitude (STREAMING, anti-crash)</h2>
+
+  <div class="controls">
+    <div class="row">
+      <label for="fileInput">CSV bestand (;</label>
+      <input type="file" id="fileInput" accept=".csv" />
+      <span class="note" id="fileInfo"></span>
+    </div>
+
+    <div class="row">
+      <strong>Kolommen:</strong><br />
+      <label for="timeCol">Tijd:</label>
+      <select id="timeCol"></select>
+
+      <label for="pressCol">Pressure:</label>
+      <select id="pressCol"></select>
+
+      <span class="note" id="colDesc"></span>
+    </div>
+
+    <div class="row">
+      <label for="maxPoints">Max tijdpunten:</label>
+      <input id="maxPoints" type="number" min="200" step="100" value="2000" />
+
+      <label for="clipAboveWater">
+        <input id="clipAboveWater" type="checkbox" checked />
+        Knip cellen boven water (h &gt; Pressure)
+      </label>
+
+      <label for="showRangeSlider">
+        <input id="showRangeSlider" type="checkbox" />
+        Rangeslider (zwaar)
+      </label>
+
+      <label for="colorscaleSelect">Kleurschaal:</label>
+      <select id="colorscaleSelect">
+        <option value="Viridis">Viridis</option>
+        <option value="Plasma">Plasma</option>
+        <option value="Cividis">Cividis</option>
+        <option value="Turbo">Turbo</option>
+        <option value="Jet">Jet</option>
+        <option value="Portland">Portland</option>
+        <option value="RdBu">RdBu</option>
+        <option value="Earth">Earth</option>
+      </select>
+
+      <button id="plotBtn">Genereer (streaming)</button>
+    </div>
+
+    <div class="row note">
+      Speed/Dir kolommen worden automatisch gedetecteerd als <code>Speed#i(0.10m)</code> en <code>Dir#i(0.10m)</code>.<br/>
+      Attitude: Heading / Pitch / Roll worden automatisch opgepikt indien aanwezig.
+    </div>
+
+    <div class="row err" id="errBox" style="display:none;"></div>
+  </div>
+
+  <div id="plots">
+    <div id="speedPlot" style="height:460px;"></div>
+    <div id="dirPlot" style="height:460px;"></div>
+    <div id="pressurePlot" style="height:320px;"></div>
+    <div id="attPlot" style="height:320px;"></div>
+  </div>
+
+<script>
+  // ---------------- UI helpers ----------------
+  function showError(msg) {
+    const box = document.getElementById("errBox");
+    box.style.display = "block";
+    box.textContent = msg;
+  }
+  function clearError() {
+    const box = document.getElementById("errBox");
+    box.style.display = "none";
+    box.textContent = "";
+  }
+
+  function parseDateTime_ddmmyyyy(s) {
+    // verwacht: 18/12/2025 07:00:00  (of dd-mm-yyyy)
+    if (!s) return null;
+    const txt = String(s).trim();
+    const parts = txt.split(" ");
+    if (parts.length < 2) return null;
+
+    const d = parts[0].split(/[\/\-]/);
+    const t = parts[1].split(":");
+    if (d.length !== 3 || t.length < 2) return null;
+
+    const day = parseInt(d[0], 10);
+    const mon = parseInt(d[1], 10) - 1;
+    const yr  = parseInt(d[2], 10);
+    const hh  = parseInt(t[0], 10);
+    const mm  = parseInt(t[1], 10);
+    const ss  = t.length > 2 ? parseInt(t[2], 10) : 0;
+
+    const dt = new Date(yr, mon, day, hh, mm, ss);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  function fillSelect(select, header, defaultIdx) {
+    select.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = "-- kies --";
+    select.appendChild(opt0);
+
+    header.forEach((h, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = h;
+      select.appendChild(opt);
+    });
+
+    if (defaultIdx !== null && defaultIdx >= 0 && defaultIdx < header.length) {
+      select.value = String(defaultIdx);
+    } else {
+      select.value = "";
+    }
+  }
+
+  function updateColDesc() {
+    const tIdx = timeCol.value !== "" ? parseInt(timeCol.value, 10) : -1;
+    const pIdx = pressCol.value !== "" ? parseInt(pressCol.value, 10) : -1;
+    const tName = (tIdx >= 0 && headerGlobal[tIdx]) ? headerGlobal[tIdx] : "(geen)";
+    const pName = (pIdx >= 0 && headerGlobal[pIdx]) ? headerGlobal[pIdx] : "(geen)";
+    colDesc.textContent = `Tijd="${tName}", Pressure="${pName}"`;
+  }
+
+  // ---------------- Global state ----------------
+  const fileInput = document.getElementById("fileInput");
+  const fileInfo = document.getElementById("fileInfo");
+  const timeCol = document.getElementById("timeCol");
+  const pressCol = document.getElementById("pressCol");
+  const colDesc = document.getElementById("colDesc");
+  const maxPoints = document.getElementById("maxPoints");
+  const clipAboveWater = document.getElementById("clipAboveWater");
+  const showRangeSlider = document.getElementById("showRangeSlider");
+  const colorscaleSelect = document.getElementById("colorscaleSelect");
+  const plotBtn = document.getElementById("plotBtn");
+
+  let fileObj = null;
+  let headerGlobal = [];
+
+  timeCol.addEventListener("change", updateColDesc);
+  pressCol.addEventListener("change", updateColDesc);
+
+  fileInput.addEventListener("change", () => {
+    clearError();
+    fileObj = fileInput.files[0] || null;
+    headerGlobal = [];
+
+    if (!fileObj) return;
+    fileInfo.textContent = `(${fileObj.name}, ${(fileObj.size/1024/1024).toFixed(1)} MB)`;
+
+    // 1) lees enkel de header (eerste lijn) via PapaParse preview=1
+    Papa.parse(fileObj, {
+      delimiter: ";",
+      newline: "",
+      preview: 1,
+      skipEmptyLines: true,
+      worker: true,
+      complete: (res) => {
+        const row0 = (res.data && res.data[0]) ? res.data[0] : [];
+        if (!row0.length) {
+          showError("Kon header niet lezen.");
+          return;
+        }
+
+        // Sommige exports eindigen met een extra ';' => laatste kolom leeg
+        headerGlobal = row0.map(s => (s ?? "").toString().trim()).filter((_,i,arr) => !(i === arr.length-1 && arr[i] === ""));
+
+        // autodetecteer tijd/pressure
+        let timeIdx = -1, pressIdx = -1;
+        for (let i=0;i<headerGlobal.length;i++){
+          const h = headerGlobal[i].toLowerCase();
+          if (timeIdx === -1 && (h.includes("datetime") || (h.includes("date") && h.includes("time")))) timeIdx = i;
+          if (pressIdx === -1 && h.includes("pressure")) pressIdx = i;
+        }
+
+        fillSelect(timeCol, headerGlobal, timeIdx >= 0 ? timeIdx : null);
+        fillSelect(pressCol, headerGlobal, pressIdx >= 0 ? pressIdx : null);
+        updateColDesc();
+      }
+    });
+  });
+
+  // ---------------- Core: 2-pass streaming parse ----------------
+  function countRowsStreaming(file, onDone) {
+    let n = 0;
+    let isHeader = true;
+
+    Papa.parse(file, {
+      delimiter: ";",
+      skipEmptyLines: true,
+      worker: true,
+      step: (results) => {
+        // results.data is 1 row array
+        if (isHeader) { isHeader = false; return; }
+        n++;
+      },
+      complete: () => onDone(n),
+      error: (err) => showError("Parse error (count pass): " + err)
+    });
+  }
+
+  function detectSpeedDirFromHeader(header) {
+    const speedRegex = /^speed#\d+\(([\d.]+)m\)$/i;
+    const dirRegex   = /^dir#\d+\(([\d.]+)m\)$/i;
+
+    const speeds = []; // {idx, h}
+    const dirs   = [];
+
+    for (let i=0;i<header.length;i++){
+      const name = header[i] || "";
+      let m = name.match(speedRegex);
+      if (m) speeds.push({ idx: i, h: parseFloat(m[1]) });
+      let d = name.match(dirRegex);
+      if (d) dirs.push({ idx: i, h: parseFloat(d[1]) });
+    }
+
+    const heights = Array.from(new Set(speeds.map(x=>x.h).concat(dirs.map(x=>x.h))))
+      .filter(v => typeof v === "number" && !isNaN(v))
+      .sort((a,b)=>a-b);
+
+    // maps h -> idx
+    const speedMap = {};
+    speeds.forEach(s => speedMap[s.h] = s.idx);
+    const dirMap = {};
+    dirs.forEach(d => dirMap[d.h] = d.idx);
+
+    return { heights, speedMap, dirMap };
+  }
+
+  function findAttitudeIndices(header) {
+    let heading=-1, pitch=-1, roll=-1;
+    for (let i=0;i<header.length;i++){
+      const h = (header[i]||"").toLowerCase();
+      if (heading === -1 && h.includes("heading")) heading = i;
+      if (pitch === -1 && h.includes("pitch")) pitch = i;
+      if (roll === -1 && h.includes("roll")) roll = i;
+    }
+    return { heading, pitch, roll };
+  }
+
+  function parseAndBuild(file, stride, timeIdx, pressIdx) {
+    const colorscale = colorscaleSelect.value || "Viridis";
+    const useSlider = !!showRangeSlider.checked;
+    const doClip = !!clipAboveWater.checked;
+
+    let isHeader = true;
+    let headerLocal = [];
+
+    let heights = [];
+    let speedMap = {};
+    let dirMap = {};
+    let attIdx = { heading:-1, pitch:-1, roll:-1 };
+
+    // output arrays (downsampled)
+    const times = [];
+    const pressures = [];
+    const heading = [];
+    const pitch = [];
+    const roll = [];
+
+    // z arrays (z x t), opgebouwd na header detectie
+    let zSpeed = null;
+    let zDir = null;
+
+    let rowCounter = 0;     // telt ALLE datarijen (excl header)
+    let keepCounter = 0;    // telt bewaarde rijen
+
+    Papa.parse(file, {
+      delimiter: ";",
+      skipEmptyLines: true,
+      worker: true,
+
+      step: (results) => {
+        const row = results.data || [];
+
+        // trim en verwijder trailing empty col indien aanwezig
+        // (sommige lijnen eindigen op ';')
+        if (row.length && row[row.length-1] === "") row.pop();
+
+        if (isHeader) {
+          isHeader = false;
+          headerLocal = row.map(s => (s ?? "").toString().trim());
+
+          // detecteer profielen
+          const det = detectSpeedDirFromHeader(headerLocal);
+          heights = det.heights;
+          speedMap = det.speedMap;
+          dirMap = det.dirMap;
+
+          if (!heights.length) {
+            throw new Error("Geen Speed#i(...) / Dir#i(...) kolommen gevonden.");
+          }
+
+          // attitude
+          attIdx = findAttitudeIndices(headerLocal);
+
+          // init z-matrices als arrays van arrays
+          zSpeed = Array.from({length: heights.length}, () => []);
+          zDir   = Array.from({length: heights.length}, () => []);
+          return;
+        }
+
+        rowCounter++;
+
+        // downsample: bewaar enkel elke stride
+        if ((rowCounter % stride) !== 0) return;
+
+        const t = parseDateTime_ddmmyyyy(row[timeIdx]);
+        times.push(t ? t : null);
+
+        const p = parseFloat(row[pressIdx]);
+        const H = isNaN(p) ? NaN : p;
+        pressures.push(isNaN(p) ? null : p);
+
+        if (attIdx.heading >= 0) {
+          const v = parseFloat(row[attIdx.heading]); heading.push(isNaN(v) ? null : v);
+        }
+        if (attIdx.pitch >= 0) {
+          const v = parseFloat(row[attIdx.pitch]); pitch.push(isNaN(v) ? null : v);
+        }
+        if (attIdx.roll >= 0) {
+          const v = parseFloat(row[attIdx.roll]); roll.push(isNaN(v) ? null : v);
+        }
+
+        // profielpunten
+        for (let j=0;j<heights.length;j++){
+          const h = heights[j];
+
+          if (doClip && !isNaN(H) && h > H) {
+            zSpeed[j].push(null);
+            zDir[j].push(null);
+            continue;
+          }
+
+          if (speedMap[h] !== undefined) {
+            const vs = parseFloat(row[speedMap[h]]);
+            zSpeed[j].push(isNaN(vs) ? null : vs);
+          } else {
+            zSpeed[j].push(null);
+          }
+
+          if (dirMap[h] !== undefined) {
+            const vd = parseFloat(row[dirMap[h]]);
+            zDir[j].push(isNaN(vd) ? null : vd);
+          } else {
+            zDir[j].push(null);
+          }
+        }
+
+        keepCounter++;
+      },
+
+      complete: () => {
+        // ---- Plotly (zonder rangeslider standaard) ----
+        Plotly.newPlot("speedPlot", [{
+          x: times, y: heights, z: zSpeed,
+          type: "heatmap",
+          colorscale,
+          colorbar: { title: "Speed (m/s)" },
+          hovertemplate: "Tijd: %{x}<br>Hoogte: %{y:.2f} m<br>Snelheid: %{z:.3f} m/s<extra></extra>"
+        }], {
+          title: `Snelheid over hoogte (stride=${stride}, punten=${times.length})`,
+          xaxis: { title: "Tijd", type: "date", rangeslider: { visible: useSlider } },
+          yaxis: { title: "Hoogte boven bodem (m)" }
+        }, { responsive: true });
+
+        Plotly.newPlot("dirPlot", [{
+          x: times, y: heights, z: zDir,
+          type: "heatmap",
+          colorscale,
+          colorbar: { title: "Dir (°)" },
+          hovertemplate: "Tijd: %{x}<br>Hoogte: %{y:.2f} m<br>Richting: %{z:.1f} °<extra></extra>"
+        }], {
+          title: `Richting over hoogte (stride=${stride}, punten=${times.length})`,
+          xaxis: { title: "Tijd", type: "date", rangeslider: { visible: useSlider } },
+          yaxis: { title: "Hoogte boven bodem (m)" }
+        }, { responsive: true });
+
+        Plotly.newPlot("pressurePlot", [{
+          x: times,
+          y: pressures,
+          mode: "lines",
+          name: headerGlobal[pressIdx] || "Pressure"
+        }], {
+          title: "Pressure (apart deelfiguur)",
+          xaxis: { title: "Tijd", type: "date", rangeslider: { visible: useSlider } },
+          yaxis: { title: headerGlobal[pressIdx] || "Pressure" },
+          hovermode: "x unified"
+        }, { responsive: true });
+
+        const attTraces = [];
+        if (heading.length) attTraces.push({ x: times, y: heading, mode:"lines", name:"Heading (deg)" });
+        if (pitch.length)   attTraces.push({ x: times, y: pitch,   mode:"lines", name:"Pitch (deg)" });
+        if (roll.length)    attTraces.push({ x: times, y: roll,    mode:"lines", name:"Roll (deg)" });
+
+        if (attTraces.length) {
+          Plotly.newPlot("attPlot", attTraces, {
+            title: "Attitude (Heading/Pitch/Roll)",
+            xaxis: { title: "Tijd", type: "date", rangeslider: { visible: useSlider } },
+            yaxis: { title: "deg" },
+            hovermode: "x unified"
+          }, { responsive: true });
+        } else {
+          document.getElementById("attPlot").innerHTML = "<em>Geen attitude-kolommen gevonden.</em>";
+        }
+      },
+
+      error: (err) => showError("Parse error (build pass): " + err)
+    });
+  }
+
+  plotBtn.addEventListener("click", () => {
+    clearError();
+
+    if (!fileObj) {
+      alert("Kies eerst een CSV bestand.");
+      return;
+    }
+    if (!headerGlobal.length) {
+      alert("Header nog niet ingelezen. Kies bestand opnieuw of wacht 1 sec.");
+      return;
+    }
+    if (timeCol.value === "" || pressCol.value === "") {
+      alert("Selecteer tijd- en pressurekolom.");
+      return;
+    }
+
+    const timeIdx = parseInt(timeCol.value, 10);
+    const pressIdx = parseInt(pressCol.value, 10);
+
+    const maxPts = Math.max(200, parseInt(maxPoints.value || "2000", 10));
+
+    // 1) tel rijen
+    countRowsStreaming(fileObj, (nRows) => {
+      if (!nRows || nRows < 10) {
+        showError("Te weinig datarijen gevonden.");
+        return;
+      }
+
+      // stride berekenen
+      const stride = Math.max(1, Math.ceil(nRows / maxPts));
+
+      // 2) parse + build (streaming)
+      try {
+        parseAndBuild(fileObj, stride, timeIdx, pressIdx);
+      } catch (e) {
+        showError(String(e && e.stack ? e.stack : e));
+      }
+    });
+  });
+
+  // live colorscale (als plots bestaan)
+  colorscaleSelect.addEventListener("change", () => {
+    const cs = colorscaleSelect.value || "Viridis";
+    try { Plotly.restyle("speedPlot", { colorscale: cs }); } catch(e){}
+    try { Plotly.restyle("dirPlot",   { colorscale: cs }); } catch(e){}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultaten - Data Visualisatie</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Resultaten</h1>
+        <h3>Voorbeeld van de Gegevens:</h3>
+        {{ data_preview | safe }}
+        <h3 class="mt-5">Grafiek:</h3>
+        {{ graph_html | safe }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-4">Terug naar Upload</a>
+    </div>
+</body>
+</html>

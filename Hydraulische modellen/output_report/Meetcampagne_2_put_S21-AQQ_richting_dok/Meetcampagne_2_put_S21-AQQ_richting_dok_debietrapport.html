@@ -1,0 +1,61 @@
+
+    <html><body>
+
+    <h1>WL Debietrapport</h1>
+
+    <h2>Doorsnede</h2>
+    A = 0.785 m²
+
+    <h2>Model</h2>
+    Flood: Q = 0.231 √Δh -0.067<br>
+    Ebb: Q = 0.011 √|Δh| +0.013
+
+    <h2>Kwaliteit</h2>
+    Globale C: -0.008<br>
+    RMSE (v-model): 0.063<br>
+    R² (v-model): 0.356<br>
+    ARX: v_t = 0.030|Δh| + 0.015Δh + -7.878·dΔh/dt + 0.746·v_(t-1)
+
+    <h2>Formules ingevuld</h2>
+    <ul>
+      <li>RMSE = sqrt(mean((v - v_model)²)) = 0.063 (N=1152)</li>
+      <li>ARX: v_t = 0.030|Δh| + 0.015Δh + -7.878·dΔh/dt + 0.746·v_(t-1)</li>
+    </ul>
+
+    <h2>ARX model uitleg</h2>
+    <ul>
+      <li>Doel: kleine oscillaties en vertragingen modelleren die het statische √Δh-model mist.</li>
+      <li>Inputvariabelen: |Δh| (amplitude), Δh (teken/asymmetrie), dΔh/dt (snelheid van peilverandering), v_(t-1) (traagheid/viscous memory).</li>
+      <li>Vorm: v_t = a1|Δh| + a2Δh + a3·dΔh/dt + a4·v_(t-1).</li>
+      <li>Interpretatie coëfficiënten: a1/a2 sturen hoofdrespons, a3 vangt pomp- of golfcomponenten, a4 dempt/ versterkt vorige snelheid (0&lt;a4&lt;1 = stabiliserend, a4&gt;1 = mogelijk overshoot).</li>
+      <li>Gebruik: levert Q_arx = A·v_t en wordt naast het piecewise √Δh-model in de tijdreeks getoond.</li>
+    </ul>
+
+    <h2>Interpretatie</h2>
+    <ul>
+    <li>Niet-lineair gedrag bevestigd</li>
+    <li>Verschil tussen ebb en flood = hysterese</li>
+    <li>Debiet gelimiteerd door hydraulische capaciteit</li>
+    
+    </ul>
+
+    <h2>Detectie</h2>
+    <ul>
+    <li>Verzadiging (slope &lt; 0.1): 586 punten</li>
+    <li>Pompen domineren (|res| &gt; 2·RMSE): 67 punten</li>
+    <li>ADCP spikes (|v-median| &gt; 5·MAD): 46 punten</li>
+    <li>Versassingen uitgezet op tijdlijn: 0</li>
+    <li>Saspeil-sprongen (>|0.44| m): 31</li>
+    </ul>
+
+    <h2>Debietcurve</h2>
+    <img src="debietcurve.png" width="700">
+
+    <h2>Tijdreeks</h2>
+    <img src="tijdreeks_Q.png" width="900">
+
+    <h2>Residuen</h2><img src="residuen.png" width="900">
+    <h2>Druk</h2><img src="druk.png" width="900">
+
+    </body></html>
+    

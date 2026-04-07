@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Interventieverslag – PAR-sensoren</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+    h1, h2, h3 { color: #003366; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+
+<h1>Interventieverslag – Vervanging PAR-sensoren</h1>
+<p><strong>Datum interventie:</strong> 26 mei 2025 / update verslag 2025/07/09<br>
+<strong>Uitgevoerd door:</strong> Styn Claeys en Steven De Leeuw<br>
+<strong>Doel:</strong> Vervanging van PAR-sensoren op twee meetlocaties</p>
+
+<h2>Locatie 1: Klein Willebroek (RUP02E)</h2>
+<table>
+  <tr><th>Handeling</th><td>Sensorvervanging en reiniging</td></tr>
+  <tr><th>Uitname toestellen</th><td>08:35</td></tr>
+  <tr><th>Herplaatsing toestellen</th><td>11:22</td></tr>
+  <tr><th>Vervangen sensoren</th><td>Boven: UWQ11499 → UWQ10202<br>Onder: UWQ10993 → UWQ10201</td></tr>
+</table>
+
+<h3>Kalibratiecoëfficiënten</h3>
+<table>
+  <tr><th></th><th>ParO (onder)</th><th>ParB (boven)</th></tr>
+  <tr><td>Oude waarden</td><td>UWQ11499 -159.27</td><td>UWQ10993 -169.35</td></tr>
+  <tr><td>Waarden ingegeven</td><td>UWQ10202-159.42</td><td>UWQ10201-158.62</td></tr>
+  <tr><td>Nieuwe waarden (Catec 27/05/2025)</td><td>UWQ10202-162.95</td><td>UWQ10201-155.72</td></tr>
+</table>
+
+<h3>Validatie</h3>
+<ul>
+  <li>Sensoren vergeleken met referentie via handheld → waarden kwamen overeen</li>
+  <li>Kalibratiewaarden bij controle:<br>
+    UWQ10202: -197,17<br>
+    UWQ10201: -197,7</li>
+</ul>
+
+<h2>Locatie 2: Weert (ZES39C)</h2>
+<table>
+  <tr><th>Handeling</th><td>Sensorvervanging en reiniging</td></tr>
+  <tr><th>Uitname toestellen</th><td>12:24</td></tr>
+  <tr><th>Herplaatsing toestellen</th><td>13:34</td></tr>
+  <tr><th>Vervangen sensoren</th><td>Boven: UWQ11423 → UWQ10743<br>Onder: UWQ09801 → UWQ10773</td></tr>
+</table>
+
+<h3>Kalibratiecoëfficiënten</h3>
+<table>
+  <tr><th></th><th>ParO (onder)</th><th>ParB (boven)</th></tr>
+  <tr><td>Oude waarden</td><td>UWQ11423  -141.44</td><td>UWQ09801 -144.17</td></tr>
+  <tr><td>Ingegeven waarden</td><td>UWQ10743 -163.61</td><td>UWQ10773 -148.31</td></tr>
+  <tr><td>Nieuwe waarden (Catec 27/05/2025)</td><td>UWQ10743 -145.54</td><td>UWQ10773 -140.73</td></tr>
+
+</table>
+
+<h3>Validatie</h3>
+<ul>
+  <li>Sensoren vergeleken met referentie via handheld → waarden kwamen overeen</li>
+  <li>Kalibratiewaarden bij controle:<br>
+    UWQ10743: -176,10<br>
+    UWQ10773: -170,28</li>
+</ul>
+
+<h2>Probleem met kalibratiegegevens</h2>
+<p>De vier sensoren waren recent gekalibreerd bij CaTeC op 7 maart 2024. In het nieuwe rapport werden enkel waarden voor handheldmeters (604 Ohm) vermeld. Voor gebruik met dataloggers (1210 Ohm) ontbraken de vereiste coëfficiënten.</p>
+<p>Na telefonisch contact met CaTeC werd bevestigd dat deze waarden niet bruikbaar zijn voor dataloggers. Tijdelijk werden daarom de waarden van het originele certificaat (met 1210 Ohm) ingevoerd. CaTeC heeft nieuwe kalibratiecertificaten aangeleverd op 27/05/2025. = Multiplier factor gedeeld door 1210 maal 1000</p>
+<table>
+</th><th>Aanpassingen</th></tr>
+  <tr><td>UWQ9802: factor 191,64 wordt 158,38 (1210 Ohm) en 145,18 wordt 119,98 (handheldmeter)</td></tr>
+    <tr><td> UWQ10201: factor 188,42 wordt 155,72 (1210 Ohm) en 142,74 wordt 117,97 (handheldmeter)</td></tr>  
+    <tr><td> UWQ10384: factor 195,02 wordt 161,17 (1210 Ohm) en 147,74 wordt 122,10 (handheldmeter)</td></tr>  
+    <tr><td> UWQ10202: factor 197,17 wordt 162,95 (1210 Ohm) en 149,37 wordt 123,44 (handheldmeter)</td></tr>  
+    <tr><td> UWQ10773: factor 170,28 wordt 140,73 (1210 Ohm)  en 129,00 wordt 106,61 (handheldmeter)</td></tr>
+  <tr><td> UWQ10743: factor 176,10 wordt 145,54 (1210 Ohm) en 133,41 wordt 110,26 (handheldmeter)</td></tr>
+    <tr><td> UWQ10385: factor 189,44 wordt 156,56 (1210 Ohm) en 143,52 wordt 118,61 (handheldmeter)</td></tr>
+</table>
+<h2>Fout bij configuratie van Weert</h2>
+<p>Tijdens het programmeren van de logger van Weert werd per vergissing het configuratiebestand van Klein Willebroek gebruikt. Hierdoor kwamen de waarden van Klein Willebroek tijdelijk ook binnen onder de locatiecode van Weert.</p>
+<p>Pas na hercompilatie en opnieuw inladen werd de fout vastgesteld en hersteld (na ongeveer 30 minuten). Daarna werden de correcte configuratie en datastroom hersteld voor beide locaties.</p>
+
+</body>
+</html>

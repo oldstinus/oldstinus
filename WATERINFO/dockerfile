@@ -1,0 +1,20 @@
+# 1) Slanke Python basis (alpine = klein; gebruik slim voor CPU-only jobs)
+FROM python:3.12-alpine AS base
+
+# 2) Systeempackages (zo weinig mogelijk; voeg gcc/musl-dev toe als je C-extensies bouwt)
+RUN apk add --no-cache bash
+
+# 3) Niet-ROOT gebruiker (veiliger)
+RUN addgroup -S app && adduser -S app -G app
+USER app
+WORKDIR /app
+
+# 4) Eerst requirements kopiëren voor betere cache-hits
+COPY --chown=app:app requirements.txt /app/requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# 5) Daarna je code
+COPY --chown=app:app . /app
+
+# 6) Standaard startcommando (kan je bij run-time overschrijven)
+ENTRYPOINT ["python", "CSV-waterinfo_parameters_naar_interactief_html_grafiek-OK.py"]

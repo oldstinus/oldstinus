@@ -1,0 +1,3 @@
+De fabrikant heeft vóór levering een waarde van 1032,8 mmHg afgetrokken van de metingen. Deze correctie is toegevoegd aan de hoogfrequente druksensor om de werkelijke drukwaarde te verkrijgen.
+
+Daarnaast werd er een tijdverschil van 8 seconden waargenomen tussen de verschillende datareeksen. Dit tijdsverschil is gecompenseerd in de X-Y grafieken voor nauwkeurigere analyse.

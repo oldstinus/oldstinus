@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>ARX Model Analyse – Hydraulisch Systeem</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    line-height: 1.6;
+    background-color: #f7f9fc;
+    color: #222;
+}
+h1, h2, h3 {
+    color: #1a4d7a;
+}
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.formula {
+    background: #eef3f8;
+    padding: 15px;
+    border-left: 5px solid #1a4d7a;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+}
+.section {
+    margin-bottom: 30px;
+}
+.highlight {
+    background: #fff3cd;
+    padding: 10px;
+    border-left: 4px solid #ffcc00;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table th, .table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+.table th {
+    background-color: #e6eef5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>ARX Model Analyse – Hydraulisch Systeem</h1>
+
+<div class="section">
+<h2>1. Modeldefinitie</h2>
+<div class="formula">
+v_t = 0.030 |Δh| + 0.015 Δh - 7.878 d(Δh)/dt + 0.746 v_(t-1)
+</div>
+<p>
+Dit model beschrijft de stroomsnelheid als functie van waterstandsverschil, dynamiek en systeemgeheugen.
+</p>
+</div>
+
+<div class="section">
+<h2>2. Interpretatie van de termen</h2>
+
+<h3>2.1 Niet-lineaire drukterm</h3>
+<p><b>0.030 |Δh|</b></p>
+<ul>
+<li>Symmetrische bijdrage (richting-onafhankelijk)</li>
+<li>Empirische benadering van energieverschil</li>
+<li>Fysisch eerder √Δh verwacht</li>
+</ul>
+
+<h3>2.2 Lineaire component</h3>
+<p><b>0.015 Δh</b></p>
+<ul>
+<li>Geeft richting van stroming</li>
+<li>Corrigeert asymmetrie</li>
+</ul>
+
+<h3>2.3 Dynamische term</h3>
+<p><b>-7.878 d(Δh)/dt</b></p>
+<ul>
+<li>Reageert op veranderingen in waterstand</li>
+<li>Dempend effect (negatief teken)</li>
+<li>Indicatie van opslag/inertie</li>
+</ul>
+
+<h3>2.4 Autoregressieve term</h3>
+<p><b>0.746 v_(t-1)</b></p>
+<ul>
+<li>Systeemgeheugen</li>
+<li>Traag systeem</li>
+<li>Stabiel (coëfficiënt &lt; 1)</li>
+</ul>
+
+</div>
+
+<div class="section">
+<h2>3. Stationaire oplossing</h2>
+
+<div class="formula">
+v = (0.030 |Δh| + 0.015 Δh) / (1 - 0.746)
+</div>
+
+<p>
+Versterkingsfactor ≈ <b>3.94</b>
+</p>
+
+</div>
+
+<div class="section">
+<h2>4. Regime-analyse</h2>
+
+<table class="table">
+<tr>
+<th>Regime</th>
+<th>Kenmerken</th>
+<th>Interpretatie</th>
+</tr>
+
+<tr>
+<td>Normaal</td>
+<td>dΔh/dt ≈ 0</td>
+<td>Gravitatie gestuurd</td>
+</tr>
+
+<tr>
+<td>Transiënt</td>
+<td>snelle Δh veranderingen</td>
+<td>Dynamica dominant</td>
+</tr>
+
+<tr>
+<td>Pomp</td>
+<td>model ≠ meting</td>
+<td>Externe forcing</td>
+</tr>
+
+<tr>
+<td>Verzadiging</td>
+<td>v groeit niet meer met Δh</td>
+<td>Capaciteitslimiet</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>5. Diagnostiek</h2>
+
+<h3>5.1 Pompdetectie</h3>
+<div class="formula">
+ε = v_measured - v_model
+</div>
+
+<h3>5.2 ADCP foutdetectie</h3>
+<ul>
+<li>Spike detectie (MAD / z-score)</li>
+<li>Onrealistische snelheden</li>
+</ul>
+
+<h3>5.3 Hysterese</h3>
+<ul>
+<li>Verschil stijgende vs dalende Δh</li>
+<li>Ingebouwd via |Δh| en dΔh/dt</li>
+</ul>
+
+</div>
+
+<div class="section">
+<h2>6. Fysische interpretatie</h2>
+
+<div class="highlight">
+Dit model beschrijft een hydraulisch systeem met:
+<ul>
+<li>Opslag (volume-effecten)</li>
+<li>Inertie</li>
+<li>Niet-lineaire stroming</li>
+<li>Mogelijke pompinteractie</li>
+</ul>
+</div>
+
+</div>
+
+<div class="section">
+<h2>7. Modelverbeteringen</h2>
+
+<ul>
+<li>Gebruik √Δh in plaats van |Δh|</li>
+<li>Voeg verzadiging toe</li>
+<li>Expliciete pompterm</li>
+<li>Hogere orde ARX model</li>
+</ul>
+
+</div>
+
+<div class="section">
+<h2>8. Belangrijkste conclusie</h2>
+
+<div class="highlight">
+De term <b>d(Δh)/dt</b> maakt het model dynamisch en geschikt voor:
+<ul>
+<li>Realtime analyse</li>
+<li>Pompdetectie</li>
+<li>Transiënt gedrag</li>
+</ul>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+limit_bytes=$((10 * 1024 * 1024))
+failed=0
+
+while IFS= read -r -d '' path; do
+  if [[ -f "$path" ]]; then
+    size=$(wc -c <"$path")
+    if (( size > limit_bytes )); then
+      printf 'Blocked: %s is larger than 10 MB (%s bytes)\n' "$path" "$size" >&2
+      failed=1
+    fi
+  fi
+done < <(git diff --cached --name-only --diff-filter=AM -z)
+
+if (( failed )); then
+  printf 'Commit aborted: staged files larger than 10 MB are not allowed.\n' >&2
+  exit 1
+fi

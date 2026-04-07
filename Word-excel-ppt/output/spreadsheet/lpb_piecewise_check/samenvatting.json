@@ -1,0 +1,19 @@
+{
+  "tijdstappen": 47849,
+  "start": "2006-05-15T00:00:00",
+  "einde": "2007-09-25T10:00:00",
+  "ssc_in_formule_mgL": "15.688660 + 20.618557 * Q_in",
+  "totale_in_kg": 1515829.745,
+  "totale_uit_kg": 518499.393,
+  "netto_balans_kg": 997330.352,
+  "netto_balans_ton": 997.33,
+  "ssc_out_constant_mgL": 28.0,
+  "ssc_out_piecewise_power_law": [
+    "early: SSC_out = 29.294 * Q_out^0.052",
+    "mid1: SSC_out = 25.487 * Q_out^0.089",
+    "mid2: SSC_out = 22.891 * Q_out^0.041",
+    "late: SSC_out = 30.270 * Q_out^0.069"
+  ],
+  "mode": "baseline",
+  "waterlevel_source": "none"
+}

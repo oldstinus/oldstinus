@@ -1,0 +1,5 @@
+De drukverandering tijdens de test is hieronder weergegeven. Bij het aanzetten en uitschakelen van de compressor zijn duidelijke fluctuaties zichtbaar.
+
+Deze figuur toont het verschil tussen de HF druksonde, de Diver en de referentiesensor. Hierbij wordt ook de tijdsverschuiving tussen de verschillende sensoren weergegeven. Er is een tijdsverschil van 2 seconden tussen de referentiesensor en de Diver, en een verschil van 10 seconden tussen de referentiesensor en de HF druksonde.
+
+Het verschil van 2 seconden tussen de referentiesensor en de Diver kan mogelijk worden verklaard door een tijdsverschil in de synchronisatie van de opname van de video en de meetgegevens van de sensor. Een andere mogelijke oorzaak kan een lichte vertraging zijn die is ontstaan bij het stoppen van de video-opname op de smartphone. Dit soort vertragingen moeten in aanmerking worden genomen bij de interpretatie van de meetresultaten.

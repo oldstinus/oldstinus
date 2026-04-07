@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verslag: Testen Drukkamer met TD-Diver en Blue Wave Gauge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #f4f8f5;
+            color: rgb(10, 1, 1);
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        header img {
+            height: 100px;
+        }
+
+        main {
+            padding: 20px;
+        }
+        .memo {
+            background-color: #f2f2f2;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
+        }
+        .memo h2 {
+            margin-top: 0;
+        }
+        section h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        img {
+            display: block;
+            margin: 15px auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.bmp" alt="Bedrijfslogo">
+
+    </header>
+
+    <main>
+        <div class="memo">
+            <h2>Memo</h2>
+            <p><strong>Titel:</strong> Verslag: Testen Drukkamer met TD-Diver en Blue Wave Gauge</p>
+            <p><strong>Datum:</strong> 28/10/2024</p>
+            <p><strong>Auteurs:</strong> Claeys, S.</p>
+            <p><strong>Referentie:</strong> Claeys, S. (2024). Verslag: Testen Drukkamer met TD-Diver en Blue Wave Gauge. Waterbouwkundig Laboratorium: Antwerpen.</p>
+        </div>
+
+        <section>
+            <h2>1. Inleiding</h2>
+            <p>De testopstelling omvatte een kunststof drukkamer, een TD-Diver, een Blue Wave Gauge, en een referentie druksonde van Dimed. Deze drukkamer, zoals zichtbaar in de afbeelding hieronder, is ontworpen om druk op te bouwen tot 20 mH<sub>2</sub>O-equivalent. Dit komt overeen met 1961 Pa en 14.7 mmHg.</p>
+            <img src="20240409_092604.jpg" alt="Foto van de drukkamer">
+        </section>
+
+        <section>
+            <h2>2. Opzet en Testprocedure</h2>
+            <p>De druk in de kamer wordt geregeld door de compressor aan en uit te zetten. Een verbeteringspunt voor de opstelling is het toevoegen van een kraan vóór de persluchtinlaat om de toevoer gemakkelijker te regelen in plaats van de stekker steeds in en uit te trekken. Bij het stoppen van de compressor is er momenteel een klein drukverlies. Daarnaast kan de uitzetting van de kunststof kamer invloed hebben op de metingen, daarom is de referentie drukopnemer van groot belang.</p>
+            <p>Een suggestie voor verbetering is de aanschaf van een drukmeter met een ingebouwde logger.</p>
+        </section>
+
+        <section>
+            <h2>3. Testuitvoering</h2>
+            <p>De test bestond uit het programmeren en instellen van de meetapparatuur. De TD-Diver werd ingesteld via DiverOffice, terwijl de metingen van de hoogfrequente druksensor real-time via Bluetooth werden weergegeven op een laptop via het programma Wave Gauge Blue.</p>
+            <p>De TD-Diver kan druk meten tot maximaal 10 mH<sub>2</sub>O, terwijl de druk tijdens de test verhoogd werd tot 20 mH<sub>2</sub>O. Waarden boven de 10 mH<sub>2</sub>O konden daarom niet vergeleken worden en werden gefilterd. Bij het uitschakelen van de compressor trad telkens een drukval op, zoals zichtbaar in de onderstaande grafieken.</p>
+        </section>
+
+        <section>
+            <h2>4. Correcties</h2>
+            <p>De fabrikant heeft vóór levering een waarde van 1032,8 mmHg afgetrokken van de metingen. Deze correctie is toegevoegd aan de hoogfrequente druksensor om de werkelijke drukwaarde te verkrijgen.</p>
+            <p>Daarnaast werd er een tijdverschil van 8 seconden waargenomen tussen de verschillende datareeksen. Dit tijdsverschil is gecompenseerd in de X-Y grafieken voor nauwkeurigere analyse.</p>
+        </section>
+        <section>
+            <h2>5. Resultaten</h2>
+            <h3>5.1 Drukverandering</h3>
+            <p>De drukverandering tijdens de test is hieronder weergegeven. Bij het aanzetten en uitschakelen van de compressor zijn duidelijke fluctuaties zichtbaar.</p>
+            <table>
+                <tr>
+                    <th>Druksoort</th>
+                    <th>Druk (Pa)</th>
+                    <th>Druk (mmH<sub>2</sub>O)</th>
+                    <th>Druk (mmHg)</th>
+                    <th>Druk (bar)</th>
+                </tr>
+                <tr>
+                    <td>HF Druksonde Start</td>
+                    <td>1050.59</td>
+                    <td>107.13</td>
+                    <td>7.88</td>
+                    <td>0.01051</td>
+                </tr>
+                <tr>
+                    <td>HF Druksonde Eind</td>
+                    <td>1057.14</td>
+                    <td>107.80</td>
+                    <td>7.93</td>
+                    <td>0.01057</td>
+                </tr>
+                <tr>
+                    <td>HF Druksonde Max</td>
+                    <td>3115.93</td>
+                    <td>317.74</td>
+                    <td>23.37</td>
+                    <td>0.03116</td>
+                </tr>
+                <tr>
+                    <td>Diver Druk Start</td>
+                    <td>1052.46</td>
+                    <td>107.32</td>
+                    <td>7.89</td>
+                    <td>0.01052</td>
+                </tr>
+                <tr>
+                    <td>Diver Druk Eind</td>
+                    <td>1052.46</td>
+                    <td>107.32</td>
+                    <td>7.89</td>
+                    <td>0.01052</td>
+                </tr>
+                <tr>
+                    <td>Diver Druk Max</td>
+                    <td>2150.00</td>
+                    <td>219.24</td>
+                    <td>16.13</td>
+                    <td>0.02150</td>
+                </tr>
+            </table>
+
+            <img src="detail druk verandering-HF-Diver_referentie_tijdshift.png" alt="HF druksonde druk vs Diver druk over Tijd">
+            <p>Deze figuur toont het verschil tussen de HF druksonde, de Diver en de referentiesensor. Hierbij wordt ook de tijdsverschuiving tussen de verschillende sensoren weergegeven. Er is een tijdsverschil van 2 seconden tussen de referentiesensor en de Diver, en een verschil van 10 seconden tussen de referentiesensor en de HF druksonde.</p>
+            <p>Het verschil van 2 seconden tussen de referentiesensor en de Diver kan mogelijk worden verklaard door een tijdsverschil in de synchronisatie van de opname van de video en de meetgegevens van de sensor. Een andere mogelijke oorzaak kan een lichte vertraging zijn die is ontstaan bij het stoppen van de video-opname op de smartphone. Dit soort vertragingen moeten in aanmerking worden genomen bij de interpretatie van de meetresultaten.</p>
+        </section>
+       
+            <h3>5.2 Voor en Na de Meting</h3>
+            <p>Vergelijking van de drukwaarden voor en na de meting:</p>
+            <img src="verschil voor meting.png" alt="Drukverschil voor meting">
+            <img src="verschil na meting.png" alt="Drukverschil na meting">
+            
+            <h3>5.3 Tijdlijn Drukmetingen voor Periode 12:45 - 13:25</h3>
+            <p>De tijdlijn van de gemeten drukken voor de periode van 12:45:00 tot 13:25:00 op 2024-10-22:</p>
+            <img src="periode 12_45-13_25_tijdlijn-Diver_HF-druksonde.png" alt="Tijdlijn van drukmetingen voor de geselecteerde periode">
+            
+            <h3>5.4 X-Y Plot van Drukmetingen voor Periode 12:45 - 13:25</h3>
+            <p>De onderstaande grafieken tonen de correlatie tussen de gemeten drukwaarden van de TD-Diver en de referentie druksonde voor de periode 12:45:00 tot 13:25:00. Zowel zonder als met een tijdcorrectie van 8 seconden:</p>
+            
+            <h4>Zonder Tijdshift</h4>
+            <img src="periode 12_45-13_25_XY-zonder tijdshift.png" alt="X-Y Plot zonder tijdshift voor de geselecteerde periode">
+            
+            <h4>Met 8 Seconden Tijdshift</h4>
+            <img src="periode 12_45-13_25_XY-met tijdshift-8sec.png" alt="X-Y Plot met 8 seconden tijdshift voor de geselecteerde periode">
+        </section>
+
+        <section>
+            <h2>6. Conclusies en Aanbevelingen</h2>
+            <p>De resultaten van deze test tonen aan dat de drukkamer effectief functioneert, hoewel de drukstabiliteit beïnvloed wordt door de afwezigheid van een regelbaar toevoerkraantje en de uitzetting van de kunststof kamer. Door een kraantje toe te voegen vóór de persluchtinlaat en een drukmeter met logger aan te schaffen, kan de controle en nauwkeurigheid van de metingen aanzienlijk verbeterd worden. Heel belanrijk is dat het gelijkzetten van de klokken moet worden geverifieerd, na synchronisatie. Ook moeten meer tussenstappen worden voorzien, en alles worden genoteerd in een logboek. Deze oefening was een test en zal worden aangepast, samen met een handleiding. </p>
+       <p> <strong>Taak Styn:</strong>  De waarde referentie druksonde zou moeten worden gelogd op een datalogger, met de mogelijkheid om tijd naukeurig in te stellen en waarvan de data kan worden geëxporteerd </p> 
+        </section>
+    </main>
+</body>
+</html>

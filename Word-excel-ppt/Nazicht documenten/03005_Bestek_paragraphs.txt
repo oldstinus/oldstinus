@@ -1,0 +1,859 @@
+P0005: Vlaams Gewest
+P0007: Beleidsdomein Mobiliteit & Openbare Werken
+P0009: Departement Mobiliteit en Openbare Werken
+P0011: AFDELING Waterbouwkundig Laboratorium
+P0015: Openbare procedure voor leveringen
+P0017: Bestek nr. DMOW/WL/03005
+P0020: Correctief onderhoudscontract HIC-meetnet en levering dataloggers, meetapparatuur en toebehoren
+P0024: INHOUDSOPGAVE
+P0025: A. ALGEMEEN 5
+P0026: Afwijkingen van de algemene uitvoeringsregels conform art. 9, §4 AUR 5
+P0027: Aanbestedende overheid 5
+P0028: Voorwerp en classificatie van de opdracht 6
+P0029: B. Administratieve voorschriften bij toepassing van de wet van 17 juni 2016 inzake overheidsopdrachten (Wet 2016) 7
+P0030: Titel 1. Inleidende bepalingen, definities en algemene beginselen 7
+P0031: Hoofdstuk 2. Algemene beginselen 7
+P0032: Art. 13  Vertrouwelijkheid 7
+P0033: Art. 14  Regels betreffende de communicatiemiddelen 7
+P0034: Titel 2. Overheidsopdrachten in de klassieke sectoren 7
+P0035: Hoofdstuk 2. Plaatsingsprocedures 7
+P0036: Art. 35  Keuze van de procedure 7
+P0037: Hoofdstuk 3: Technieken en instrumenten voor elektronische en samengestelde opdrachten 7
+P0038: Art. 43 Raamovereenkomsten 7
+P0039: Art. 43, §1 Afnemende overheden 8
+P0040: Art. 43, §2 looptijd en uitvoeringstermijn 8
+P0041: Art. 43,§3 Aantal ondernemers 8
+P0042: Art. 43, §5 Plaatsing van bestellingen bij Enekelvoudige raamovereenkomsten 8
+P0043: Hoofdstuk 4. Verloop van de procedure 9
+P0044: Afdeling 1. Voorbereiding 9
+P0045: Art. 53  Technische specificaties 9
+P0046: Art. 56  Varianten en opties 9
+P0047: Art. 57  Opdracht in vaste en voorwaardelijke gedeelten en verlengingsclausules 9
+P0048: Art. 58  Percelen 9
+P0049: Afdeling 3. Selectie van deelnemers en gunning van opdrachten 10
+P0050: Art. 67-69 Uitsluitingsgronden 10
+P0051: Art. 73  Uniform Europees aanbestedingsdocument (UEA) 10
+P0052: Art. 73, §4 Administratieve vereenvoudiging 11
+P0053: Art. 78 Beroep op de draagkracht van andere entiteiten 11
+P0054: Afdeling 4. Gunning van de opdracht 11
+P0055: Art. 81  Gunningscriteria van de opdracht 11
+P0056: Perceel 1: Onderhoudscontact voor correctief onderhoud van het HIC-meetnet en een jaarlijkse kalibratie van de 19 pluviometers (regenmeters) 11
+P0057: Perceel 2: Levering van dataloggers, meetapparatuur en toebehoren 12
+P0058: C. Administratieve voorschriften bij toepassing van het KB van 18 april 2017 inzake plaatsing overheidsopdrachten in de klassieke sectoren (KB Plaatsing) 13
+P0059: Titel 1. Algemene bepalingen 13
+P0060: Hoofdstuk 4. Prijsvaststelling en prijsbestandsdelen 13
+P0061: Art. 25  Prijsweergave 13
+P0062: Art. 26  Prijsvaststelling 13
+P0063: Art. 29  Allerlei heffingen 13
+P0064: Art. 31  Keurings- en opleveringskosten 13
+P0065: Art. 32  Elementen die in de prijzen begrepen zijn 13
+P0066: Hoofdstuk 7. Regels van toepassing op de handtekeningen en op de communicatiemiddelen 14
+P0067: Art. 42-44 Ondertekening van de offertes 14
+P0068: Hoofdstuk 11. Indiening van de aanvragen tot deelneming en offertes 14
+P0069: Afdeling 2. Indieningsmodaliteiten voor de aanvragen tot deelneming en offertes 14
+P0070: Art. 53, §1 Taalgebruik 14
+P0071: Afdeling 4. Verbintenistermijn 15
+P0072: Art. 58  Verbintenistermijn voor de inschrijvers 15
+P0073: Hoofdstuk 12. Selectie van de kandidaten en van de inschrijvers 15
+P0074: Afdeling 3. Selectiecriteria, beroep op onderaannemers en op andere entiteiten 15
+P0075: Art. 68 Technische bekwaamheid en beroepsbekwaamheid 15
+P0076: Titel 2. Gunning bij openbare of niet-openbare procedure 15
+P0077: Hoofdstuk 1 Vorm en inhoud offerte 15
+P0078: Art. 77  Vorm van de offerte 15
+P0079: Art. 78  Inhoud van de offerte 16
+P0080: Hoofdstuk 2. Samenvattende opmeting en inventaris 16
+P0081: Art. 79  Inventaris 16
+P0082: Hoofdstuk 4. Indiening en opening 17
+P0083: Art. 84  Elektronische indiening offertes 17
+P0084: Art. 84 Elektronische indiening offertes 17
+P0085: D. Administratieve voorschriften bij toepassing van het koninklijk besluit van 14 januari 2013 tot bepaling van de algemene uitvoeringsregels van de overheidsopdrachten (AUR) 19
+P0086: Hoofdstuk 2. Gemeenschappelijke bepalingen opdrachten voor werken, leveringen en diensten 19
+P0087: Afdeling 1. Algemeen kader 19
+P0088: Art. 11  Leidend ambtenaar 19
+P0089: Art. 12  Onderaannemers 19
+P0090: Afdeling 2. Intellectuele rechten 20
+P0091: Art. 19  Gebruik van de resultaten 20
+P0092: Art. 20  Methodes en knowhow 20
+P0093: Afdeling 3. Financiële garanties 20
+P0094: Art. 24, §1 Verzekeringen 20
+P0095: Art. 25 Draagwijdte en bedrag van de borgtocht 22
+P0096: Afdeling 5. Wijzigingen aan de opdracht 22
+P0097: Art. 38/7, §1  Prijsherziening 22
+P0098: Art. 38/11 Feiten van de aanbesteder en van de opdrachtnemer 23
+P0099: Art. 38/12 Schorsing op bevel van de aanbestedende overheid 23
+P0100: Art. 38/18 nazicht  van de boekhoudkundige stukken 23
+P0101: Afdeling 7. Actiemiddelen aanbestedende overheid 23
+P0102: Art. 44  In gebreke blijven en sancties 23
+P0103: Art. 45, §2 ALGEMENE straffen 25
+P0104: Art. 50, §3 en 51 Teruggave vertragingsboetes en straffen 25
+P0105: Afdeling 11. Algemene betalingsvoorwaarden 25
+P0106: Art. 66  Betalingen 25
+P0107: Art. 69  Intrest voor laattijdige betaling 26
+P0108: Art. 73  Bevoegde rechtbank 26
+P0109: Hoofdstuk 5. Specifieke bepalingen voor opdrachten voor leveringen 26
+P0110: Art. 116 LEVERINGSTERMIJN 26
+P0111: Art. 117 Te leveren hoeveelheden 26
+P0112: Art. 118 Modaliteiten inzake LEVERINGEN 26
+P0113: Art. 121 Wijzigingen aan de opdracht 27
+P0114: Art. 122 Aansprakelijkheid van de LEVERANCIER 27
+P0115: Art. 127  Betalingen 28
+P0116: Hoofdstuk 6. Specifieke bepalingen voor opdrachten voor diensten 32
+P0117: ART. 147 UITVOERINGSTERMIJN 32
+P0118: Art. 64 en 156 Opleveringen en waarborgen 32
+P0119: E. TECHNISCHE VOORWAARDEN 34
+P0122: ALGEMEEN
+P0124: De nummers van de artikels waarnaar verwezen wordt, stemmen overeen met de nummers van de artikels van de onderstaande wetgeving, in de versie zoals van toepassing op de desbetreffende opdracht:
+P0126: de wet van 17 juni 2016 inzake overheidsopdrachten (Wet 2016) (BS 14 juli 2016);
+P0127: het koninklijk besluit van 18 april 2017 inzake plaatsing overheidsopdrachten in de klassieke sectoren (K.B. plaatsing) (BS 9 mei 2017);
+P0128: het koninklijk besluit van 14 januari 2013 tot bepaling van de algemene uitvoeringsregels van de overheidsopdrachten (AUR) (BS 14 februari 2017).
+P0130: Door het indienen van een offerte aanvaarden de inschrijvers onvoorwaardelijk de inhoud van de opdrachtdocumenten en aanvaarden ze door de bepalingen ervan gebonden te zijn. Indien een inschrijver in verband met de inhoud van de opdrachtdocumenten rechtmatigheidsbezwaren heeft, dient hij dat schriftelijk en per aangetekende brief uiterlijk tien kalenderdagen voor de opening van de offertes bekend te maken aan de aanbestedende overheid met omschrijving van de redenen.
+P0131: Indien in het kader van de uitvoering van onderhavige opdracht door de opdrachtnemer persoonsgegevens worden verwerkt, dan dient dit op aantoonbare wijze te gebeuren conform aan de bepalingen van de Algemene Verordening Gegevensbescherming (Vo. 2016/679) en aan de bepalingen van de Wet betreffende de bescherming van natuurlijke personen met betrekking tot de verwerking van persoonsgegevens van 30 juli 2018.
+P0132: Afwijkingen van de algemene uitvoeringsregels conform art. 9, §4 AUR
+P0134: De artikelen van dit bestek die van de algemene uitvoeringsregels afwijken, zijn:
+P0136: Art. 50  Teruggave boetes;
+P0137: Art. 51  Teruggave straffen;
+P0138: Art. 117  Te leveren hoeveelheden;
+P0139: Art. 122  Aansprakelijkheid van de leverancier;
+P0140: Art. 127  Betalingen;
+P0141: Aanbestedende overheid
+P0143: De opdracht wordt uitgeschreven door het Vlaams Gewest, vertegenwoordigd door de Vlaamse Regering, bij delegatie, in de persoon van de secretaris-generaal van het departement Mobiliteit en Openbare Werken (ir. Filip Boelaert).
+P0144: De administratieve entiteit die optreedt als aanbestedende overheid en die belast is met de inhoudelijke opvolging van de opdracht, is:
+P0145: Afdeling: Waterbouwkundig Laboratorium, Berchemlei 115, 2140 Antwerpen
+P0146: Tel.: +32 3 224 60 35
+P0147: E-mail:
+P0149: Ieder deurwaardersexploot bestemd voor de aanbestedende overheid moet worden betekend aan de kanselarij van de Voorzitter van de Vlaamse Regering, Koolstraat 35 te 1000 Brussel. Het is daarbij onverschillig of het gaat om de betekening van een dagvaarding, een gerechtelijke uitspraak, een overdracht van schuldvordering of een ander exploot. Hetzelfde adres geldt ook voor de aangetekende brief waarbij een schuldvordering wordt overgedragen of in pand gegeven.
+P0151: Deelnemers kunnen vragen stellen en/of opmerkingen maken over dit bestek en haar bijlagen. 
+Deze vragen en opmerkingen kunnen uitsluitend worden gesteld via het forum op e-Procurement tot uiterlijk 10 kalenderdagen vóór de uiterste datum van inschrijving. De vragen en/of opmerkingen dienen door de deelnemer gegroepeerd te worden ingediend. De vragen en/of opmerkingen die tijdig zijn overgemaakt, zullen uiterlijk 6 kalenderdagen vóór de uiterste datum van inschrijving worden beantwoord via datzelfde portaal. De aanbestedende overheid zal uitsluitend de vragen of opmerkingen die een algemene draagwijdte hebben en die tot verdere verduidelijking van de bepalingen van het bestek strekken, beantwoorden. Vragen of opmerkingen die verder gaan dan een loutere verduidelijking of het bekomen van bijkomende informatie en die een zeker overleg of onderhandeling veronderstellen, evenals vragen of opmerkingen die na de uiterste indieningstermijn worden ingediend, zullen niet door de aanbestedende overheid worden beantwoord. De antwoorden op het forum van e-Procurement (zonder dat de identiteit van de vraagsteller wordt weergegeven) worden als een integraal onderdeel van het bestek beschouwd. De Inschrijvers worden geacht met deze antwoorden rekening te houden.
+P0153: Voorwerp en classificatie van de opdracht
+P0154: Deze opdracht is een opdracht voor leveringen in de zin van art. 2, 20° van de Wet inzake overheidsopdrachten van 17 juni 2016.
+P0156: Omschrijving opdracht
+P0157: Het HIC (Hydrologisch Informatie Centrum) is een onderdeel van het Waterbouwkundig Laboratorium. Het HIC-meetnet beheert een 250 tal meetlocaties waar waterpeilen, debieten een neerslag gemeten wordt. Deze opdracht bestaat uit 2 percelen waarbij het eerste perceel het uitvoeren van correctief onderhoud inhoudt voor deze 250 meetlocaties en het kalibreren van 19 pluviometers geïnstalleerd in Vlaanderen. Het tweede perceel houdt de aankoop van dataloggers, meetapparatuur en toebehoren in op basis van een raamcontract.
+P0159: Volgens de CPV-classificatie hebben deze diensten betrekking op:
+P0160: 45246000-3 - Werkzaamheden voor rivierdebietregeling en hoogwaterbeheersing;
+P0161: 45246400-7 - Werkzaamheden voor hoogwaterpreventie
+P0162: 38420000-5 - Instrumenten voor het meten van debiet, peil en druk van vloeistoffen en gassen;
+P0163: 38422000-9 - Peilmetingstoestellen;
+P0164: 38421000-2 - Debietmeetuitrusting;
+P0165: 38125000-7 – Regenmeters;
+P0166: 71631440-6 – Debietmeetdiensten
+P0168: Een gedetailleerde omschrijving van de leveringen is opgenomen onder E. technische voorwaarden.
+P0170: Administratieve voorschriften bij toepassing van de wet van 17 juni 2016 inzake overheidsopdrachten (Wet 2016)
+P0172: Titel 1. Inleidende bepalingen, definities en algemene beginselen
+P0173: Hoofdstuk 2. Algemene beginselen
+P0174: Art. 13  Vertrouwelijkheid
+P0175: De inschrijver en zijn medewerkers zijn gebonden door discretieplicht met betrekking tot informatie waarvan zij kennis krijgen bij het ontvangen van de opdrachtdocumenten en bij de eventuele uitvoering van de opdracht. Die informatie kan in geen geval zonder schriftelijke toestemming van de aanbestedende overheid meegedeeld worden aan derden. De gekozen opdrachtnemer mag deze opdracht wel opgeven als referentie.
+P0176: De plannen, documenten en voorwerpen, alsook de informatie waar men toegang toe krijgt via eDelta en MEDIAAN, die in het kader van de plaatsing van de opdracht ter beschikking worden gesteld door de aanbestedende overheid, mogen door de opdrachtnemer niet worden gereproduceerd of verspreid, noch voor enig ander gebruik dan in het kader van de uitvoering van de opdracht aangewend worden, dan met de voorafgaande en schriftelijke toestemming van de aanbestedende overheid. Aan deze toestemming kunnen voorwaarden worden verbonden.
+P0178: Art. 14  Regels betreffende de communicatiemiddelen
+P0179: De communicatie tussen de aanbestedende overheid en de ondernemers, met inbegrip van het indienen van offertes, dient elektronisch te verlopen. Voor de nadere regels met betrekking tot het indienen van digitale offertes, wordt verwezen naar art. 84 of 85 KB Plaatsing. Andere communicatie dan het indienen van offertes gebeurt enkel rechtsgeldig via het e-mailadres vermeld in de opdrachtdocumenten, met uitzondering van de vereiste aangetekende zendingen zoals bepaald in het KB Plaatsing en het KB Uitvoering en de communicatie via e-contracting.
+P0181: Titel 2. Overheidsopdrachten in de klassieke sectoren
+P0182: Hoofdstuk 2. Plaatsingsprocedures
+P0183: Art. 35  Keuze van de procedure
+P0184: De opdracht wordt geplaatst bij wijze van een openbare procedure conform artikel 36 Wet 2016.
+P0185: Hoofdstuk 3: Technieken en instrumenten voor elektronische en samengestelde opdrachten
+P0186: Art. 43 Raamovereenkomsten
+P0187: MAXIMALE WAARDE
+P0188: Onverminderd de toepassing van artikel 38 en verder KB Uitvoering en los van de in de samenvattende opmeting/inventaris vermelde hoeveelheden wenst de aanbestedende overheid mee te geven dat de maximale waarde voor deze raamovereenkomst (over de ganse looptijd en onverminderd de toepassing van art. 38 e.v. van het KB Uitvoering) *** euro bedraagt. Dit is de maximale waarde over de volledige looptijd van de raamovereenkomst inclusief eventuele verlengingen. Bij de bepaling van de maximale waarde is niet uitgegaan van de hoeveelheden die in de samenvattende opmeting/inventaris zijn opgenomen. De maximale waarde vormt bijgevolg geen indicatie voor het offertebedrag waarmee kan worden ingeschreven. Het betreft daarentegen de maximale waarde van de raamovereenkomst, vastgesteld op basis van de maximaal te bestellen hoeveelheden over alle opdrachten die binnen de raamovereenkomst kunnen worden geplaatst heen.
+P0189: Om de omvang van de raamovereenkomst te kunnen controleren, zullen de uitgaven binnen de raamovereenkomst worden gemonitord en zullen indien nodig maatregelen worden genomen om te voorkomen dat de maximale waarde van de raamovereenkomst zou worden overschreden. In functie van de monitoring bezorgt de opdrachtnemer ieder kwartaal een overzicht van de geplaatste bestellingen en de gevorderde prestaties.
+P0191: Art. 43, §1 Afnemende overheden
+P0192: Volgende aanbestedende overheden kunnen afnemen van deze raamovereenkomst:
+P0193: De afdelingen van het departement Mobiliteit en Openbare werken
+P0194: Art. 43, §2 looptijd en uitvoeringstermijn
+P0196: Raamovereenkomst
+P0198: Deze raamovereenkomst heeft een looptijd van 4  jaar (initiële looptijd van 1 jaar, driemaal verlengbaar met telkens 1 jaar).
+P0200: De opdrachtnemer heeft gedurende de looptijd van de raamovereenkomst geen exclusiviteitsrechten.
+P0201: De aanbestedende overheid heeft het recht om, tijdens de looptijd van de raamovereenkomst, een derde opdrachtnemer aan te stellen om prestaties vervat in deze opdracht uit te voeren.
+P0202: Art. 43,§3 Aantal ondernemers
+P0204: Deze raamovereenkomst wordt afgesloten met één ondernemer.
+P0206: Art. 43, §5 Plaatsing van bestellingen bij Enkelvoudige raamovereenkomsten
+P0207: Bestellingen in het kader van deze raamovereenkomst zullen volgens onderstaande procedure geplaatst worden:
+P0209: Perceel 1: onderhoudscontact voor correctief onderhoud van het HIC-meetnet en een jaarlijkse kalibratie van de 19 pluviometers (regenmeters)
+P0210: Per maand zal er een bestelling aangemaakt worden binnen de raamovereenkomst met de prestaties die in die maand plaatsgevonden hebben.
+P0212: Perceel 2: levering van dataloggers, meetapparatuur en toebehoren:
+P0213: PER OFFERTEVRAAG
+P0215: Per specifieke bestelling zal de aanbestedende overheid aan opdrachtnemer een opdrachtomschrijving, gewenste uitvoeringsdatum en gerelateerde documenten bezorgen via e-mail en vragen om een offerte te geven voor deze opdracht. Meerdere opdrachtverzoeken kunnen gelijktijdig gegeven worden.
+P0217: De deelnemer bevestigt onmiddellijk de ontvangst van de vraag tot opmaak van een offerte.
+P0219: Binnen de termijn opgenomen in het bestek voor de bestelopdracht bezorgt de opdrachtnemer aan de opdrachtgever een offerte via mail.
+P0221: De maximum eenheidsprijzen zijn deze die inschrijver heeft opgegeven bij zijn inschrijving op de raamovereenkomst.
+P0223: De bestelling start op de datum vermeld in het aanvangsbevel. Dit aanvangsbevel zal zowel via e-mail als per brief worden overgemaakt aan de opdrachtnemer.
+P0226: Hoofdstuk 4. Verloop van de procedure
+P0228: Afdeling 1. Voorbereiding
+P0229: Art. 53  Technische specificaties
+P0231: Naast de wettelijke en reglementaire voorschriften zijn de volgende documenten van toepassing op deze opdracht:
+P0233: Dienstorder MOW/MIN/2023/02 inzake de bijzondere bestekposten;
+P0236: Art. 56  Varianten en opties
+P0238: 1° Vrije varianten
+P0239: Vrije varianten zijn niet toegelaten.
+P0241: 2° Vrije opties
+P0242: Vrije opties zijn niet toegelaten.
+P0244: Art. 57  Opdracht in vaste en voorwaardelijke gedeelten en verlengingsclausules
+P0246: Verlengingsclausules.
+P0247: Uitdrukkelijke verlenging
+P0248: De aanbestedende overheid heeft het recht de opdracht geheel of gedeeltelijk te verlengen in één of meerdere malen met een maximale looptijd van 4 jaar.
+P0249: Iedere verlenging wordt aan de opdrachtnemer meegedeeld tenminste 30 kalenderdagen voor het verstrijken van de looptijd.
+P0250: Art. 58  Percelen
+P0252: De opdracht wordt opgedeeld in 2 percelen:
+P0253: Perceel 1 :
+P0254: Onderhoudscontact voor correctief onderhoud van het HIC-meetnet en een jaarlijkse kalibratie van de 19 pluviometers (regenmeters)
+P0256: Perceel 2 :
+P0257: Levering van dataloggers, meetapparatuur en toebehoren
+P0259: Een gedetailleerde omschrijving van de percelen is opgenomen onder E. technische voorwaarden.
+P0261: Afdeling 3. Selectie van deelnemers en gunning van opdrachten
+P0262: Art. 67-69 Uitsluitingsgronden
+P0263: De inschrijver legt een ingevuld Uniform Europees Aanbestedingsdocument (UEA) voor als verklaring dat hij zich niet in een toestand van uitsluiting bevindt zoals bedoeld in art. 67 t.e.m. 69 Wet OO.
+P0265: Deze bepaling is individueel van toepassing op de deelnemers die samen als een combinatie een offerte indienen, alsook op entiteiten op wiens draagkracht de inschrijver een beroep doet met het oog op het voldoen aan de selectiecriteria of onderaannemers.
+P0267: De verplichte uitsluitingsgronden zijn ook van toepassing in hoofde van personen die lid zijn van het bestuurs-, leidinggevend of toezichthoudend orgaan van de inschrijver of daarin vertegenwoordigings-, beslissings- of controlebevoegdheid hebben.
+P0269: ART. 70 CORRIGERENDE MAATREGELEN
+P0271: §2. Verplichte uitsluitingsgronden
+P0272: Artikel 70, §2 Wet 2016 is van toepassing op deze opdracht. De kandidaat of inschrijver deelt, bij aanvang van de procedure, op eigen initiatief mee of hij corrigerende maatregelen heeft genomen.
+P0274: §3. Facultatieve uitsluitingsgronden
+P0275: In afwijking van artikel 70, §3 Wet 2016 dient de kandidaat of inschrijver eveneens op eigen initiatief voor alle uitsluitingsgronden opgenomen in artikel 69 Wet 2016, bij aanvang van de procedure, mee te delen of hij corrigerende maatregelen heeft genomen.
+P0277: Art. 73  Uniform Europees aanbestedingsdocument (UEA)
+P0279: De inschrijvers worden verzocht het bij de aankondiging gevoegde UEA in Xml-formaat te vervolledigen via de UEA-tool (https://uea.publicprocurement.be) en het ingevulde UEA vervolgens in pdf-formaat op te laden samen met de andere offertedocumenten. Let wel, het UEA dient niet afzonderlijk te worden getekend, maar zal samen met de andere offertedocumenten worden getekend via de elektronische handtekening die op het indieningsrapport wordt aangebracht.
+P0281: De inschrijver moet tevens:
+P0282: een ingevuld UEA voorleggen voor elke deelnemer van een combinatie van ondernemingen die optreedt als inschrijver, en voor elke onderaannemer of andere entiteit op wiens draagkracht de inschrijver beroep doet;
+P0283: in geval de inschrijver een combinatie van ondernemingen is, aanduiden welke deelnemer aan de combinatie zal optreden als vertegenwoordiger naar de aanbestedende overheid toe, in deel II.B van het UEA.
+P0285: De aanbestedende overheid kan de inschrijvers tijdens de procedure ten allen tijde verzoeken de vereiste ondersteunende documenten geheel of gedeeltelijk in te dienen wanneer dit noodzakelijk is voor het goede verloop van de procedure.
+P0287: De inschrijvers worden verzocht het bij de aankondiging gevoegde UEA in Xml-formaat te vervolledigen via de UEA-tool (https://uea.publicprocurement.be) en het ingevulde UEA vervolgens in pdf-formaat op te laden samen met de andere offertedocumenten. Let wel, het UEA dient niet afzonderlijk te worden getekend, maar zal samen met de andere offertedocumenten worden getekend via de elektronische handtekening die op het indieningsrapport wordt aangebracht.
+P0289: Art. 73, §4 Administratieve vereenvoudiging
+P0290: De aanbestedende overheid vraagt voor de Belgische inschrijvers zelf de volgende documenten op:
+P0291: Attest inzake sociale zekerheid;
+P0292: Attest niet-faillissement;
+P0293: Fiscaal attest inzake directe belastingen en btw;
+P0295: Art. 78 Beroep op de draagkracht van andere entiteiten
+P0296: Indien de inschrijver zich beroept op de draagkracht van andere entiteiten, moet de behoorlijk ondertekende en gedagtekende verbintenis met deze entiteiten bij de offerte gevoegd worden. Deze verbintenis vermeldt steeds voor welk gedeelte hij een beroep doet op die draagkracht. Voor opmaak van de bovenvermelde verbintenis kan gebruikgemaakt worden van het model “Verbintenis terbeschikkingstelling middelen”, dat als bijlage bij dit bestek gevoegd werd.
+P0299: Afdeling 4. Gunning van de opdracht
+P0301: Art. 81  Gunningscriteria van de opdracht
+P0303: De economisch meest voordelige offerte wordt vastgesteld:
+P0304: rekening houdend met de beste prijs-kwaliteitsverhouding.
+P0306: Voor de aanwijzing van de economisch meest voordelige regelmatige offerte wordt rekening gehouden met volgende gunningscriteria:
+P0308: Perceel 1: Onderhoudscontact voor correctief onderhoud van het HIC-meetnet en een jaarlijkse kalibratie van de 19 pluviometers (regenmeters)
+P0309: Criterium 1: het offertebedrag (50 punten)
+P0311: De puntenberekening gebeurt op basis van volgende formule: Pi =
+P0312: waarbij: Pi  puntenaantal voor offerte i
+P0313: M  maximum aantal punten
+P0314: Xi  (gecorrigeerd) offertebedrag offerte i
+P0315: Xmin  laagste (gecorrigeerd) offertebedrag
+P0317: Criterium 2: organisatie permanenties en interventies (50 punten)
+P0318: De aanbieder zal aantonen op welke manier hij de 24/24-7/7 permanentie en interventies zal organiseren.
+P0319: Als de aanbieder aan alle punten, vermeld in de technische specificaties voldoet, worden hier 50 punten op gescoord.
+P0320: Als de aanbieder aan 1 of meerder punten, uit technische specificaties, niet voldoet worden er 25 punten gescoord
+P0321: Als de aanbieder geen plan van organisatie bijsluit worden op dit onderdeel 0 punten gescoord.
+P0323: Perceel 2: Levering van dataloggers, meetapparatuur en toebehoren
+P0325: Criterium 1: het offertebedrag (50 punten)
+P0326: De puntenberekening gebeurt op basis van volgende formule: Pi =
+P0327: waarbij: Pi  puntenaantal voor offerte i
+P0328: M  maximum aantal punten
+P0329: Xi  (gecorrigeerd) offertebedrag offerte i
+P0330: Xmin  laagste (gecorrigeerd) offertebedrag
+P0332: Criterium2: demo (50 punten)
+P0333: Tijdens de demo, verder beschreven in de Technische Specificaties, worden een aantal testen uitgevoerd. Er zijn 10 onderdelen voor deze demo. Elke onderdeel staat op 5 punten.
+P0334: Indien een onderdeel negatief wordt beoordeeld zal dit onderdeel 0 punten scoren. Indien het getest onderdeel positief scoort worden hier 5 punten voor gescoord.
+P0335: Na de test worden alle onderdelen gescoord en opgeteld om tot een resultaat op 50 punten te komen. Hierbij rekening houdende dat op de Test 1 minstens 35/35 moet gehaald worden. Indien er geen maximale score wordt behaald op deze test zal de inschrijving van de aanbieder voor het perceel 2 geweerd worden wegens niet voldaan aan minimumvereisten.
+P0336: De onderdelen die worden getest tijdens de demo zijn:
+P0338: Test 1: Op volgende onderdelen moet minstens 35/35 behaald worden
+P0339: Datalogger kan connectie maken met Apn van het aanbestedend bestuur en krijgt het ip-adres van de simkaart van het aanbestedend bestuur. Dat de datalogger een ip-adres verkrijgt wordt aangetoond in een app of webbrowser of software pakket van datalogger of scherm.
+P0340: Er worden elke 10 seconden een meetwaarde opgeslagen en deze wordt uitgemiddeld naar een 1 minuut waarde (visueel zichtbaar via applicatie/webbrowser van de datalogger)
+P0341: 1 minuut gemiddelde waarde wordt verzonden naar ftp-server aanbestedend bestuur en databestand is ontvangen op ftp-server
+P0342: Databestand voldoet aan bestandsformaat zoals beschreven
+P0343: Configuratie van datalogger kan gedownload worden, gewijzigd worden en terug geïmporteerd worden in datalogger
+P0344: Aantonen dat de gemeten waarde kan gewijzigd worden, correctie mTaw peil, en dat deze wijziging als apart bestand wordt verzonden naar de ftp-server (zie verder).
+P0345: Aantonen dat de modbus data elke 5 seconden in mTaw verzonden kan worden. Hiervoor zal het aanbestedend bestuur zorgen voor een toestel dat modbus kan ontvangen en waarbij kan gecontroleerd worden dat de data effectief ontvangen wordt.
+P0347: Test 2
+P0348: Behuizing, connectoren en aansluitingen zijn zoals beschreven in de technische specificaties.
+P0349: Aantonen dat op basis van de handleiding volgende zaken kunnen uitgevoerd worden:
+P0350: programmatie en connectie maken met datalogger
+P0351: correcties van waterpeil in mTaw
+P0352: config downloaden en uploaden
+P0353: aanpassingen van Apn, ftp map, meetfrequentie, doorstuurfrequentie
+P0354: Databestand is van het ASCII formaat
+P0356: Administratieve voorschriften bij toepassing van het KB van 18 april 2017 inzake plaatsing overheidsopdrachten in de klassieke sectoren (KB Plaatsing)
+P0357: Titel 1. Algemene bepalingen
+P0359: Hoofdstuk 4. Prijsvaststelling en prijsbestandsdelen
+P0360: Art. 25  Prijsweergave
+P0361: De eenheidsprijzen moeten zowel in cijfers als in letters worden geschreven.
+P0362: Bij vermoedelijke hoeveelheden moeten de eenheidsprijzen tot op 2 decimalen na de komma worden afgerond. De totaalprijzen voor deze posten moeten worden afgerond tot op 2 decimalen na de komma.
+P0364: Bij een globale prijs moet worden afgerond tot op 2 decimalen na de komma.
+P0366: Art. 26  Prijsvaststelling
+P0367: Deze opdracht is een opdracht met gemengde prijsvaststelling.
+P0369: Art. 29  Allerlei heffingen
+P0370: De belasting over de toegevoegde waarde wordt in een afzonderlijke post van de inventaris vermeld en wordt bij de prijs van de offerte gevoegd.
+P0372: Art. 31  Keurings- en opleveringskosten
+P0374: De kosten van de prestaties die in verband met de opleveringen worden geleverd door derden, worden ten laste van de opdrachtnemer aangerekend tegen de door deze derden gefactureerde kostprijs.
+P0375: De kosten van de prestaties die de opdrachtnemer in verband met de opleveringen zelf uitvoert, blijven te zijnen laste.
+P0376: Art. 32  Elementen die in de prijzen begrepen zijn
+P0377: De opdrachtnemer is verplicht op zijn kosten alle ondergeschikte diensten, werken en leveringen uit te voeren die niet expliciet vermeld zijn in een post van de inventaris, maar die noodzakelijk zijn voor de uitvoering van de opdracht zoals bepaald in de opdrachtdocumenten, en/of voor de uitvoering van die post.
+P0379: In de eenheidsprijzen en globale prijzen van de opdracht dienen te zijn begrepen:
+P0380: 1° de verpakkingen, behalve wanneer ze eigendom blijven van de inschrijver en het laden, de overslag, het overladen, het vervoer, de verzekering en het inklaren;
+P0381: 2° het lossen, uitpakken en stapelen op de plaats van levering, op voorwaarde dat de opdrachtdocumenten de juiste plaats van levering en de toegangsmogelijkheden vermelden;
+P0382: 3° de documentatie die met de levering verband houdt;
+P0383: 4° het monteren en het bedrijfsklaar maken;
+P0384: 5° de voor het gebruik noodzakelijke vorming.
+P0386: Hoofdstuk 7. Regels van toepassing op de handtekeningen en op de communicatiemiddelen
+P0387: Art. 42-44 Ondertekening van de offertes
+P0389: De inschrijver wordt er op gewezen dat zijn offerte, overgelegd via e-Procurement, elektronisch ondertekend moet worden met een geldige gekwalificeerde elektronische handtekening.
+P0390: Een gescande handtekening is onvoldoende.
+P0391: De elektronische handtekening dient te worden geplaatst op het indieningsrapport in e-Procurement.
+P0393: Deze elektronische handtekening moet uitgaan van een bevoegd persoon of bevoegde personen. De inschrijver voegt tevens de nodige documenten toe waaruit de bevoegdheid blijkt om de onderneming te binden (uittreksels van de statuten, volmacht,…).
+P0394: Indien meerdere personen samen moeten optreden (gezamenlijke uitoefening van bevoegdheid binnen de onderneming, indiening van offerte door een combinatie), moeten zij elk een geldige gekwalificeerde elektronische handtekening plaatsen ofwel moet uit de toegevoegde documenten de machtiging blijken om namens meerdere personen of ondernemingen de offerte elektronisch te ondertekenen.
+P0396: In geval van indiening van een offerte door een combinatie van ondernemingen, moet voor elke deelnemer aan de combinatie een elektronische handtekening geplaatst worden door een bevoegd persoon of bevoegde personen.
+P0398: Een gekwalificeerde elektronische handtekening kan geplaatst worden door middel van een Belgische eID, of een gekwalificeerd certificaat dat kan aangekocht worden bij private actoren. Er dient wel te worden opgemerkt dat het enige tijd kan in beslag nemen vooraleer u de drager met uw gekwalificeerd certificaat ontvangt. Koop dus tijdig uw certificaat aan.
+P0399: Voor meer informatie omtrent de aankoop van een gekwalificeerd certificaat, zie: http://overheid.vlaanderen.be/gekwalificeerde-certificaten.
+P0400: Door in te schrijven op deze opdracht verbindt de inschrijver zich op zijn roerende en onroerende goederen tot de uitvoering van de in dat bestek beschreven opdracht, overeenkomstig de bepalingen en voorwaarden ervan.
+P0401: In geval van indiening van een offerte door een combinatie zonder rechtspersoonlijkheid verbindt elke deelnemer aan de combinatie zich hoofdelijk.
+P0403: Hoofdstuk 11. Indiening van de aanvragen tot deelneming en offertes
+P0404: Afdeling 2. Indieningsmodaliteiten voor de aanvragen tot deelneming en offertes
+P0405: Art. 53, §1 Taalgebruik
+P0407: De inschrijver gebruikt uitsluitend het Nederlands in zijn mondelinge en schriftelijke communicatie met de aanbestedende overheid.
+P0408: Van documenten die enkel in een andere taal beschikbaar zijn, kan de aanbestedende overheid een vertaling eisen. De vertaling gebeurt op kosten van de inschrijver. De vertaling is het enige rechtsgeldige.
+P0410: Afdeling 4. Verbintenistermijn
+P0411: Art. 58  Verbintenistermijn voor de inschrijvers
+P0413: De inschrijvers blijven gebonden door hun offerte gedurende een termijn van 120 kalenderdagen, ingaande de dag na de uiterste indieningsdatum van de offertes.
+P0414: Hoofdstuk 12. Selectie van de kandidaten en van de inschrijvers
+P0416: Afdeling 3. Selectiecriteria, beroep op onderaannemers en op andere entiteiten
+P0417: Art. 68 Technische bekwaamheid en beroepsbekwaamheid
+P0418: De inschrijvers tonen hun technische bekwaamheid en beroepsbekwaamheid aan door overlegging van het volgende documenten:
+P0420: Voor perceel 1 – Diensten:
+P0421: Technische en beroepsbekwaamheid:
+P0422: De minimale vereisten qua technische en beroepsbekwaamheid zijn:
+P0423: De inschrijver moet over minstens 2 referenties beschikken van minstens één van volgende diensten die kwaliteitsvol werden uitgevoerd tijdens de laatste drie jaar:
+P0424: •Elektrotechnisch onderhoud van waterpeil- en/of debietmeetstations in waterlopen
+P0425: •Technische realisatie (niet bouwkundig) van waterpeil en/of debietmeetstations in waterlopen
+P0426: •Onderhoud van elektrotechnische laagspanningsinstallaties langs waterwegen
+P0428: Indien het diensten aan overheden betreft, worden de diensten aangetoond door certificaten die door de bevoegde overheid zijn opgesteld of goedgekeurd. Indien het gaat om diensten aan privaatrechtelijke personen worden de diensten aangetoond door certificaten opgesteld door deze personen, of bij ontstentenis, door een verklaring van de inschrijver.
+P0430: Voor perceel 2 - Leveringen:
+P0431: Technische en beroepsbekwaamheid:
+P0433: Om voor selectie in aanmerking te komen, moet de inschrijver minstens 3 referenties van relevante, soortgelijke opdrachten, met een individuele waarde van 10.000 euro kunnen aantonen
+P0435: Indien het leveringen aan overheden betreft, worden de leveringen aangetoond door certificaten die door de bevoegde overheid zijn opgesteld of goedgekeurd. Indien het gaat om leveringen aan
+P0436: privaatrechtelijke personen worden de leveringen aangetoond door certificaten opgesteld door deze personen, of bij ontstentenis, door een verklaring van de inschrijver.
+P0438: De inschrijver verklaart op het UEA of hij al dan niet voldoet aan de selectiecriteria. De voor te leggen stukken dienen niet aan het UEA te worden toegevoegd maar zal de aanbestedende overheid opvragen indien noodzakelijk. Zie A.1.4. voor meer informatie over het UEA.
+P0440: De inschrijver dient de vereiste bewijsstukken toe te voegen aan de offerte.
+P0441: Titel 2. Gunning bij openbare of niet-openbare procedure
+P0442: Hoofdstuk 1 Vorm en inhoud offerte
+P0443: Art. 77  Vorm van de offerte
+P0444: De aandacht van de inschrijver wordt erop gevestigd dat hij zijn offerte en zijn inventaris moet invullen op de bij de opdrachtdocumenten gevoegde formulieren.
+P0445: Voor het indienen van offertes wordt het gebruik van elektronische middelen opgelegd.
+P0447: De inschrijver wordt gevraagd om zijn offerte op te delen volgens een vaste structuur. De verschillende bestanden voldoen aan de volgende bestandsnaamconventie, waarbij [inschrijver] de naam van de inschrijver is, [ext] de extensie van het document is (pdf, doc, xls, …) en [nr] een oplopend nummer is in volgorde van de opsomming in het overeenkomstig artikel.
+P0450: Art. 78  Inhoud van de offerte
+P0451: Bij het offerteformulier dienen de volgende documenten te worden gevoegd:
+P0452: De inventaris (zie art. 79 K.B. Plaatsing). Prijsvermeerderingen of –verminderingen (toeslagen of kortingen) dienen onmiddellijk in de prijs te worden verrekend. Bij niet naleving hiervan kan de aanbestedende overheid de prijsvermeerderingen of –verminderingen (toeslagen of kortingen) als ongeschreven beschouwen;
+P0453: De documenten die vereist zijn voor de selectie;
+P0454: De documenten die vereist zijn ihkv de uitsluitingsgronden;
+P0455: UEA;
+P0456: De documenten die vereist zijn voor de gunning (zie art. 81 Wet 2016);
+P0457: De bewijzen dat de personen, die de offerte ondertekenden, statutair of bij volmacht bevoegd zijn om de bedrijven geldig in en buiten rechte te vertegenwoordigen (art. 44, §3 K.B. Plaatsing). Dit gebeurt naargelang de rechtsvorm van de bedrijven door het bijvoegen van één van de volgende documenten:
+P0458: uittreksel of kopie van de statutaire clausule i.v.m. de vertegenwoordigings-bevoegdheid en een kopie van de akte of afschrift van de notulen van de algemene vergadering, zoals verschenen in het B.S., houdende benoeming van de bestuurders;
+P0459: volmacht om het bedrijf te vertegenwoordigen of om bevoegdheid door te geven aan een ander persoon;
+P0460: benoemingsbesluit van zaakvoerder;
+P0461: andere documenten ter staving van de bevoegdheid;
+P0462: Hoofdstuk 2. Samenvattende opmeting en inventaris
+P0463: Art. 79  Inventaris
+P0464: §1 In de inventaris gaat de post vergezeld:
+P0465: van de vermelding “GP”, globale prijs, als de hoeveelheid niet aangegeven is;
+P0466: van de vermelding “VH”, vermoedelijke hoeveelheid;
+P0467: §2 De vermoedelijke hoeveelheden in de inventaris mogen niet verbeterd worden. De forfaitaire hoeveelheden mogen niet verbeterd worden in de inventaris, maar enkel in een apart document dat hij voegt bij zijn offerte ter verantwoording van deze verbeteringen.
+P0469: Hoofdstuk 4. Indiening en opening
+P0470: Art. 84  Elektronische indiening offertes
+P0471: Art. 84 Elektronische indiening offertes
+P0472: De offertes moeten elektronisch worden overgelegd via het e-Procurement platform: https://www.publicprocurement.be. Dit is een elektronisch platform in de zin van art. 14, § 7 van de Wet Overheidsopdrachten.
+P0474: Meer informatie omtrent het gebruik van e-Procurement kan worden bekomen via het Hulpcentrum: https://bosa.service-now.com/eprocurement?lang=nl
+P0476: De e-Procurement helpdesk kan bereikt worden op het nummer +32 (0)2 740 80 00, of via het contactformulier: e-Procurement - Contact form (service-now.com).
+P0478: De met elektronische middelen ingediende offertes moeten worden opgemaakt in een afdrukbaar pdf-formaat.
+P0480: De inventaris wordt via een Excel-bestand ter beschikking gesteld. De inschrijver maakt gebruik van dit bestand voor het invullen van zijn inventaris. Aan dit bestand mogen geen wijzigingen worden aangebracht met uitzondering van het invullen van de grijze invulvelden. De inschrijver dient het ingevulde Excel-document te converteren naar een afdrukbaar pdf-bestand. Zowel het Excel- als het pdf-bestand moeten worden opgeladen en ingediend via e-Procurement. Bij tegenstrijdigheid tussen beide bestanden, wordt het pdf-bestand geacht de werkelijke bedoeling van de inschrijver te zijn en is het pdf-bestand aldus het enige rechtsgeldige.
+P0482: Een handleiding voor het omzetten van de inventaris van Excel naar pdf is beschikbaar op:
+P0483: bijlage_instructies_ingeven_offerteprijzen_2014_09_10_0_c6sqkk.pdf (vlaanderen.be)
+P0485: U kunt als buitenlandse inschrijver de offerte en alle bijhorende documenten ondertekenen met een gekwalificeerd certificaat dat u kunt aankopen via een private actor en dat door de applicatie herkend wordt als een geldig certificaat dat geschikt is voor het plaatsen van een wettelijke digitale handtekening ofwel met een elektronisch middel, aangekocht bij een private actor en waarvan zij zelf garanderen dat dit voldoet aan alle wettelijke voorwaarden:
+P0486: Gekwalificeerde certificaten, die geschikt zijn voor het plaatsen van een wettelijke digitale handtekening, kunnen aangekocht worden bij private actoren. Voor meer informatie over deze private actoren, kunt u terecht bij de helpdesk via het contactformulier e-Procurement - Contact form (service-now.com) of op +32 (0) 740 80 00. Er dient wel te worden opgemerkt dat het enige tijd in beslag kan nemen vooraleer u de drager met uw gekwalificeerd certificaat ontvangt. Koop dus tijdig uw certificaat aan.
+P0487: Wanneer de buitenlandse inschrijver een eigen elektronisch middel gebruikt om de handtekening te plaatsen, garandeert hij zelf dat deze handtekening voldoet aan de voorwaarden van art. 14, §7 Wet 2016. Deze elektronische handtekening moet aldus conform zijn met de regels van het Europees, en het daarmee overeenstemmend nationaal, recht inzake de geavanceerde elektronische handtekening met een geldig gekwalificeerd certificaat, waarbij deze handtekening werd gerealiseerd via een veilig middel voor het aanmaken van een handtekening.
+P0488: Gelieve ook alle nuttige informatie over het gebruikte elektronische middel aan de offerte toe te voegen opdat de aanbestedende overheid kan nagaan of het gebruikte elektronische middel geldig is en conform is met de bepalingen in de regelgeving.
+P0490: Administratieve voorschriften bij toepassing van het koninklijk besluit van 14 januari 2013 tot bepaling van de algemene uitvoeringsregels van de overheidsopdrachten (AUR)
+P0492: Hoofdstuk 2. Gemeenschappelijke bepalingen opdrachten voor werken, leveringen en diensten
+P0493: Afdeling 1. Algemeen kader
+P0494: Art. 11  Leidend ambtenaar
+P0496: De leidend ambtenaar op het niveau van de raamovereenkomst is de vertegenwoordiger en de woordvoerder van de aanbestedende overheid in haar betrekking met de opdrachtnemer. De leidend ambtenaar voor deze opdracht is Andy Henderick -  andy.henderick@mow.vlaanderen.be
+P0498: Het mandaat van de leidend ambtenaar bestaat uit:
+P0499: het geven van instructies, telkens wanneer de opdrachtdocumenten onvolledig of onduidelijk zijn;
+P0500: het opstellen van de processen-verbaal op niveau van de raamovereenkomst of bestellingsoverschrijdende inbreuken en het eventueel nemen van straffen en ambtshalve maatregelen naar aanleiding van deze processen-verbaal;
+P0501: opleveren van de raamovereenomst;
+P0503: Leiding en toezicht met betrekking tot de individuele bestellingen:
+P0505: De leidend ambtenaar op het niveau van de bestelling is de vertegenwoordiger en de woordvoerder van de aanbestedende overheid in haar betrekking met de opdrachtnemer en wordt bij elke bestelling meegedeeld.
+P0507: Het mandaat van de leidend ambtenaar bestaat uit:
+P0508: de technische en administratieve opvolging van de prestaties tot en met de oplevering;
+P0509: de keuring van de prestaties, zowel de a priori als de a posteriori keuring;
+P0510: de aanvaarding van de geleverde diensten;
+P0511: het nazicht van de vorderingsstaten en van de facturen;
+P0512: het opstellen van de processen-verbaal;
+P0513: het opleggen van straffen en boetes, en het nemen van ambtshalve maatregelen;
+P0514: de opleveringen;
+P0515: het instaan voor het bestendig toezicht op de prestaties.
+P0517: Art. 12  Onderaannemers
+P0518: De opdrachtnemer deelt aan de leidend ambtenaar schriftelijk de naam, contactgegevens en wettelijke vertegenwoordigers van al zijn onderaannemers mee. Hij voegt tevens een uittreksel uit het strafregister toe van deze onderaannemers. Hij doet dat ten laatste bij de aanvang van de uitvoering van de opdracht, voor zover deze gegevens op dat moment bekend zijn. In het andere geval moet hij deze gegevens meedelen ten laatste 15 kalenderdagen vóór de aanvang van de overeenstemmende werken, behalve in geval van hoogdringendheid waarbij deze termijn van 15 kalenderdagen kan ingekort worden.
+P0520: Omwille van het feit dat de opdrachtnemer zelf verantwoordelijk is voor de keuze van de in te zetten onderaannemers, staat hij zelf ook in voor elke vorm van tijdsverlies die ontstaat doordat een onderaannemer werd voorgesteld die niet bleek te beantwoorden aan de vereisten vervat in art. 12 t.e.m. 13  AUR. In dergelijke gevallen kan de opdrachtnemer dan ook geen aanspraak maken op een schorsing of verlenging van de uitvoeringstermijnen.
+P0522: Afdeling 2. Intellectuele rechten
+P0523: Art. 19  Gebruik van de resultaten
+P0524: §1 De aanbestedende overheid verwerft de volle en exclusieve eigendom op de uitvindingen die gedaan en ontwikkeld worden bij of naar aanleiding van de uitvoering van de opdracht.
+P0525: De opdrachtnemer en zijn rechtsopvolgers verbinden zich ertoe de specifieke uitvindingen die noodzakelijk zijn voor het gebruik van de resultaten van de opdracht gratis en kosteloos ter beschikking te stellen van de aanbestedende overheid en alle andere diensten, departementen en entiteiten die ressorteren onder de Vlaamse overheid, zelfs al zijn deze een van de aanbestedende overheid onderscheiden rechtspersoon.
+P0526: §4 De opdrachtnemer kan, na voorafgaande schriftelijke toestemming door de aanbestedende overheid, de algemene gegevens over het bestaan van de opdracht en over de verkregen resultaten aanwenden voor commercieel of ander gebruik.
+P0528: Art. 20  Methodes en knowhow
+P0529: De aanbestedende overheid verkrijgt niet de rechten op de methodes en knowhow die ontwikkeld worden bij de uitvoering van de opdracht.
+P0530: De opdrachtnemer deelt de aanbestedende overheid ten laatste bij de voorlopige oplevering mee welke knowhow nodig is voor het gebruik van het werk, ongeacht of die aanleiding gegeven heeft tot het aanvragen van een octrooi of niet.
+P0531: De opdrachtnemer en zijn rechtsopvolgers verbinden zich ertoe de methodes en knowhow die noodzakelijk zijn voor het gebruik van de resultaten van de opdracht gratis en kosteloos ter beschikking te stellen van de aanbestedende overheid en alle andere diensten, departementen en entiteiten die ressorteren onder de Vlaamse overheid, zelfs al zijn deze een van de aanbestedende overheid onderscheiden rechtspersoon.
+P0533: Afdeling 3. Financiële garanties
+P0534: Art. 24, §1 Verzekeringen
+P0536: Algemeen
+P0538: Onverminderd de aansprakelijkheden van de opdrachtnemer, zoals bepaald in artikel 122 AUR, verbindt de opdrachtnemer zich ertoe de hierna genoemde verzekeringspolissen af te sluiten.
+P0540: Deze polissen moeten beantwoorden aan de hiernavolgende bepalingen.
+P0542: De polissen moeten voldoen aan de bepalingen van de wet van 4 april 2014 betreffende de verzekeringen. De polissen moeten een clausule bevatten, die bepaalt dat elke schorsing, verbreking, opzegging of vervallenverklaring van het verzekeringscontract door de verzekeraar onmiddellijk per aangetekend schrijven ter kennis wordt gebracht van de aanbestedende overheid. De schorsing kan ten vroegste 5 werkdagen na kennisgeving ingaan.
+P0544: De polissen moeten een clausule bevatten die bepaalt dat de verzekeringsmaatschappij zich, na uitkering, in geen enkel geval tot de aanbestedende overheid kan richten om de gedane uitkering te verhalen.
+P0546: De vermelde te verzekeren kapitalen houden geen beperking van verantwoordelijkheid in. Alle hierna vermelde uitgesloten risico’s, bedragen van de vrijstellingen en schadevergoedingen die de verzekerde kapitalen overtreffen (zelfs indien gebaseerd op art. 544 van het Burgerlijk Wetboek), blijven ten laste van de betrokken opdrachtnemers en kunnen onder geen enkel beding gerecupereerd of verhaald worden bij de aanbestedende overheid.
+P0548: De opdrachtnemer legt binnen een termijn van 30 dagen het bewijs voor dat de polissen vermeld onder punten 1.1 t.e.m. 1.4 afgesloten zijn conform de onderstaande bepalingen. Dit bewijs wordt geleverd aan de hand van het als bijlage bij dit bestek gevoegde modeldocument (in te vullen door de verzekeraar/gemachtigde makelaar). Voor elke dag vertraging wordt een dagelijkse straf toegepast zoals bepaald in artikel 45.
+P0550: Op eenvoudig verzoek van de aanbestedende overheid levert de opdrachtnemer het bewijs van premiebetaling.
+P0552: 1.1 Arbeidsongevallen
+P0554: De waarborg geldt voor de ongevallen van het personeel van de opdrachtnemer tijdens de uitoefening van hun activiteit en voor de ongevallen op de weg van en naar het werk.
+P0556: De opdrachtnemer vrijwaart de aanbestedende overheid mocht één van zijn onderaannemers niet beschikken over een passende dekking.
+P0558: Deze polis voorziet uitdrukkelijk dat er na toekenning een afstand van verhaal van de verzekeraar is ten overstaan van de aanbestedende overheid en/of zijn aangestelden en/of zijn gevolmachtigden voor gebeurlijke lichamelijke ongevallen bij personeelsleden van de opdrachtnemer.
+P0560: 1.2 BA Uitbating
+P0562: Het minimaal verzekerde kapitaal per schadegeval bedraagt: 1.250.000,00 euro voor lichamelijk schade, materiële schade, immateriële gevolgschade en zuiver immateriële schade gemengd.
+P0564: Waarborgen:
+P0566: BA Uitbating : extracontractuele aansprakelijkheid voor schade aan derden.
+P0567: BA na levering / na uitvoering van werken: contractuele en extracontractuele aansprakelijkheid voor schade door gebrekkige producten / gebrekkig uitgevoerde werken.
+P0569: Moet gedekt zijn:
+P0570: Lichamelijke schade;
+P0571: Materiële schade;
+P0572: Immateriële gevolgschade;
+P0573: Zuiver immateriële schade.
+P0575: Vrijwaringsclausule: de opdrachtnemer vrijwaart de aanbestedende overheid van vorderingen van derden n.a.v. de uitvoering van deze opdracht. Deze vrijwaring wordt eveneens opgenomen in de verzekeringspolis van opdrachtnemer
+P0577: De in de polis voorziene vrijstellingen mogen maximum 5.000,00 euro per schadegeval bedragen voor andere dan letselschade.
+P0579: Art. 25 Draagwijdte en bedrag van de borgtocht
+P0580: Voor deze opdracht wordt geen borgstelling gevraagd
+P0582: Afdeling 5. Wijzigingen aan de opdracht
+P0583: Er wordt opgemerkt dat de bepalingen omtrent ‘wijzigingen aan de opdracht’ zowel van toepassing zijn op wijzigingen aan de raamovereenkomst als op wijzingen aan de bestellingen die worden geplaatst binnen deze raamovereenkomst.
+P0585: Art. 38/7, §1  Prijsherziening
+P0587: Op deze opdracht is volgende maandelijkse prijsherziening van toepassing voor perceel 2:
+P0589: met
+P0592: Art. 38/11 Feiten van de aanbesteder en van de opdrachtnemer
+P0594: In toepassing van artikel 38/11, laatste lid wordt volgende herzieningsclausule inzake de modaliteiten voor de herziening van de voorwaarden van de opdracht wanneer de aanbesteder of de opdrachtnemer ten gevolge van nalatigheden, vertragingen of welke feiten ook die ten laste van de andere partij kunnen worden gelegd, een vertraging of een nadeel heeft geleden, voorzien.
+P0596: De herziening kan bestaan uit één of meerdere van volgende maatregelen:
+P0597: de aanpassing van de contractuele bepalingen, inclusief de verlenging of de inkorting van de uitvoeringstermijnen;
+P0598: een schadevergoeding of een verbreking van de opdracht.
+P0600: Indien de schorsing, de vertraging of het nadeel dat de opdrachtnemer heeft geleden, toe te schrijven is aan een nalatigheid, een vertraging of een feit van een identificeerbare derde op wie de opdrachtnemer de (overige) schadeverwekkende gevolgen ervan kan verhalen, bijvoorbeeld in geval van de laattijdige verplaatsing van nutsleidingen, kan hij enkel aanspraak maken op een verlenging van de uitvoeringstermijn en dus geen andere vorm van aanpassing van de contractuele bepalingen, een schadevergoeding of een verbreking van de opdracht.
+P0602: Art. 38/12 Schorsing op bevel van de aanbestedende overheid
+P0603: In toepassing van artikel 38/12, §2 AUR geeft de schorsing op bevel van de aanbestedende overheid in onderstaande gevallen geen aanleiding tot enige schadevergoeding voor de opdrachtnemer:
+P0604: wanneer zij, overeenkomstig artikel 49/1 van het Sociaal Strafwetboek, door een sociaal inspecteur ervan in kennis is gesteld dat de opdrachtnemer of zijn onderaannemer of de onderaannemer van deze laatste en zo verder, op zwaarwichtige wijze tekort is geschoten in zijn verplichting om zijn werknemers tijdig het loon te betalen waarop deze recht hebben; of
+P0605: wanneer zij, overeenkomstig artikel 49/2 van het Sociaal Strafwetboek, door een sociaal inspecteur ervan in kennis is gesteld dat de opdrachtnemer of zijn onderaannemer of de onderaannemer van deze laatste en zo verder, één of meer illegaal verblijvende onderdanen van derde landen tewerkstelt.
+P0606: Art. 38/18 nazicht  van de boekhoudkundige stukken
+P0608: De aanbestedende overheid heeft het recht één of meerdere personen aan te wijzen, die de boekhoudkundige stukken verifiëren en ter plaatse onderzoeken uitvoeren om de juistheid van de door de opdrachtnemer verstrekte inlichtingen te onderzoeken. Dit boekhoudkundig onderzoek kan zowel bij de opdrachtnemer als bij zijn eventuele onderaannemers plaatsvinden. Met het oog op dit onderzoek dient de opdrachtnemer in zijn onderaannemingsovereenkomst een beding ten behoeve van derden (met name de aanbestedende overheid) op te nemen.
+P0610: Afdeling 7. Actiemiddelen aanbestedende overheid
+P0611: Art. 44  In gebreke blijven en sancties
+P0612: Verbod tot toegang tot de plaats van uitvoering van de opdracht alsook tot de verdere uitvoering van de opdracht voor een opdrachtnemer of een onderaannemer die een illegaal verblijvende onderdaan van een derde land tewerkstelt, zoals blijkt uit een kennisgeving van de arbeidsinspectie:
+P0614: Wanneer de opdrachtnemer of onderaannemer, hierna “de onderneming” genoemd, het in artikel 49/2, vierde lid, van het Sociaal Strafwetboek bedoelde afschrift ontvangt waarmee zij ervan in kennis wordt gesteld dat zij één of meerdere illegaal verblijvende onderdanen van een derde land in België tewerkstelt, onthoudt deze onderneming zich ervan, met onmiddellijke ingang, de plaats van uitvoering van de opdracht nog verder te betreden of nog verder uitvoering aan de opdracht te geven, en wel tot de aanbestedende overheid een bevel in andere zin zou geven.
+P0616: Hetzelfde geldt wanneer de voormelde onderneming ervan in kennis wordt gesteld,
+P0617: ofwel door de opdrachtnemer of de aanbestedende overheid, dat zij de in artikel 49/2, eerste dan wel tweede lid, van het Sociaal Strafwetboek bedoelde kennisgeving heeft ontvangen die betrekking heeft op deze onderneming;
+P0618: ofwel door middel van de in artikel 35/12 van de wet van 12 april 1965 betreffende de bescherming van het loon der werknemers bedoelde aanplakking, dat zij één of meerdere illegaal verblijvende onderdanen van een derde land in België tewerkstelt.
+P0620: De onderneming is er bovendien toe gehouden een clausule op te nemen in de onderaannemingsovereenkomsten die zij desgevallend zou sluiten, op grond waarvan:
+P0621: de onderaannemer er zich van onthoudt de plaats van uitvoering van de opdracht nog verder te betreden of nog verder uitvoering aan de opdracht te geven, indien uit een in uitvoering van artikel 49/2 van het Sociaal Strafwetboek opgestelde kennisgeving blijkt dat deze onderaannemer een illegaal verblijvende onderdaan van een derde land tewerkstelt;
+P0622: de niet-naleving van de onder 1° gestelde verplichting aanzien wordt als een ernstige tekortkoming in hoofde van de onderaannemer, ingevolge waarvan de onderneming is gemachtigd de overeenkomst te verbreken;
+P0623: de onderaannemer ertoe is gehouden een soortgelijke clausule als onder 1° en 2° op te nemen in de onderaannemingsovereenkomsten en ervoor te zorgen dat dergelijke clausules ook in de verdere onderaannemingsovereenkomsten worden opgenomen.
+P0625: Verbod tot toegang tot de plaats van uitvoering van de opdracht alsook tot de verdere uitvoering van de opdracht voor een opdrachtnemer of onderaannemer die een werkgever blijkt te zijn die op zwaarwichtige wijze tekortschiet in zijn verplichting het aan zijn werknemers verschuldigde loon tijdig te betalen, zoals blijkt uit een kennisgeving van de arbeidsinspectie:
+P0627: Wanneer de opdrachtnemer of onderaannemer, hierna “de onderneming” genoemd, het in artikel 49/1, derde lid, van het Sociaal Strafwetboek bedoelde afschrift ontvangt van de kennisgeving waarmee zij ervan in kennis wordt gesteld dat zij een zwaarwichtige inbreuk heeft begaan op de verplichting om haar werknemers tijdig het loon te betalen waarop deze recht hebben, onthoudt zij zich ervan, met onmiddellijke ingang, de plaats van uitvoering van de opdracht nog verder te betreden of nog verder uitvoering aan de opdracht te geven, en wel tot zij het bewijs voorlegt aan de aanbestedende overheid dat de betrokken werknemers integraal zijn uitbetaald.
+P0629: Hetzelfde geldt wanneer de voormelde onderneming ervan in kennis wordt gesteld,
+P0631: ofwel door de opdrachtnemer of de aanbestedende overheid, dat zij de in artikel 49/1, eerste lid, van het Sociaal Strafwetboek bedoelde kennisgeving heeft ontvangen die betrekking heeft op deze onderneming;
+P0632: ofwel door middel van de in artikel 35/4 van de wet van 12 april 1965 betreffende de bescherming van het loon der werknemers bedoelde aanplakking.
+P0634: De onderneming is er bovendien toe gehouden een clausule op te nemen in de onderaannemingsovereenkomst die zij desgevallend zou sluiten, op grond waarvan:
+P0636: 1° de onderaannemer er zich van onthoudt de plaats van uitvoering van de opdracht nog verder te betreden of nog verder uitvoering aan de opdracht te geven, indien uit een in uitvoering van artikel 49/1 van het Sociaal Strafwetboek opgestelde kennisgeving blijkt dat deze onderaannemer op zwaarwichtige wijze tekortschiet in zijn verplichting het aan zijn werknemers verschuldigde loon tijdig uit te betalen;
+P0638: 2° de niet-naleving van de onder 1° gestelde verplichting aanzien wordt als een ernstige tekortkoming in hoofde van de onderaannemer, ingevolge waarvan de opdrachtnemer is gemachtigd de overeenkomst te verbreken;
+P0640: 3° de onderaannemer ertoe is gehouden een soortgelijke clausule als onder 1° en 2° op te nemen in de onderaannemingsovereenkomsten en ervoor te zorgen dat dergelijke clausules ook in de verdere onderaannemingsovereenkomsten worden opgenomen.
+P0641: Art. 45, §2 ALGEMENE straffen
+P0643: De algemene straffen kunnen worden toegepast zowel op het niveau van de raamovereenkomst als op het niveau van de bestelling.
+P0645: Art. 50, §3 en 51 Teruggave vertragingsboetes en straffen
+P0647: Een verzoek om kwijtschelding van opgelopen vertragingsboetes en straffen moet per aangetekende brief worden gericht aan de aanbestedende overheid.
+P0649: Motivering: deze afwijking wordt gemotiveerd door het belang van de datum van aanvraag van kwijtschelding waardoor de bijkomende formaliteit van aangetekende zending bewijs levert.
+P0650: De datum van aantekening bij de post geldt als datum van het verzoek.
+P0652: Afdeling 11. Algemene betalingsvoorwaarden
+P0653: Art. 66  Betalingen
+P0654: Perceel 1 :Onderhoudscontact voor correctief onderhoud van het HIC-meetnet en een jaarlijkse kalibratie van de 19 pluviometers (regenmeters)
+P0655: De diensten worden betaald in maandelijkse betalingen in mindering.
+P0656: De begindag van de eerste afbetalingsperiode is de startdatum zoals bepaald in het aanvangsbevel. Deze afbetalingsperiode heeft een vaste periodiciteit van 1 maand en blijft onveranderd gedurende de hele aanneming.
+P0657: Een post tegen globale prijs wordt betaald naar verhouding van het uitgevoerde gedeelte.
+P0659: Perceel 2 : Levering van dataloggers, meetapparatuur en toebehoren
+P0660: De leveringen wordt betaald wanneer de desbetreffende bestellingen volledig zijn afgerond
+P0662: Art. 69  Intrest voor laattijdige betaling
+P0663: Er wordt uitdrukkelijk afgeweken van de bepalingen van art. 5.210 van het Burgerlijk Wetboek (art. 1254 van het Oud Burgerlijk Wetboek) inzake de toerekening van de betalingen. Elke betaling wordt dan ook bij voorrang toegerekend op de hoofdsommen, en pas daarna op de interesten.
+P0665: Art. 73  Bevoegde rechtbank
+P0666: Elke rechtsvordering van de opdrachtnemer wordt ingesteld bij een Nederlandstalige Belgische rechtbank, behoudens ingeval van een vordering tot tussenkomst in een bestaand geding.
+P0668: Hoofdstuk 5. Specifieke bepalingen voor opdrachten voor leveringen
+P0669: Art. 116 LEVERINGSTERMIJN
+P0670: De leveringstermijn voor perceel 2 zal per bestelling bepaald worden.
+P0672: Art. 117 Te leveren hoeveelheden
+P0673: De in de inventaris opgenomen hoeveelheden zijn niet te beschouwen als vaste of minimale hoeveelheden. Opdrachtnemer verkrijgt niet het recht deze uit te voeren.
+P0675: Art. 118 Modaliteiten inzake LEVERINGEN
+P0677: 1) Non-discriminatieclausules
+P0678: De opdrachtnemer verbindt zich er toe bij het uitvoeren van deze opdracht niemand te discrimineren op grond van geslacht, leeftijd, seksuele geaardheid, burgerlijke staat, geboorte, vermogen, geloof of levensbeschouwing, politieke overtuiging, taal, gezondheidstoestand, handicap, fysieke of genetische eigenschappen, sociale positie, nationaliteit, zogenaamd ras, huidskleur, afkomst, nationale of etnische afstamming of syndicale overtuiging. Hij waarborgt dit zowel ten aanzien van zijn personeelsleden onderling als ten aanzien van derden, zoals deelnemers, bezoekers, externe medewerkers…
+P0680: De opdrachtnemer verbindt zich er toe, voor zo ver redelijk, aanpassingen door te voeren, op vraag van personen met een handicap, die de beperkende invloed van een onaangepaste omgeving op de participatie van een persoon met een handicap neutraliseren (zie artikel 19 van het decreet van 10 juli 2008 houdende een kader voor het Vlaamse gelijke kansen- en gelijke behandelingsbeleid).
+P0682: De opdrachtnemer verbindt zich ertoe de werknemers en derden zoals deelnemers, bezoekers, externe medewerkers, … mee te delen dat hij geen rekening zal houden met vragen of wensen van discriminerende aard.
+P0684: Indien een personeelslid van de opdrachtnemer zich tijdens de uitvoering van de opdracht schuldig maakt aan discriminatie, pestgedrag, geweld of ongewenst seksueel gedrag, zal de opdrachtnemer de nodige maatregelen treffen om een eind te maken aan dit gedrag en waar nodig het slachtoffer in eer herstellen. De werknemers met hiërarchische verantwoordelijkheden zullen toezien op het naleven van dit engagement.
+P0686: Bij elke mogelijke klacht in dit verband tegen de opdrachtnemer, zal deze zijn volledige medewerking verlenen aan een eventueel onderzoek dat in dit verband verricht wordt door een meldpunt discriminatie of een andere organisatie, in dit verband aangesteld door de Vlaamse overheid.
+P0687: De opdrachtnemer vraagt tevens al zijn personeelsleden alert te zijn voor discriminatie, pestgedrag, geweld of ongewenst seksueel gedrag, in die zin dat ze de gevallen waar ze getuige van zijn, onmiddellijk dienen te melden aan een werknemer met hiërarchische verantwoordelijkheid.
+P0689: De opdrachtnemer verbindt zich ertoe om geen druk uit te oefenen op eigen personeelsleden, die slachtoffer worden van discriminatie, pestgedrag, geweld of ongewenst seksueel gedrag door een klant of een derde, om af te zien van een eventuele indiening van een klacht of inleiding van een vordering voor de rechtbank in dit verband.
+P0691: De opdrachtnemer ziet er op toe dat ook de onderaannemers, die hij eventueel inschakelt voor de opdracht, zich houden aan deze uitvoeringsvoorwaarden.
+P0693: Plaats van levering:
+P0694: De goederen worden geleverd op de plaats op volgend adres:
+P0695: Waterbouwkundig Laboratorium
+P0696: Berchemlei 115
+P0697: 2140 Antwerpen
+P0698: Indien de opdrachtnemer om de één of andere reden verhinderd wordt de goederen te leveren, stelt hij de vermelde contactpersoon hiervan onmiddellijk in kennis.
+P0699: De opdrachtnemer is verantwoordelijk voor de aflevering van de producten op het juiste adres, bij de aangegeven persoon. De afgetekende leveringsbon (duidelijk leesbaar) geldt als bewijs.
+P0700: Art. 121 Wijzigingen aan de opdracht
+P0702: Meldingsplicht
+P0703: De opdrachtnemer licht de aanbestedende overheid onverwijld, en uiterlijk de eerst volgende werkdag na de vaststelling, in wanneer hij eender welke feiten of omstandigheden vaststelt die al dan niet onder toepassing van artikel 121, §2 AUR vallen.
+P0704: De meldingsplicht geldt ongeacht of de aanbestedende overheid op de hoogte is van de feiten of omstandigheden. De meldingsplicht vervalt enkel indien de wijziging in de uitvoering het gevolg is van een wijzigingsbevel zoals omschreven in artikel 121, §1 AUR.
+P0705: De opdrachtnemer vermeldt in de melding minstens de motivering waarom hij de mening is toegedaan dat er sprake is van een wijziging in de zin van artikel 121, §2 AUR. Indien mogelijk bevat de melding reeds een bondige toelichting van de invloed die de wijziging zou kunnen hebben op het verloop en de kostprijs van de opdracht.
+P0706: Indien geen of geen tijdige melding van de wijziging werd gedaan vervalt het recht op betaling van het deel van de uitgaven dat redelijkerwijze niet meer kan vastgesteld of gecontroleerd worden.
+P0707: De melding gebeurt schriftelijk, bij voorkeur via een aangetekende brief. De opdrachtnemer moet de verzending kunnen bewijzen en blijft aldus verantwoordelijk voor de melding.
+P0708: Art. 122 Aansprakelijkheid van de LEVERANCIER
+P0710: De leverancier is aansprakelijk tot op het ogenblik van nazicht en de daarbij horende goedkeuring.
+P0712: Zonder afbreuk te doen aan de wettelijke bepalingen die van openbare orde of van dwingend recht zijn, sluiten de aanbesteder en opdrachtnemer elke buitencontractuele aansprakelijkheid uit van de ene ten aanzien van de andere en ten aanzien van de hulppersonen (zoals onder meer: werknemers, bestuurders, zelfstandige medewerkers (al dan niet in vennootschap), onderaannemers, …) van de andere, voor schade veroorzaakt door de niet-nakoming van een contractuele verbintenis.
+P0714: Art. 127  Betalingen
+P0716: De behandelingstermijn bedraagt 30 kalenderdagen.
+P0717: In afwijking van bovenvermelde behandelingstermijn gelden de volgende verlengde behandelingstermijnen:
+P0718: voor schuldvorderingen die ingediend worden vanaf  1 juli tot en met 31 augustus: 45 kalenderdagen;
+P0719: voor schuldvorderingen die ingediend worden vanaf twee weken vóór tot en met het einde van de kerstvakantie: 45 kalenderdagen;
+P0720: voor bisstaten: 60 kalenderdagen;
+P0721: voor schuldvorderingen die gelijktijdig ingediend worden: 60 kalenderdagen. Schuldvorderingen worden als gelijktijdig beschouwd als ze betrekking hebben op minstens 6 verschillende prestatieperiodes en binnen eenzelfde periode ingediend worden;
+P0722: voor laattijdige schuldvorderingen: 60 kalenderdagen. Een schuldvordering is laattijdig als ze één jaar of meer na het einde van de prestatieperiode waarop ze betrekking heeft, ingediend wordt.
+P0724: Motivering voor schuldvorderingen ingediend vanaf 1 juli tot en met 31 augustus en vanaf twee weken voor tot en met het einde van de kerstvakantie: De aanbesteder stelt vast dat opdrachtnemers voorafgaand aan en tijdens periodes van collectief verlof doorgaans de indiening van schuldvorderingen bundelen. Hierdoor moet de aanbesteder op korte termijn meer schuldvorderingen nakijken en betalen dan gebruikelijk. Dit kan onmogelijk binnen de standaard behandelingstermijn van 30 kalenderdagen. Omdat de opdrachtnemer hier bovendien een grote hand in heeft, is een verlenging van de behandelingstermijn noodzakelijk. Het zou immers onbillijk zijn als de aanbesteder schade lijdt en verwijlintresten verschuldigd is aan de opdrachtnemer omwille van een keuze van de opdrachtnemer.
+P0726: Motivering voor bisstaten: Bisstaten bevatten per definitie prestaties en prijzen waarover nog geen akkoord bestaat tussen de aanbesteder en de opdrachtnemer. Alvorens deze betaald kunnen worden, moet eerst de prijs bepaald worden, bij voorkeur in overleg met de opdrachtnemer of, als dat niet haalbaar blijkt, door middel van een ambtshalve verrekening of ramingsstaat. In voorkomend geval kan ook een voorafgaand advies van de Inspectie van Financiën vereist zijn. Het is onmogelijk om deze bijkomende stappen uit te voeren bovenop de verrichtingen die nodig zijn voor het nazicht en de betaling binnen de behandelingstermijn van 30 of 45 kalenderdagen. Dit maakt op zich reeds dat de behandelingstermijn dient te worden verlengd. Daarenboven bepalen de opdrachtdocumenten dat de opdrachtnemer geen schuldvordering mag indienen voor prestaties waarvoor nog geen prijs bepaald werd. Het zou onbillijk zijn, moest de aanbesteder nadeel ondervinden uit de inbreuk van de opdrachtnemer. Bijgevolg is een verlenging van de behandelingstermijn tot 60 kalenderdagen noodzakelijk.
+P0728: Motivering voor gelijktijdig ingediende schuldvorderingen: Als de opdrachtnemer ervoor kiest om meerdere schuldvorderingen voor verschillende vorderingsperiodes gelijktijdig in te dienen, zorgt dit voor een onverwachte piek in het aantal na te kijken en te betalen prestaties. Vanaf een combinatie van minstens 6 prestatieperiodes zorgt dit ervoor dat de aanbesteder onmogelijk de nodige verrichtingen kan uitvoeren voor het nazicht en de betaling binnen de behandelingstermijn van 30 of 45 kalenderdagen. Omdat de keuzes van de opdrachtnemer er niet toe kunnen leiden dat de aanbesteder schade lijdt en verwijlintresten verschuldigd zou zijn aan diezelfde opdrachtnemer is een verlenging van de behandelingstermijn tot 60 kalenderdagen noodzakelijk.
+P0730: Motivering voor laattijdige schuldvorderingen: Als er veel tijd (één jaar of meer) zit tussen de uitvoering en de vordering van prestaties neemt het nazicht van de schuldvordering meer tijd in beslag. Door de tijd die verstreken is, is het immers moeilijker om de werkelijk verschuldigde hoeveelheden en bedragen na te gaan. Het is de verantwoordelijkheid van de opdrachtnemer om tijdig een correcte schuldvordering in te dienen. Omdat de keuzes van de opdrachtnemer er niet toe kunnen leiden dat de aanbesteder schade lijdt en verwijlintresten verschuldigd zou zijn aan diezelfde opdrachtnemer is een verlenging van de behandelingstermijn tot 60 kalenderdagen noodzakelijk.
+P0732: Algemeen
+P0734: Zowel voor de betalingen in mindering, de betaling van het saldo als voor de eenmalige betaling van de opdrachtsom dient de opdrachtnemer een gedateerde en ondertekende schuldvordering in te dienen die steunt op een gedetailleerde staat van de uitgevoerde leveringen.
+P0736: Onder “betaling van het saldo van de opdracht” wordt verstaan de laatste betaling van de uitgevoerde en aanvaarde leveringen, met uitzondering van die leveringen die tijdens de waarborgtermijn moeten worden uitgevoerd.
+P0738: Enkel de prestaties waarvoor reeds een prijs werd bepaald, met name in de offerte of in een goedgekeurde verrekening, worden opgenomen in de gedetailleerde staat van de uitgevoerde leveringen. Alle overige prestaties die binnen dezelfde betalingsperiode werden verricht en waarvoor nog geen prijs werd bepaald, moeten worden opgenomen in een bisstaat. De opname in deze (bis)staat houdt niet in dat de desbetreffende leveringen zouden aanvaard zijn.
+P0740: De leveringen en prestaties, die in de gedetailleerde staat van de uitgevoerde leveringen of bisstaat worden opgenomen, moeten uitgesplitst worden per bestelling of dienstbevel.
+P0742: Als de leveringen uitgevoerd zijn in verschillende perioden, moeten de gevorderde bedragen per periode uitgesplitst worden.
+P0744: Zowel een gedetailleerde staat van de uitgevoerde leveringen als een bisstaat moet vergezeld zijn van de nodige verantwoordingsstukken, zijnde de in de opdrachtdocumenten vereiste verantwoordingsstukken alsook de verantwoordingsstukken vereist conform het dienstorder MOW/MIN/2023/02 Bijzondere besteksposten. Met het oog op het nazicht door de aanbestedende overheid, moeten de verantwoordingsstukken worden genummerd en eenduidig gelinkt aan de desbetreffende prestaties. Daarnaast moet ingeval van een bisstaat steeds melding gemaakt worden van hetzij het wijzigingsbevel gegeven door de aanbestedende overheid hetzij van de melding van de wijziging door de opdrachtnemer.
+P0746: Nazicht- en betalingsproces
+P0748: De behandelingstermijn start op de dag van de ontvangst van de gedateerde en ondertekende schuldvordering door de aanbestedende overheid.
+P0750: Na ontvangst van de gedateerde en ondertekende schuldvordering maakt de aanbestedende overheid, op grond van haar eigen gegevens, de verbeterde staat op van de uitgevoerde prestaties die voor betaling aanvaard worden. Het voor betaling aanvaarde bedrag wordt opgenomen in een proces-verbaal.
+P0752: De prestaties die niet op dit proces-verbaal voorkomen, maar die wel door de opdrachtnemer gevorderd werden, dienen derhalve beschouwd te worden als prestaties die niet voor betaling in aanmerking komen. De aanbestedende overheid vermeldt in het proces-verbaal of de prestaties die niet voor betaling in aanmerking komen, afgewezen dan wel afgekeurd werden:
+P0754: Afgewezen prestaties zijn prestaties waarover de aanbestedende overheid omwille van het ontbreken van de vereiste verantwoordingsstukken of documenten niet kan overgaan tot het nazicht van de prestaties. De behandelingstermijn voor deze prestaties wordt geacht niet te zijn gestart. De prestaties die afgewezen worden omwille van het ontbreken van documenten en verantwoordingsstukken moeten door de opdrachtnemer opnieuw ingediend worden, d.i. via een nieuwe schuldvordering. De behandelingstermijn voor deze prestaties begint pas te lopen als hiervoor een volledige schuldvordering werd ingediend, d.i. met alle vereiste documenten en verantwoordingsstukken.
+P0756: Afgekeurde prestaties zijn prestaties die niet aanvaard werden door de aanbestedende overheid en omwille daarvan niet werden weerhouden voor betaling. Deze prestaties mogen niet meer in een nieuwe schuldvordering worden opgenomen. Eén en dezelfde prestatie die afgekeurd werd, kan dan ook niet het voorwerp van meerdere schuldvorderingen (reguliere staat of een bisstaat) uitmaken. Afgekeurde prestaties die niet voor betaling werden aanvaard en waarop de opdrachtnemer toch meent recht te hebben, moeten worden opgenomen in een door de opdrachtnemer actueel te houden Excel-bestand (conform het model dat als bijlage bij de opdrachtdocumenten is gevoegd) dat bij elke daaropvolgende schuldvordering aan de aanbestedende overheid wordt bezorgd.
+P0758: De opdrachtnemer vertrekt van de gegevens die de aanbestedende overheid heeft aanvaard voor het opmaken van zijn volgende gedetailleerde staat van uitgevoerde leveringen.
+P0760: Van het bovenvermelde proces-verbaal wordt onmiddellijk een afschrift verstuurd naar de opdrachtnemer met de vraag om voor het aanvaarde bedrag binnen de 5 kalenderdagen een factuur in te dienen.
+P0762: De aanbestedende overheid houdt zich het recht voor om voor eenzelfde factuuraanvraag meer dan één factuur te vragen aan de opdrachtnemer, telkens voor een gedeelte van het bedrag van de factuuraanvraag. Dit kan niet leiden tot het vragen van een bijkomende vergoeding door de opdrachtnemer. De opdrachtnemer heeft uiteraard het recht om de verschillende facturen voor de deelbedragen gelijktijdig in te dienen.
+P0764: De behandelingstermijn wordt in voorkomend geval geschorst met:
+P0765: 1. het aantal kalenderdagen dat de bovenvermelde termijn van vijf kalenderdagen voor de indiening van de factuur wordt overschreden;
+P0766: 2. het aantal kalenderdagen dat de opdrachtnemer nodig heeft om, in het kader van de hoofdelijke aansprakelijkheid, de vragen van de aanbestedende overheid inzake zijn fiscale en sociale schulden te beantwoorden;
+P0767: 3. een termijn van vijf dagen als de vereiste gegevens niet opgenomen zijn op de elektronische factuur (zie inhoud van de elektronische factuur).
+P0769: Praktische modaliteiten:
+P0771: WIJZE VAN INDIENEN SCHULDVORDERING
+P0773: De schuldvorderingen, de gedetailleerde staten van de uitgevoerde leveringen en de eventuele bisstaten moeten ingediend worden via de e-Contracting applicatie https://e-contracting.vlaanderen.be, de elektronische werkwijze voor de ontvangst van schuldvorderingen en het verzenden van factuuraanvragen binnen het beleidsdomein MOW van de Vlaamse overheid.
+P0775: De opdrachtnemer bevestigt expliciet kennis te hebben genomen van de gebruiksvoorwaarden en disclaimer van e-Contracting en de aanvullende informatie op https://overheid.vlaanderen.be/e-contracting en gaat hiermee uitdrukkelijk akkoord. De opdrachtnemer brengt zijn gebruikers op de hoogte van deze voorwaarden en disclaimer.
+P0777: De aandacht van de opdrachtnemer wordt er op gevestigd dat hij zijn schuldvordering via e-Contracting dient in te dienen in de postbox van de juiste opdracht/opdrachtonderdeel. Indien dit niet het geval blijkt te zijn en de schuldvordering door een verkeerde entiteit werd ontvangen, zal de ontvanger van de schuldvordering de opdrachtnemer hiervan op de hoogte brengen. In voorkomend geval, dient de opdrachtnemer de schuldvordering opnieuw in te dienen in de postbox van de correcte opdracht/opdrachtonderdeel. Het is pas vanaf het ogenblik van correcte indiening dat de behandelingstermijn begint te lopen.
+P0779: Hebt u vragen rond e-Contracting? Stuur dan een mail naar e-Contracting@vlaanderen.be.
+P0781: Het elektronische bestand van de schuldvordering dient volgende structuur te volgen qua benaming:
+P0783: “Besteknummer – Schuldvorderingsnummer – periode - Schuldvordering”
+P0785: Deze verplichting geldt niet voor een buitenlandse opdrachtnemer die niet beschikt over een Belgisch ondernemingsnummer. In dat geval dient de opdrachtnemer zijn schuldvorderingen in op volgende wijze:
+P0787: Via Email: schuldvorderingen.dmow@mow.vlaanderen.be  EN het mailadres van de leidend ambtenaar van de opdracht: andy.henderick@mow.vlaanderen.be
+P0790: In het onderwerp van de mail dient het besteknummer vermeld te worden.
+P0792: Het elektronische bestand van de schuldvordering dient volgende structuur te volgen qua benaming:
+P0794: “Besteknummer – Schuldvorderingsnummer – periode - Schuldvordering”
+P0796: WIJZE VAN FACTUREREN
+P0798: De factuur moet ingediend worden via elektronische facturatie.
+P0800: Met e-invoicing bedoelen we geen PDF-factuur, maar een e-factuur in een gestructureerd XML-formaat, die verstuurd werd via het Europese afsprakenkader Peppol, of via het Mercuriusplatform. Facturen die ingediend werden in een ander formaat of op een andere manier, worden niet aanvaard.
+P0802: Voor meer informatie, zie https://www.vlaanderen.be/het-facilitair-bedrijf-overheidsopdrachten-en-raamcontracten/digitalisering-van-overheidsopdrachten/e-facturatie/e-facturatie-informatie-voor-leveranciers.
+P0804: Inhoud van de elektronische factuur
+P0806: De elektronische factuur dient, naast de gegevens die verplicht zijn overeenkomstig het BTW-wetboek, zeker volgende gegevens te bevatten die essentieel zijn voor de verwerking van de factuur:
+P0807: Identificatienummer van de aanbestedende overheid: dit nummer, dat de opdrachtnemer in de elektronische factuur opneemt in het veld ‘AccountingCustomerParty’, is:
+P0808: KBO 316380841 (Ministerie van de Vlaamse Gemeenschap - Departement MOW);
+P0809: Ordernummer: dit nummer, dat de opdrachtnemer in de elektronische factuur opneemt in het veld ‘OrderReference’, wordt bepaald na sluiting van het contract en zal vermeld worden in:
+P0810: het aanvangsbevel en/of de factuuraanvraag;
+P0811: Factuuraanvraagreferentie: unieke referentie die in de factuuraanvraag vermeld wordt. De opdrachtnemer neemt deze referentie op onder het veld ‘BuyerReference’ of ‘Note’.
+P0813: Hoofdstuk 6. Specifieke bepalingen voor opdrachten voor diensten
+P0814: ART. 147 UITVOERINGSTERMIJN
+P0815: De looptijd van de raamovereenkomst is 1 jaar, driemaal jaarlijks verlengbaar en in totaal maximaal 4 jaren, inclusief de sluitingsdagen voor de jaarlijkse vakanties in de onderneming van de dienstverlener.
+P0817: Art. 64 en 156 Opleveringen en waarborgen
+P0819: Niveau bestelling
+P0820: De uitgevoerde diensten zullen per bestelling worden opgeleverd binnen een termijn van 30 dagen na de datum van de volledige beëindiging van de diensten. De besteller beschikt over deze termijn van 30 dagen om de geleverde diensten te onderzoeken en de beslissing tot oplevering of weigering van oplevering ervan mee te delen. Deze termijn gaat in voor zover de besteller tegelijk in het bezit is gesteld van de lijst van gepresteerde diensten. Indien er na 30 dagen geen beslissing tot oplevering of weigering van oplevering is meegedeeld, worden de diensten geacht stilzwijgend te zijn opgeleverd. Na oplevering wordt voor bestellingen ook de eventuele borg vrijgegeven.
+P0822: Niveau raamovereenkomst
+P0823: De oplevering van de laatste bestelling die op basis van deze raamovereenkomst werd gesloten, geldt als oplevering van de raamovereenkomst.
+P0824: TECHNISCHE VOORWAARDEN
+P0827: Het HIC (Hydrologisch Informatie Centrum) is een onderdeel van het Waterbouwkundig Laboratorium. Het HIC-meetnet omvat een waterpeil-, debiet- en pluviomeetnet. De peil- en debietmeetposten zijn allen gesitueerd langs de waterwegen in Vlaanderen. De pluvio’s staan verspreid in Vlaanderen.
+P0828: Het peilmeetnet bestaat uit een 250 tal peilmeters die continu het waterpeil meten, het debietmeetnet bevat een 40 tal debietsmeter en het pluviomeetnet omvat 19 pluviometers. Een lijst van de locaties van deze meetlocatie is terug te vinden in bijlage 6. Deze lijst is niet-limitatief en in de loop van de opdracht kunnen hier a rato van 5-10 nieuwe stations per jaar bijkomen.
+P0830: Deze aanbesteding bestaat uit 2 percelen namelijk:
+P0832: Perceel 1: Onderhoudscontract voor correctief onderhoud van het HIC-meetnet
+P0833: Onderhoudscontract voor correctief onderhoud van het HIC-meetnet
+P0834: Een jaarlijkse kalibratie van de 19 pluviometers
+P0836: Perceel 2: Levering van dataloggers, meetapparatuur en toebehoren
+P0838: Perceel 1: Correctief onderhoud en kalibratie pluviometers
+P0840: Correctief onderhoud van het HIC-meetnet
+P0841: Algemeen
+P0842: Nadat enige tijd geen meetgegevens meer binnenkomen op de ftp-server van het aanbestedend bestuur zal een meetpost zogenaamd in “defect” gaan. Op dat moment wordt het bestuur automatisch verwittigd van het defecte meetstation en kan het aanbestedend bestuur contact opnemen met de opdrachtnemer om een interventie uit te voeren om het probleem vast te stellen op het terrein en op te lossen binnen de geldende interventietijden (zie punt 1.1.3 Interventietijden).
+P0843: Het aanbestedend bestuur zal telefonisch contact opnemen met de opdrachtnemer om de storing aan de betreffende meetpost te melden. Dit zal gebeuren door mondeling vermelding van de locatiecode en een beschrijving van het vastgestelde probleem. De vraag tot interventie zal tevens via mail bevestigd worden aan de opdrachtnemer. Het tijdstip van het telefonisch contact geldt als begintijdstip van de oproep.
+P0844: De opdrachtnemer is 24/24-7/7 telefonisch en via mail bereikbaar. Een algemeen telefoonnummer en mailadres dat 24/24-7/7 bereikbaar is zal door de opdrachtnemer bezorgd worden.
+P0846: Volgende meettoestellen worden op dit moment gebruikt:
+P0847: -Vega radar C21
+P0848: -Vega radar Vegapuls WL61
+P0849: -Vega druksonde Vegawell 52
+P0850: -OTT Radar RLS
+P0851: -OTT druksonde PLS
+P0853: Volgende dataloggers worden op dit moment gebruikt:
+P0854: -Campbell CR850 (Campbell Scientific)
+P0855: -OTT Duosense (OTT)
+P0856: -Atlas (Spiece)
+P0858: Volgende communicatiemodules (modem) worden op dit moment gebruikt:
+P0859: -Ercogener (2G-4G)
+P0860: -Cinterion BGSS2T (2G-4G)
+P0861: -Cell 215 Campbell (4G)
+P0863: De opdrachtnemer zal het probleem oplossen binnen de geldende interventietijden met uitzondering van defecten van uitwendige oorzaak.
+P0865: Defecten van uitwendige oorzaak worden beschreven als:
+P0866: -problemen met de spanning waarbij de meetlocatie geen 230V meer ontvangt en waarbij de oorzaak van het ontbreken van de 230V bij derden ligt. De opdrachtnemer kan gevraagd worden om het probleem tijdelijk op te lossen via het plaatsen van een batterij.
+P0867: -vandalisme, indien om bepaalde reden de meetlocaties is gevandaliseerd waardoor de opdrachtnemer het probleem niet binnen de opgelegde tijden de oorzaak kan verhelpen. In dit geval zal de opdrachtnemer onmiddellijk contact opnemen met het aanbestedende bestuur en een verslag van de vaststellingen doorgeven. In overleg met het aanbesteden bestuur zal dan bekeken worden op welke manier de meetlocatie zo snel als mogelijk terug operationeel kan gemaakt worden.
+P0869: Uit te voeren werken
+P0870: Het aanbestedende bestuur kan voor de werken opgelijst onder dit punt een beroep doen op de opdrachtnemer.
+P0871: Om de werken te kunnen uitvoeren zal de opdrachtnemer de jaagpaden langs de bevaarbare waterlopen dienen te betreden. Een toelating om deze jaagpaden te betreden dient aangevraagd te worden door de opdrachtnemer. Deze toelating dient voor elk voertuig dat ingezet zal worden voor de werken aangevraagd te worden. De aanvraag en de financiële kost die dit met zich meebrengt is volledig ten laste van de opdrachtnemer. De aanvraag kan via de volgende website https://www.vlaamsewaterweg.be/jaagpadtoelatingen of bij De Vlaamse Waterweg (DVW).
+P0872: Specifieke veiligheidsvoorschriften die door de opdrachtnemer ten allen tijde in acht dienen genomen te worden zijn vermeld in bijlage (I-WL-MP06.01.02.01 Reddingsvest 275N, I-WL-MP06.01.04.01 Betreden van meetputten kanalen, I-WL-MP06.01.04.02 Werken langs de waterkant).
+P0874: Volgende werken kunnen door aanbestedend bestuur gevraagd worden aan de opdrachtnemer:
+P0875: • Heropstarten volledige systeem via het in(uit)schakelen van de automaat.
+P0876: • Hele meetsysteem spanningsloos zetten door loskoppelen batterij en voeding (220V, zonnepaneel) los te koppelen op datalogger, nadien terug aankoppelen.
+P0877: • Heropstarten aanwezige pc, indien aanwezig.
+P0878: • Configuratie opnieuw inladen in datalogger bij verlies ervan. De specifieke configuratie zal via mail op vraag worden overgemaakt aan de medewerker die ter plaatse staat of kan gedownload worden van de ftp-server van het Waterbouwkundig Laboratorium.
+P0879: • Vaststelling en telefonische melding defecte meetsonde/datalogger/pc/modem/ gecorrodeerde batterij/omvormer aan HIC.
+P0880: • Vervangen defecte omvormer/gecorrodeerde batterij.
+P0881: • Eventueel foto’s nemen van vaststellingen.
+P0882: • Vervangen defecte datalogger/meettoestel/modem/antenne/kabels.
+P0883: • Vervangen van OTT/Campbell dataloggers indien er geen OTT/Campbell dataloggers meer op stock zijn. De OTT/Campbell datalogger zal dan vervangen worden door de datalogger welke in deze aanbesteding aangeboden wordt of een datalogger die bij aanbestedend bestuur nog op stock is.
+P0884: • Reinigen van de meetapparatuur indien een niet-kwaliteitsvolle meting wordt vastgesteld.
+P0885: • Controle waterpeil versus datalogger (bij elke interventie uit te voeren en in te geven in digitaal logboek). Meestal gebeurt dit door vergelijking met een aanwezige peilschaal. Voor dergelijke controles in het tijgebied van de Zeeschelde kan een mobiel radartoestel van het bestuur ter beschikking gesteld worden.
+P0886: • Vervangen simkaart bij defecte communicatie in overleg met aanbestedend bestuur.
+P0887: • Controle van de werking van de apparatuur door telefonische melding aan bestuur die van op afstand controle zal uitvoeren. Deze controle kan er bijvoorbeeld uit bestaan na te gaan of er terug data toekomen op de ftp-server indien dit niet meer het geval was.
+P0888: • Bijkomend zal de buffer van de datalogger leeggemaakt worden wanneer dit nodig is.
+P0890: Interventietijden
+P0891: Er zijn twee types interventies/oproepen namelijk de dringende interventies en de normale interventies. Deze kunnen op alle HIC-meetposten verspreid over het Vlaamse Gewest gevraagd worden, afhankelijk van de situatie (wateroverlast, extreem lage peilen, gestremde sluis, bediening stuw,…). De beslissing om een oproep dringend te maken, wordt genomen door het aanbestedend bestuur en zal telefonisch worden meegedeeld bij de aanvraag tot interventie, daarna via mail bevestigd.
+P0893: Dringende oproep (VH 20) : Reactietijd: start herstel binnen 3u na de telefonische oproep
+P0894: o Eventuele voorlopige herstelling: ten laatste 5u na de telefonische oproep
+P0895: o Definitieve oplossing: ten laatste 2 werkdagen na de telefonische oproep
+P0897: Normale oproep (VH 80) : Reactietijd: start herstel volgende werkdag
+P0898: o Eventuele voorlopige herstelling: ten laatste op de werkdag van interventie
+P0899: o Definitieve oplossing: ten laatste 5 werkdagen na de telefonische oproep
+P0901: Bereikbaarheid van 24/24-7/7
+P0903: Rapportering / Digitale logboek
+P0904: Rapportering van de uitgevoerde interventies zal gebeuren via het digitale logboek dat ter beschikking zal gesteld worden door het aanbestedend bestuur. Dit is een internetpagina waar de nodige informatie en controles kunnen ingevoerd worden, mits toegang via een login en paswoord. Hieronder een voorbeeld van het in te vullen scherm.
+P0908: Aankomsttijd wordt steeds geregistreerd in digitaal logboek (MET of wintertijd).
+P0909: Elke interventie aan een meetlocatie dient vermeld te worden in het digitale logboek. De tijd die daarbij gehanteerd wordt is MET (wintertijd). Een handleiding van het digitale logboek zal bezorgd worden aan de opdrachtnemer of zal uitgelegd worden bij de jaarlijkse opleiding die door het aanbestedend bestuur zal georganiseerd worden.
+P0910: Indien de opdrachtnemer bepaalde onderdelen dient te vervangen, die onderdeel zijn van het luik “Metadata” van het digitale logboek (zie afbeelding hieronder), zal de opdrachtnemer dit zelf veranderen in het digitale logboek. Hieronder een voorbeeld van het in te vullen scherm.
+P0914: De opdrachtnemer zal na het oplossen van het defect vanop de meetlocatie een telefonische terugmelding doen naar het bestuur die dan de nodige controles kan uitvoeren op het slagen van de gerealiseerde interventie. Het al of niet geslaagd zijn van de interventie wordt vanuit het bestuur telefonisch bevestigd.
+P0915: Het tijdstip waarop de opdrachtnemer de telefonische terugmelding doet, in het geval van een ‘geslaagde’ interventie, wordt gebruikt als eindtijdstip van de interventie.
+P0917: Jaarlijkse kalibratie 19 pluvio’s
+P0918: Het pluviomeetnet van het HIC omvat 19 OTT pluvio’s (regenmeters), specifiek de OTT DWD en OTT Pluvio 2. Deze pluvio’s zijn verbonden met een OTT datalogger of Campbell logger die elke 5 minuten de gemeten (gewogen) neerslag verstuurt naar de ftp-server van het HIC. Deze pluvio’s dienen jaarlijks gekalibreerd/gecontroleerd te worden op de juiste werking.
+P0919: Het doel van deze kalibratie is eventuele afwijking in de gemeten neerslag vast te stellen. Op die manier moet het mogelijk zijn om afwijkingen op tijd op te sporen en maatregelen te treffen om deze afwijking te verhelpen.
+P0921: In deze opdracht zitten volgende onderdelen vervat:
+P0922: Kalibreren/controleren op afwijkingen van de gemeten neerslag
+P0923: Opstellen van kalibratierapport en aan te leveren in pdf formaat via email aan de leidend ambtenaar van deze aanbesteding
+P0924: Vaststellen van eventuele afwijkingen, bijvoorbeeld batterijen die gecorrodeerd zijn, bekabeling die slijtage vertoont. Deze afwijkingen worden vermeld in het kalibratierapport
+P0925: Het moment van kalibreren gebeurt ENKEL bij droog weer en in samenspraak met de leidend ambtenaar en gebeurt idealiter in 1 beweging. Bijvoorbeeld alle pluvio’s kalibreren in 1 en dezelfde week.
+P0926: Het kalibratierapport en de foto’s worden ten laatste 1 maand na de laatste kalibratierapport bezorgd aan leidend ambtenaar
+P0927: Bijkomend zal de buffer van de datalogger leeggemaakt worden door de configuratie opnieuw op te laden. Dit is nodig omdat na controles blijkt dat de buffer van de datalogger jaarlijks volloopt waardoor de datalogger stopt met functioneren.
+P0929: In de prijs zit alles vervat dat betrekking heeft op deze opdracht. Het kalibreren, opstellen rapport, vaststellen afwijkingen en nemen foto’s worden in 1 globale prijs opgegeven.
+P0930: Indien afwijkingen worden vastgesteld aan de meetopstelling dan worden deze enkel gerapporteerd via het kalibratierapport, er worden geen verder acties van de opdrachtnemer verwacht.
+P0931: Deze kalibraties dienen eveneens vermeld te worden in het digitale logboek.
+P0933: Voor het betreden van Aquafin sites dienen volgende PBM’s gebruikt te worden helm, veiligheidsschoenen, gasdetectie (4-cellig) alsook het dragen van een fluohesje. Er is een strikte toepassing van het dragen van deze PBM’s bij het betreden van de Aquafin sites.
+P0935: Organisatie permanenties en interventies
+P0937: De aanbieder zal aantonen op welke manier hij de 24/24-7/7 permanentie en interventies zal organiseren. Een algemeen telefoonnummer en email adres worden in dit document vermeld.
+P0938: De aanbieder zal aantonen dat alle technici die de interventies uitvoeren over de nodige kennis beschikken om de interventies uit te voeren en dit op basis van ervaring. De aanbieder toont ook aan dat alle technici in staat zijn om te werken met de specifieke veiligheidsvoorschriften zoals aangegeven in volgende documenten in bijlage (VIK PBM - Reddingsvest.pdf, VIK - Betreden meetputten kanalen.pdf, VIK - Werken langs de waterkant.pdf, VIKI- Gasdetectie systeem PS 200.pdf).
+P0939: De aanbieder zal ook aangeven hoeveel technici beschikbaar zijn om de interventies en permanentie te voorzien. Uitval, om gelijk welke reden, van een technici kan uiteraard geen reden zijn om de permanentie en interventies niet meer te kunnen voorzien. Het kan gebeuren dat er meerdere interventies gevraagd worden op een 1 dag, dit betekent dus dat er een interventie in Adinkerke en in Maaseik kan gevraagd worden op 1 dag (grosso modo de grootste af te leggen afstand tussen twee meetlocaties). De aanbieder zal aantonen dat meerdere interventies op 1 dag organisatorisch gerealiseerd kunnen worden.
+P0941: Perceel 2: Levering van dataloggers, meetapparatuur en toebehoren
+P0943: Dit onderdeel van de aanbesteding houdt de levering van dataloggers, meetapparatuur en toebehoren in. De apparatuur van het HIC-meetnet is onderhevig aan slijtage en defecten. Om die reden dienen regelmatig dataloggers, meetapparatuur en toebehoren vervangen te worden. De bedoeling van dit onderdeel is om een stock van materiaal aan te leggen zodat de opdrachtnemer ten alle tijd materiaal heeft om eventuele correctieve interventies te kunnen uitvoeren waar vervanging van materiaal nodig is.
+P0944: Het HIC-meetnet wordt regelmatig uitgebreid met nieuwe meetinstallaties. De apparatuur die nodig is voor deze nieuwe inrichtingen wordt ook uit deze aangelegde stock genomen.
+P0945: De aangelegde stock zal voor 1/3 bij de opdrachtnemer aanwezig blijven, 2/3 van het materiaal zal bezorgd worden aan het HIC. De opdrachtnemer zal geen beheerskosten aanrekenen voor deze 1/3 stock omdat deze onderdeel uitmaakt van het kunnen uitvoeren van de opdracht beschreven in 1.1.2 Uit te voeren werken.
+P0947: De stock die het HIC jaarlijks wenst aan te leggen met het oog op vervanging/nieuwe installatie bestaat uit volgende onderdelen:
+P0950: Demo van datalogger
+P0951: Om zeker te zijn dat de datalogger die aangeboden wordt ook effectief voldoet aan de technische specificaties zal de aanbieder een demo geven van de datalogger. Deze demo maakt deel uit van de gunningscriteria. M.a.w. de demo zal voor een bepaald percentage meetellen in de beoordeling van dit perceel. De demo zal binnen de 10 werkdagen gebeuren na het afsluiten van de indiening offerte. Een exacte datum zal doorgegeven worden aan de aanbieders na het sluiten van de indiening van de offerteperiode. De demo zal doorgaan bij het Waterbouwkundig Laboratorium, Berchemlei 115, 2140 Antwerpen. De technische specificaties welke niet beoordeeld worden tijdens deze demo blijven uiteraard ook geldig, deze worden beoordeeld op basis van de ingediende offerte.
+P0953: Tijdens deze demo zal de aanbieder volgende punten demonstreren:
+P0954: Datalogger kan connectie maken met Apn van het aanbestedend bestuur en krijgt ip-adres
+P0955: Er worden elke 10 seconden een meetwaarde opgeslagen en deze wordt uitgemiddeld naar een 1 minuut waarde (visueel zichtbaar via applicatie/webbrowser van de datalogger)
+P0956: 1 minuut gemiddelde waarde wordt verzonden naar ftp-server aanbestedend bestuur en databestand is ontvangen op ftp-server
+P0957: Databestand voldoet aan output formaat zoals beschreven (Datum_Tijd_Rivstacode_Waarde)
+P0958: Configuratie van datalogger kan gedownload worden, gewijzigd worden en terug geïmporteerd worden in datalogger
+P0959: Aantonen dat de gemeten waarde kan gewijzigd worden, correctie mTaw peil, en dat deze wijziging als apart bestand wordt verzonden naar de ftp-server (zie verder).
+P0960: Aantonen dat de modbus data elke 5 seconden in mTaw ontvangen wordt. Hiervoor zal het aanbestedend bestuur zorgen voor een toestel dat modbus kan ontvangen en waarbij kan gecontroleerd worden dat de data effectief ontvangen wordt.
+P0961: Behuizing, connectoren en aansluitingen zijn zoals beschreven in de technische specificaties.
+P0962: Aantonen dat op basis van de handleiding volgende zaken kunnen uitgevoerd worden:
+P0963: -programmatie en connectie maken met datalogger
+P0964: -correcties van waterpeil in mTaw
+P0965: -config downloaden en uploaden
+P0966: -aanpassingen van Apn, ftp map, meetfrequentie, doorstuurfrequentie
+P0967: Databestand is van het ASCII format
+P0969: De demo maakt onderdeel uit van de gunningscriteria voor Perceel 2 en kan geen aanleiding geven tot een vergoeding voor het geven van deze demo. Ook indien een aanbieder deze opdracht niet gegund krijgt zal deze demo geen aanleiding geven tot het verkrijgen van een vergoeding voor de eventueel gemaakte kosten.
+P0971: Technische Specificaties hardware
+P0972: Datalogger
+P0973: Algemeen
+P0975: De datalogger dient minstens over volgende specificaties te beschikken
+P0976: 2 analoge ingangen 4-20mA
+P0977: Modbus protocol over RS485
+P0978: Voedingsspanning 12V
+P0979: Mogelijkheid om datalogger via IP over te nemen van op afstand en dit om het functioneren van de datalogger te controleren en instellingen te wijzigen.
+P0980: Mogelijkheid om gemeten data uit te middelen naar 1-5-15 minuut waarden en deze elke 1-5-15 minuten door te sturen naar server van HIC.
+P0981: Minimum 4Gb opslagruimte voor de gemeten data, dit vooral als er communicatieproblemen zijn en data niet kan verzonden worden. Voorkeur is hier Flash / SRAM geheugen / Industriële SD-kaart. Het gebruik van een consumenten SD kaart is niet gewenst wegens de beperktere betrouwbaarheid op lange termijn door de gelimiteerde aantal schrijfcycli, de gevoeligheid van dataverlies door fysieke schade van de kaart en de gevoeligheid voor omgevingsfactoren. De aanbieder zal aantonen op basis van technische specificaties dat de gebruikte SD-kaart effectief een industriële SD-kaart is (als deze wordt gebruikt in de aanbieding).
+P0982: Interne communicatiemodule (modem 4G - MQTT)
+P0983: Het moet mogelijk zijn om de configuratie van de datalogger te downloaden en opnieuw te uploaden in de datalogger. Op die manier kan een bestaande configuratie in meerdere dataloggers gebruikt worden zonder een configuratie van nul te moeten starten.
+P0984: De tijdsregistratie van de datalogger moet in UTC+1 mogelijk zijn. Een tijdsynchronisatie met een webpagina, beheerd door aanbestedend bestuur, waar de tijd is gedefinieerd moet mogelijk zijn. Bij een synchronisatie zal de datalogger dan ook dezelfde tijd weergeven als deze op de webpagina van het aanbestedend bestuur.
+P0985: End-of life van minstens 5 jaar. Indien de opdrachtnemer verschillende componenten combineert om tot een datalogger te komen dan geld dat voor alle onderdelen er eveneens een end-of-life is van minstens 5 jaar.
+P0986: De behuizing van de datalogger is zodanig ontworpen dat deze in een inox kast, die zich in open lucht bevind, kan geplaatst worden zonder dat condens of stof de onderdelen van de datalogger kan aantasten.
+P0987: Datalogger dient te functioneren bij temperaturen van -25°C tot 50°C.
+P0989: Aansluitmogelijkheden
+P0990: De draden van de meettoestellen dienen op een eenvoudige manier gemonteerd te kunnen worden aan de datalogger. Dit kan bijvoorbeeld via connectoren waarbij de draad in de connector wordt vastgezet via een vijs/kliksysteem. Soldeerwerk bijvoorbeeld om de draad vast te zetten op een printplaat van de datalogger wordt niet beschouwd als een eenvoudige manier.
+P0992: Spanningsvoorziening
+P0993: De datalogger moet werken op 12V. Op de meeste meetlocaties is 230V of een zonnepaneel voorzien. De spanning van de 230V/zonnepaneel wordt lokaal omgezet, via een transformator, naar de benodigde spanning voor de datalogger. De transformator maakt geen onderdeel uit van de levering.
+P0995: Communicatiemodule
+P0996: Huidige situatie
+P0997: Op dit moment gebeurt het doorsturen van de data via een private APN (Orange en Proximus) die door het HIC beheerd wordt en dit via 2G-4G modems.
+P0998: Concreet wordt, naargelang de doorstuurfrequentie, elke 1-5-15 minuut een waarde verzonden naar de ftp-server van het HIC. Vanuit de ftp server worden de data dan geëxporteerd naar de Wiski-databank van het HIC.
+P0999: De simkaarten in de communicatiemodule hebben allemaal een fixed Ip-adres, de Apn is geprogrammeerd in de datalogger.
+P1000: Om toegang te krijgen tot de ftp-server wordt een bepaalde poort gebruikt om door de firewall te geraken, dit is niet de standaard poort 21.
+P1002: Gewenste oplossing
+P1003: De aangeboden datalogger bevat een interne communicatiemodule welke op 2 manieren communicatie moet kunnen voeren namelijk via een APN en via MQTT.
+P1004: APN: De aangeboden datalogger moet volgens onze huidige manier van communiceren kunnen functioneren m.a.w.:
+P1005: Kunnen werken met fixed-Ip adressen.
+P1006: Data moet minimum elke minuut kunnen verzonden worden vanuit de datalogger, via de modem, naar onze ftp-server.
+P1007: APN moet ingegeven kunnen worden in de datalogger.
+P1008: De modem/communicatiemodule moet minstens overweg kunnen met 4G.
+P1009: De ftp poort moet aanpasbaar zijn.
+P1010: Geïntegreerde modem kan eenvoudig gewisseld worden indien deze defect is, het kan niet de bedoeling zijn dat de volledige datalogger dient vervangen te worden indien modem defect is. Dit is ook interessant indien er een betere en snellere versie van modem om de markt zou komen.
+P1011: De simkaart kan eenvoudig geplaatst worden.
+P1013: De simkaarten in de communicatiemodule hebben een fixed-Ip adres. Om op de ftp-server in te loggen wordt gebruik gemaakt van een login en paswoord, het moet mogelijk zijn om dit in te geven in de datalogger zodat de data geautomatiseerd kan opgeladen worden op de ftp-server.
+P1014: MQTT: Dit communicatiesysteem wordt op dit moment nog niet gebruikt binnen het HIC echter dit zou in de toekomst wel kunnen. Om die reden moet de datalogger dan ook in staat zijn om via MQTT de data te verzenden.
+P1016: Het moet mogelijk zijn om de werking van de modem te controleren zonder de behuizing van de datalogger te openen. M.a.w. het moet via bijvoorbeeld een led zichtbaar zijn of de modem geconnecteerd is op het netwerk of een Ip-adres heeft verkregen. Dit vermijd dat bij slechte weersomstandigheden en een netwerkprobleem de behuizing moet opengemaakt worden om werking modem te controleren.
+P1018: Programmatie datalogger
+P1019: Algemeen
+P1020: De datalogger programmatie, zolang de communicatie via ftp verloopt, moet kunnen gebeuren vanop een laptop/tablet. Dit kan dan gebeuren door connectie te maken met de datalogger via Bluetooth/WiFi, USB of een andere mogelijke verbinding.
+P1021: Software voor de programmatie dient bijgeleverd te worden (zie verder)
+P1022: Ook moet het mogelijk zijn om de datalogger vanop afstand over te nemen, via IP, zodat er een controle van de gegevens en status datalogger kan gebeuren. Het aanpassen van de configuratie van de datalogger vanop afstand is eveneens gewenst.
+P1024: Rivsta code
+P1025: De Rivstacode is een code die door het HIC wordt gecreëerd om de locatie en parameter aan te geven. De eerste 3 letters zijn een afkorting van de rivier, de volgende 3 karakters zijn een volgnummer.
+P1026: De laatste 3 karakters van de code geven de gemeten parameters aan. Voor het waterpeil zal dit 00V zijn en voor de spanning zal dit 32V zijn. Dit wijzigt uiteraard naargelang de parameter die gemeten wordt.
+P1027: zwv03f-1s1b-00v
+P1028: Het moet mogelijk zijn om deze code te wijzigen in de datalogger zodat de bestandsnaam en inhoud van het bestand aangepast worden naargelang de locatie en parameter die er wordt gemeten.
+P1030: Instelling wintertijd, tijdsynchronisatie
+P1031: Standaard werkt het HIC in wintertijd (MET/UTC+1). Het moet dan ook mogelijk zijn om de tijd van de datalogger aan te passen naar wintertijd. Eveneens moet het mogelijk zijn om dagelijks een controle van de tijd te laten doen door de datalogger en indien nodig een tijdsynchronisatie uit te voeren. Het HIC beschikt over een server waarnaar kan geconnecteerd worden, via de APN, om een tijdssynchronisatie uit te voeren. Het moet mogelijk zijn om de tijd van de datalogger visueel te controleren.
+P1033: Meetfrequentie/Doorstuurfrequentie/omzetting naar mTaw
+P1035: Omdat de meettoestellen vooral werken via het 4-20mA signaal moet de datalogger deze gegevens vlot kunnen verwerken. Een verwerking van 1 meetwaarde elke 10 sec moet haalbaar zijn voor de datalogger.
+P1036: In de datalogger moet het mogelijk zijn om het signaal van het peilmeettoestel om te zetten naar een mTaw waterpeil. Het is dit mTaw waterpeil dat dient verzonden te worden naar de HIC databank.
+P1037: Elke 1 of 5 of 15 minuut moet er een gemiddelde waarde berekend kunnen worden, vanuit het signaal van het peilmeettoestel, en omgezet naar een mTaw waterpeil en dit naargelang de vereisten. M.a.w. de datalogger kan minstens elke minuut een gemiddelde berekenen en deze gemiddelde waarde elke minuut doorsturen naar de databank van het HIC.
+P1038: We gaan er van uit dat indien het mogelijk is om een 1 minuut gemiddelde waarde te berekenen en door te sturen dat dit ook mogelijk is voor een 5 minuut / 15 minuut gemiddelde waarde en een doorstuurfrequentie van 5 minuut/ 15 minuut. Indien dit niet mogelijk zou zijn dan moet dit vermeld worden in het antwoord op dit onderdeel.
+P1039: Een andere parameter die moet gemeten worden is de spanning van de datalogger. Dit voor de opvolging van de lokale spanning. Dit wordt gebruikt indien de 230V zou wegvallen en een externe batterij de voeding overneemt. Op dat moment weten wij dat er een probleem is met de 230V en kan hier op gereageerd worden. Deze spanning moet 1* per uur gemeten en verzonden kunnen worden.
+P1040: Maw concreet dient het waterpeil elke 1-5-15 minuut verzonden te worden, de spanning 1 maal per uur. Deze 2 verschillende doorstuurfrequenties moeten geprogrammeerd kunnen worden in de datalogger.
+P1041: De datalogger moet in staat zijn om het gemeten waterpeil, in mTaw, door te sturen via de Modbus poort naar een externe PLC. Het moet mogelijk zijn dat er elke 5s een waarde verzonden wordt via de modbus poort.
+P1043: OUTPUT FORMAAT
+P1044: Het bestand dat verzonden wordt vanuit de datalogger naar de ftp server is idealiter van het ASCII formaat. De inhoud en de bestandsnaam moet kunnen aangepast worden aan de specificaties van het HIC.
+P1045: Elke parameter moet als apart bestand verzonden worden. Maw het waterpeil en bijvoorbeeld de spanning moeten in twee aparte bestanden verzonden worden.
+P1047: -De inhoud van het bestand kan als volgt opgebouwd zijn:
+P1048: Datum_Tijd_Rivstacode_Waarde
+P1049: Vb van inhoud bestand:
+P1050: "2025-04-08 09:49:00","zwv03f-1s1b-00v",42.526
+P1051: Datum: 2025-04-08
+P1052: Tijd: 09:49:00
+P1053: Rivstacode: zwv03f-1s1b-00v
+P1054: Waarde: 42.526
+P1055: -De bestandsnaam kan als volgt opgebouwd zijn:
+P1056: Rivstacode_Datum_Tijd
+P1057: Vb. van een bestandsnaam:
+P1058: zwv03f-1s1b-00v_2025-04-08_09-49-10
+P1059: waarbij
+P1060: Rivstacode: zwv03f-1s1b-00v
+P1061: Datum: 2025-04-08
+P1062: Tijd: 09-49-10
+P1063: Variaties op de bestandsnaam en inhoud zijn mogelijk echter Rivstacode, datum, tijd en waarde moeten wel in bestand aanwezig zijn.
+P1065: Correctie mTaw waterpeil
+P1066: Het moet mogelijk zijn om een correctie uit te voeren van het mTaw waterpeil in de datalogger.
+P1067: Op elk peilmeet locatie is een peilschaal of mobiele radar opstelling geplaatst om het mTaw waterpeil te kunnen aflezen. In de ideale wereld is deze waarde altijd gelijk aan de waarde die door de datalogger wordt weergegeven. Echter indien door bepaalde omstandigheden deze waarde afwijkt moet er in de datalogger een correctie kunnen uitgevoerd worden zodat de datalogger terug het correcte mTaw waterpeil aangeeft.
+P1068: De datalogger is in staat om deze correctie waarde als apart bestand door te sturen naar de ftp-server van het aanbestedend bestuur. De bedoeling is dat bij een correctie de laatst gemeten waarde en de nieuw ingegeven waarde beide vermeld worden in dit databestand. Op die manier is het bestuur in staat om te bepalen met hoeveel cm er een correctie is uitgevoerd.
+P1070: Firmware aanpassingen
+P1071: Firmware aanpassingen kunnen van op afstand gebeuren. Indien een nieuwe firmware wordt aangeboden door de opdrachtnemer dan dient deze alle voorgaande versies eveneens te bevatten. Het is niet de bedoeling dat het aanbestedend bestuur bij wijze van spreken 5 firmware aanpassingen moet opladen om tot de laatste versie te komen. De opdrachtnemer voorziet de laatst beschikbare firmware van de datalogger
+P1073: Externe 4G/5G Modem
+P1074: Voor de externe modem wordt gekozen voor een 4G/5G modem die compatibel is met de Campbell/OTT datalogger. De modem moet kunnen aangesloten worden op de RS232 poort van de datalogger. De inschrijver zal aantonen via de nodige documentatie dat deze compatibiliteit effectief is. De modems worden gebruikt om defecte modems, die aangesloten zijn op een Campbell datalogger, te vervangen.
+P1075: Daar de nieuwe dataloggers voorzien zijn van een interne modem wordt voor deze dataloggers geen stock van modems aangelegd.
+P1077: Antenne
+P1078: De antenne is een 9dB antenne die kan aangesloten worden op de voorgestelde datalogger/modem, m.a.w. de aansluitconnector is compatibel met connector op modem/datalogger. De kabellengte tussen antenne en datalogger/modem bedraagt minimum 5m. Deze lengte is nodig om de antenne in bepaalde situaties hoger te kunnen plaatsen dan de kast, waarin de modem en datalogger zijn bevestigd.
+P1079: De inschrijver zal, via bijgeleverde informatie, aantonen dat de antenne effectief een 9dB antenne is en dat deze compatibel is met de voorgestelde modem.
+P1081: Batterij Lithium LiFePO4 20Ah
+P1083: De batterij heeft volgende kenmerken:
+P1085: Capaciteit batterij: 20Ah
+P1086: Accusoort: Lithium LiFePO4
+P1087: Laadspanning: Max 15,0 volt
+P1089: Radar peilmeter vrijstaand
+P1090: In totaal zijn er actueel ongeveer 50 meetopstellingen met een vrijstaande radar binnen het HIC-meetnet (zie foto’s hieronder, respectievelijk meetpost te Antwerpen (Schelde) en Oostkerke (Afleidingskanaal van de Leie).
+P1091: Momenteel zijn het merendeel van de vrijstaande radars Vegapuls C21 (35) Ott RLS toestellen (70%) en op een beperkt aantal plaatsen een Vegapuls WL61 (25%).
+P1094: De radar die binnen dit bestek als vrijstaande radar wordt aangeboden moet beantwoorden aan de volgende specificaties:
+P1095: -Uitgangssignaal is tweedraads 4...20 mA
+P1096: -Meetbereik 20m
+P1097: -Meetafwijking kleiner of gelijk aan 2mm
+P1098: -Openingshoek max 8°
+P1099: -Werkspanning is 12 volt (min 9 tot max 30 volt)
+P1100: -Bluetooth connectie
+P1101: -Beschermingsklasse is IP66/IP68
+P1102: -Werkbare omgevingstemperatuur -40°C tot  +80°C
+P1103: -End-of-Life: minstens 5 jaar
+P1105: Radar peilmeter in buis
+P1106: Sinds enkel jaren is er een radar systeem op de markt die het mogelijk maakt om metingen uit te voeren in een naadloze roestvrij stalen standpijp van 80 mm. Door het gebruik van een aangepaste radarfrequentie en interne rekenkracht is het mogelijk om een staande golf in beeld te brengen waarbij het waterniveau als een harde reflectie-oppervlak gevolgd wordt. Deze manier van meten is de maatstaf bij installaties van peilmeters nabij stuwen en sluizen in het ambtsgebied van de Vlaamse Waterweg.
+P1107: De eerste dergelijke meetlocatie zijn door het Wl-HIC geplaatst in 2021 Voor deze installatie is de Vegapuls WL61 gebruikt met aangepaste flens (type PS61NRS.YD) en montagebeugel 170 mm (type MONTZUB-MB.XA). Omdat dit type radar niet meer wordt gemaakt wordt op dit moment de opvolger de Vegapuls 6X gebruikt binnen het meetnet. Idealiter wordt met dit type toestel ingeschreven of minstens een gelijkwaardig toestel.
+P1109: Eigenschappen standpijp van 80 mm (maakt geen onderdeel uit van aanbesteding, enkel informatief):
+P1110: o Inox buis zonder lasnaad
+P1111: o Voorzien van ontluchtingsgaten, minimaal 1 ontluchtingsgat. Deze is gemaakt net onder de  flens op bv. 5 á 10 cm van de flens. Hierdoor heeft de opening geen invloed het de uitgezonden  signaal
+P1112: Onderaan open
+P1114: De radar die binnen dit bestek wordt aangeboden moet in staat zijn om foutloos het waterpeil te meten in deze standpijpen en moet ook passen op de daartoe gemonteerde flenzen. Verder moet hij voldoen aan volgende specificaties:
+P1115: -Uitgangssignaal is tweedraads 4...20 mA
+P1116: -Meetbereik 120m
+P1117: -Meetafwijking kleiner of gelijk aan 1mm
+P1118: -Openingshoek max 3°
+P1119: -Werkspanning is 12 volt (min 9 tot max 30 volt)
+P1120: -Bluetooth connectie
+P1121: -Beschermingsklasse is IP66/IP67
+P1122: -Flens DN80 voor montage radar
+P1123: -Werkbare omgevingstemperatuur -40°C tot  +80°C
+P1124: -End-of-Life: minstens 5 jaar
+P1126: Druksonde (0,4 bar en 1 bar)
+P1127: Momenteel zijn op ongeveer 250 meetlocaties van het HIC-meetnet druksensoren gebruikt voor het opmeten van het waterpeil. Daarvan zijn ongeveer 50% OTT PLS sensoren, 50% Vegawell52.
+P1128: De druksensor die binnen dit bestek wordt aangeboden moet beantwoorden aan de volgende specificaties:
+P1129: - Hangend aan kabel voor onderdompeling
+P1130: - Buitendiameter 20 tot 24 mm
+P1131: - Keramisch capacitief membraan
+P1132: - Geen olie als overdracht medium (“olievrij”)
+P1133: - Nauwkeurigheid 0,2% FS
+P1134: - 4-20 mA uitgangssignaal
+P1135: - Instelbare range
+P1136: - Meetbereik van  0 - 0,4 bar
+P1137: 0 – 1 bar
+P1138: -Uitgangssignaal is tweedraads 4...20 mA
+P1139: -Werkspanning is 12 volt (min 9 tot max 30 volt)
+P1140: -Werkbare omgevingstemperatuur -20°C tot  +80°C
+P1141: -Mogelijkheid tot bestellen van aangepaste kabellengtes (prijs per meter).
+P1142: - Geventileerde kabel (met capillair) voor compensatie voor de luchtdruk
+P1143: - Inox behuizing
+P1144: -End-of-Life: minstens 5 jaar
+P1146: Belangrijke opmerking met betrekking tot bekabeling
+P1147: Alle bekabeling die nodig is om de verschillende componenten te koppelen met elkaar en op die manier een werkend systeem te verkrijgen dienen bijgeleverd te worden. Er zal eveneens een aansluitschema door de opdrachtnemer voorzien worden in de offerte waarin beschreven is hoe de verschillende componenten met elkaar zijn verbonden. Op die manier kan de leverancier aantonen dat alle benodigde bekabeling is voorzien. Deze post is niet afzonderlijk voorzien in de inventaris, er wordt vanuit gegaan dat deze bekabeling en de prijs daartoe aangeboden en verrekend wordt bij de meetapparatuur zelf
+P1149: SCHERM/APP
+P1150: Lokaal moet het mogelijk zijn om de gemeten parameters realtime te bekijken. Dit kan ofwel door een scherm op/naast de datalogger of via een app.
+P1151: Indien gekozen wordt voor een scherm moet op dit scherm de datum, tijd en de realtime gemeten parameters afleesbaar zijn. Voor het waterpeil zal de waarde gevisualiseerd worden in mTaw.
+P1152: Indien gekozen wordt voor een app dan is het nodig dat de datalogger over een bluetooth/wifi connectie beschikt. Door het activeren van de bluetooth/wifi kan de gebruiker dan via een app op de smartphone/tablet verbinding maken en kan op die manier het realtime waterpeil gecontroleerd worden.
+P1153: Indien gekozen wordt voor een Wifi connectie dient er op gelet te worden dat het doorsturen van de data hier geen hinder van ondervindt door de creatie van een 2de IP-adres dat eventueel conflict kan veroorzaken met IP-adres van simkaart modem.
+P1154: Een app die werkt via internet zal in onze toepassing niet werken omdat onze simkaarten geen toegang hebben tot het internet, deze zitten namelijk achter de APN die geen toegang verleent tot internet.
+P1156: SOFTWARE
+P1157: De aanbieder zorgt voor de software van de datalogger om een aantal zaken te kunnen uitvoeren zoals:
+P1158: -programmeren van de datalogger en dit via een verbinding via USB/serieel/bluetooth/wifi of IP
+P1159: -uitlezen van opgeslagen data
+P1160: -mogelijkheid om via de software de datalogger van op afstand over te nemen om de nodige controle te kunnen uitvoeren.
+P1161: Het software pakket is de laatste stabiele versie die ter beschikking is. De software wordt via USB of download link ter beschikking gesteld. Indien een licentie nodig is om de software te gebruiken zal de aanbieder minstens 5 licenties te beschikking stellen.
+P1162: Ook zorgt de aanbieder dat alle dataloggers voorzien zijn van de laatste stabiele firmware.
+P1163: Toekomstige firmware upgrades worden door de aanbieder ter beschikking gesteld zolang garantieperiode loopt. Indien dit gebeurt via een download van op een website dient een user en paswoord voorzien te worden indien dit nodig is.
+P1165: HANDLEIDING
+P1166: Er wordt een digitale versie van de handleiding bezorgd door de inschrijver. Idealiter wordt deze handleiding in het Nederlands aangeboden of anders in het Engels. Andere talen worden niet aanvaard.
+P1167: Deze handleiding beschrijft alle technische kenmerken van de datalogger, mogelijkheden, manier van instellen, programmatie, aansluitmogelijkheden en dergelijke.
+P1168: Ook dient beschreven te worden in de handleiding op welke manier een eventuele firmware upgrade kan uitgevoerd worden.
+P1170: Opleiding
+P1171: Jaarlijks kan er door het aanbestedend bestuur een opleiding georganiseerd worden indien er grote wijzigingen in het onderhoud van het HIC-meetnet zouden gebeuren. Dit kan bijvoorbeeld zijn als er een nieuwe type meettoestel of datalogger zal gebruikt worden. Of indien bij de opdrachtnemer er nieuwe werknemers te werk worden gesteld.
+P1172: Sowieso zal het aanbestedend bestuur een opleiding voorzien binnen de maand na de aanbesteding van de opdracht. Tijdens deze opleiding komen onder andere volgende zaken aan bod:
+P1173: -uitleg over type installaties, configuraties
+P1174: -uitleg over manier van aansluiten, vervangen van onderdelen
+P1175: -vervangen van OTT-datalogger naar Campbell datalogger
+P1176: -overschakelen van radar naar druksonde

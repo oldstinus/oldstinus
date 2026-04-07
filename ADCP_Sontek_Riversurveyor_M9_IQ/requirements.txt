@@ -1,0 +1,6 @@
+argparse
+altgraph==0.16.1
+matplotlib==3.6.3
+numpy==1.26.2
+pandas==1.4.0
+scipy==1.9.3

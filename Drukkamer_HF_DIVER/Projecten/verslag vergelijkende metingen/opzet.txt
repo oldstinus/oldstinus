@@ -1,0 +1,3 @@
+De druk in de kamer wordt geregeld door de compressor aan en uit te zetten. Een verbeteringspunt voor de opstelling is het toevoegen van een kraan vóór de persluchtinlaat om de toevoer gemakkelijker te regelen in plaats van de stekker steeds in en uit te trekken. Bij het stoppen van de compressor is er momenteel een klein drukverlies. Daarnaast kan de uitzetting van de kunststof kamer invloed hebben op de metingen, daarom is de referentie drukopnemer van groot belang.
+
+Een suggestie voor verbetering is de aanschaf van een drukmeter met een ingebouwde logger.

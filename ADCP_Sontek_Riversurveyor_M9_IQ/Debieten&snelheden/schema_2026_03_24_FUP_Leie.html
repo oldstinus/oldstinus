@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schema 2026_03_24_FUP_Leie</title>
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --card: #fffdf8;
+      --ink: #1f2a37;
+      --muted: #5b6574;
+      --line: #d7cfbf;
+      --accent: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 28%),
+        linear-gradient(180deg, #f7f3ea 0%, var(--bg) 100%);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2 {
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #10212a;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    p, li {
+      line-height: 1.55;
+    }
+
+    .path {
+      margin: 0 0 24px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.4fr 1fr;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(31, 42, 55, 0.05);
+    }
+
+    .diagram-wrap {
+      overflow: auto;
+      padding: 8px 4px 4px;
+    }
+
+    .tree,
+    .tree ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .tree ul::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 14px;
+      left: 8px;
+      border-left: 1px solid #b8c6c2;
+    }
+
+    .tree li {
+      position: relative;
+      margin: 8px 0;
+      padding-left: 18px;
+    }
+
+    .tree li::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 8px;
+      width: 10px;
+      border-top: 1px solid #b8c6c2;
+    }
+
+    .tree > li::before,
+    .tree > li > ul::before {
+      display: none;
+    }
+
+    .node {
+      display: inline-block;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(31, 42, 55, 0.04);
+      white-space: nowrap;
+    }
+
+    .dir {
+      border-color: #94b8b2;
+      background: #edf8f6;
+      font-weight: 600;
+    }
+
+    .file {
+      background: #fffdfa;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98rem;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      width: 42%;
+      color: #213547;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Schema 2026_03_24_FUP_Leie</h1>
+    <p class="path">Bronmap: P:\PA029-BMeetinstr-Cmp\3_Uitvoering\0_03_MEETCAMPAGNES_CALIBRATION_MEETNET\2026_03_24_FUP_Leie</p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Directorydiagram</h2>
+        <div class="diagram-wrap">
+          <ul class="tree">
+            <li>
+              <span class="node dir">2026_03_24_FUP_Leie</span>
+              <ul>
+                <li>
+                  <span class="node dir">ADCP</span>
+                  <ul>
+                    <li>
+                      <span class="node dir">2026_03_25-m9</span>
+                    </li>
+                    <li>
+                      <span class="node dir">2026_03_25-s5</span>
+                      <ul>
+                        <li><span class="node dir">Raaien</span></li>
+                        <li><span class="node dir">Stationair</span></li>
+                        <li><span class="node dir">verwerking</span></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span class="node dir">Verwerking</span>
+                      <ul>
+                        <li><span class="node dir">Bathymetrische profielen</span></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span class="node dir">Divers</span>
+                  <ul>
+                    <li><span class="node dir">Kalibratie_druktank</span></li>
+                    <li>
+                      <span class="node dir">WL_LE008</span>
+                      <ul>
+                        <li>
+                          <span class="node dir">DAT</span>
+                        </li>
+                        <li>
+                          <span class="node dir">MON</span>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li><span class="node dir">RTK-gps</span></li>
+                <li><span class="node dir">Vector</span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Samenvatting</h2>
+        <table>
+          <tbody>
+            <tr><th>Hoofdmappen</th><td>ADCP, Divers, RTK-gps, Vector</td></tr>
+            <tr><th>Grootste dataset</th><td>ADCP\2026_03_25-m9</td></tr>
+            <tr><th>M9</th><td>44 x .mat, 44 x .riv, 44 x .wsp</td></tr>
+            <tr><th>S5</th><td>2 x .mat, 2 x .riv, 2 x .wsp</td></tr>
+            <tr><th>RTK-gps</th><td>8 bestanden</td></tr>
+            <tr><th>Vector</th><td>13 bestanden</td></tr>
+            <tr><th>WL_LE008 DAT</th><td>7 bestanden</td></tr>
+            <tr><th>WL_LE008 MON</th><td>2 bestanden</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Dit schema is een compacte samenvatting van de gelezen mapstructuur, geen volledige bestandsdump.</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

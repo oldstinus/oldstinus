@@ -1,0 +1,1561 @@
+'CR300 Series Datalogger
+
+'Pakbus logger is 1.
+'Bij gebruik van call back functie moet elke logger een ander pakbus nummer hebben anders wordt de data door elkaar gehaald.
+
+SetSetting ("StationName","S7468 MOW")
+SetSetting("PakBusAddress",1)
+
+'versie 1_00 22-08-2022 EMN : eerste opzet.
+
+'Info 1 = Niet gebruikt.
+'Info 2 = Niet gebruikt.
+'Info 3 = Herstart van de datalogger.
+'Info 4 = ftp communicatie is niet gelukt.
+'Info 5 = Callback communicatie is niet gelukt.
+'Info 6 = Controle klok via internet is niet gelukt.
+
+'Status_systeem = 0 Systeem werkt goed.
+'Status_systeem = 1 AT 1 werkt niet goed of is niet goed ingesteld.
+'Status_systeem = 2 AT 2 werkt niet goed of is niet goed ingesteld.
+'Status_systeem = 4 AT 3 werkt niet goed of is niet goed ingesteld.
+'Status_systeem = 8 AT 4 werkt niet goed of is niet goed ingesteld.
+'Status_systeem = 16 Communicatie problemen GPRS.
+
+'Status_AT_x = -1 Sensor niet in gebruik, adres staat op -1.
+'Status_AT_x = 0 Sensor werkt goed en staat goed ingesteld.
+'Status_AT_x = 1 Adres van de sensor is niet goed ingesteld.
+'Status_AT_x = 2 Sensor type is niet goed ingesteld.
+'Status_AT_x = 3 Sensor type komt niet overeen met gegevens uit de sensor.
+'Status_AT_x = 4 Geen communicatie met de sensor tijdens initialisatie.
+
+'timer 0 = Algemene timer voor het starten en stoppen van de GPRS communicatie
+'timer 1 = Vrij
+'timer 2 = Vrij
+'timer 3 = Vrij
+'timer 4 = FTP verzenden
+'timer 5 = Callback verzenden
+'timer 6 = NTP tijd controle
+
+ConstTable (Programma_instellingen,0)
+  Const Scan_tijd_sec = 10                                'Scantijd van het hoofdprogramma in seconden.
+  Const Registratie_tijd_sec = 10                         'Registratietijd van de meetwaarde in seconden.
+  Const AT_1_type = 100                                   'Type voor sensor 1, 100, 200 en 500 wordt op dit moment ondersteund.
+  Const AT_1_adres = "1"                                  'Adres van sensor 1, 0-9, A-Z en a-z worden ondersteund. 
+  Const AT_2_type = 500                                   'Type voor sensor 2, 100, 200 en 500 wordt op dit moment ondersteund.
+  Const AT_2_adres = "2"                                  'Adres van sensor 2, 0-9, A-Z en a-z worden ondersteund. 
+  Const AT_3_type = 0                                   'Type voor sensor 3, 100, 200 en 500 wordt op dit moment ondersteund.
+  Const AT_3_adres = "-1"                                  'Adres van sensor 3, 0-9, A-Z en a-z worden ondersteund. 
+  Const AT_4_type = 0                                   'Type voor sensor 4, 100, 200 en 500 wordt op dit moment ondersteund.
+  Const AT_4_adres = "-1"                                  'Adres van sensor 4, 0-9, A-Z en a-z worden ondersteund. 
+  Const Lees_status_informatie_sensoren = 0               'Of status informatie moet worden uitgelezen, kost ongeveer 2 seconden extra tijd 1 = Ja, 0 = Nee.
+  Const APN = "WL-HICO.M2MMOBI.BE"                            'APN voor de GPRS communicatie.  
+  Const APN_User = ""                                     'Eventueel de gebruikersnaam die bij de APN hoort. 
+  Const APN_pass = ""                                     'Eventueel het passwoord dat bij de APN hoort. 
+  Const IP_URL_ftp_server = "10.129.38.5"                 'ftp-server waarnaar de data gestuurd wordt, als ingesteld.
+  Const User_ftp = "meetpost"                             'Gebruikersnaam voor de ftp-server.
+  Const Pass_ftp = "Mp-137638"                            'Passwoord voor de ftp-server. 
+  Const Locatie_code = "locatie_1"                        'Locatie code, wordt vooraan de bestandsnaam gezet vna het bestand dat op de ftp-server wordt gezet.
+  Const AT_sensor_1_code = "_AT100_-1,5m_"                          'Code voor de meetwaarde die aan het databestand van sensor 1 wordt gekoppeld op de ftp-server.
+  Const AT_sensor_2_code = "_AT500_-7,5m_"                          'Code voor de meetwaarde die aan het databestand van sensor 2 wordt gekoppeld op de ftp-server.
+  Const AT_sensor_3_code = ""                          'Code voor de meetwaarde die aan het databestand van sensor 3 wordt gekoppeld op de ftp-server.
+  Const AT_sensor_4_code = ""                          'Code voor de meetwaarde die aan het databestand van sensor 4 wordt gekoppeld op de ftp-server.
+  Const IP_URL_call_back_server = "xxx.xxx.xxx.xxx"       'URL of IP-nummer voor de server waarnaar een call back gedaan kan worden.
+  Const Call_back_port = "xxxx"                           'Port-nummer waarover de call back gedaan wordt.
+  Const Tijd_URL = "http://10.129.38.5/timesync/time.php" 'Web-site die een tijd melding terug kan geven wordt alleen gebruikt als Const NTP_server = "" en Tijd_synchronistatie staat aan.
+  Const NTP_server = ""                                   'NTP server voor tijd synchronisatie.
+  Const Tijd_zone = 1                                     'Tijdzone waarnaartoe de ontvangen tijd wordt gezet, tijd van de NTP server wordt ontvangen in UTC.
+  Const Modem_aan_tijd = 0                                'Tijdstip binnen het aan-uit interval waarop het modem aangezet moet worden.
+  Const Modem_uit_tijd = 0                                'Tijdstip binnen het aan-uit interval waarop het modem uitgezet moet worden.
+  Const Modem_aan_uit_int = 360                           'Interval voor het aan-uitzetten van het modem.
+  Const FTP_data_versturen_tijd = 0                       'Tijdstip binnen het ftp-interval waarop de meetwaarde naar de ftp-server gestuurd moeten worden, -1 is geen ftp communicatie.
+  Const FTP_data_versturen_int = 360                      'Interval voor het versturen van meetwaarde naar de ftp-server.
+  Const Call_back_data_versturen_tijd = -1                'Tijdstip binnen het call back-interval waarop de meetwaarde naar de call back-server gestuurd moeten worden, -1 is geen call back communicatie.                '
+  Const Call_back_data_versturen_int = 60                 'Interval voor het versturen van meetwaarde naar de call back-server.
+  Const Tijd_synchroniseren_tijd = 0                      'Tijdstip binnen het tijd synchronisatie-interval waarop de tijd moet worden gecontroleerd, -1 is geen tijd synchronisatie.
+  Const Tijd_synchroniseren_int = 1440                    'Interval voor het synchroniseren van de tijd.
+EndConstTable
+
+Public Systeem_status_info As String * 50 = "Systeem start op."
+Public Status_systeem
+Public Controle_meting_uitvoeren
+Public Initialiseren_sensoren
+
+Public Loggertemperatuur_dgC
+Public Batterijspanning_Vdc
+Dim sdi_12_adres As String
+Dim AT_meetwaarde(4,6)
+#If Lees_status_informatie_sensoren = 1
+  Dim AT_Status(4,3)
+#EndIf
+
+Public AT_1_setup As String * 50
+Public AT_1_info As String * 50
+Public AT_1_setup_status
+Public AT_1_ID As String * 50
+Dim AT_1_Brand As String
+Dim AT_1_Model As String
+Dim AT_1_sn As String
+Dim AT_1_OS
+
+#If AT_1_type = 100
+  Public AT_1_meetwaarde(3)
+  #If Lees_status_informatie_sensoren = 1
+    Public AT_1_Status(1)
+  #EndIf
+  Alias AT_1_meetwaarde(1) = AT_1_Temperatuur_dgC
+  Alias AT_1_meetwaarde(2) = AT_1_Actuele_geleidbaarheid_uS
+  Alias AT_1_meetwaarde(3) = AT_1_Specifieke_geleidbaarheid_uS
+  Units AT_1_Temperatuur_dgC = dgC
+  Units AT_1_Actuele_geleidbaarheid_uS = uS_cm
+  Units AT_1_Specifieke_geleidbaarheid_uS = uS_cm
+
+#ElseIf AT_1_type = 200
+  Public AT_1_meetwaarde(4)
+  #If Lees_status_informatie_sensoren = 1
+    Public AT_1_Status(1)
+  #EndIf
+  Alias AT_1_meetwaarde(1) = AT_1_Temperatuur_dgC
+  Alias AT_1_meetwaarde(2) = AT_1_Actuele_geleidbaarheid_uS
+  Alias AT_1_meetwaarde(3) = AT_1_Specifieke_geleidbaarheid_uS
+  Alias AT_1_meetwaarde(4) = AT_1_Druk_mbar
+  Units AT_1_Temperatuur_dgC = dgC
+  Units AT_1_Actuele_geleidbaarheid_uS = uS_cm
+  Units AT_1_Specifieke_geleidbaarheid_uS = uS_cm
+  Units AT_1_Druk_mbar = mbar
+
+#ElseIf AT_1_type = 500
+  Public AT_1_meetwaarde(6)
+  #If Lees_status_informatie_sensoren = 1
+    Public AT_1_Status(3)
+  #EndIf
+  Alias AT_1_meetwaarde(1) = AT_1_Temperatuur_dgC
+  Alias AT_1_meetwaarde(2) = AT_1_Actuele_geleidbaarheid_uS
+  Alias AT_1_meetwaarde(3) = AT_1_Specifieke_geleidbaarheid_uS
+  Alias AT_1_meetwaarde(4) = AT_1_Druk_mbar
+  Alias AT_1_meetwaarde(5) = AT_1_Troebelheid_NTU
+  Alias AT_1_meetwaarde(6) = AT_1_Voeding_Vdc
+  Units AT_1_Temperatuur_dgC = dgC
+  Units AT_1_Actuele_geleidbaarheid_uS = uS_cm
+  Units AT_1_Specifieke_geleidbaarheid_uS = uS_cm
+  Units AT_1_Druk_mbar = mbar
+  Units AT_1_Troebelheid_NTU = NTU
+  Units AT_1_Voeding_Vdc = Vdc
+
+#EndIf
+
+Public AT_2_setup As String * 50
+Public AT_2_info As String * 50
+Public AT_2_setup_status
+Public AT_2_ID As String * 50
+Dim AT_2_Brand As String
+Dim AT_2_Model As String
+Dim AT_2_sn As String
+Dim AT_2_OS
+
+#If AT_2_adres > -1
+
+  #If AT_2_type = 100
+    Public AT_2_meetwaarde(3)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_2_Status(1)
+    #EndIf
+    Alias AT_2_meetwaarde(1) = AT_2_Temperatuur_dgC
+    Alias AT_2_meetwaarde(2) = AT_2_Actuele_geleidbaarheid_uS
+    Alias AT_2_meetwaarde(3) = AT_2_Specifieke_geleidbaarheid_uS
+    Units AT_2_Temperatuur_dgC = dgC
+    Units AT_2_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_2_Specifieke_geleidbaarheid_uS = uS_cm
+
+  #ElseIf AT_2_type = 200
+    Public AT_2_meetwaarde(4)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_2_Status(1)
+    #EndIf
+    Alias AT_2_meetwaarde(1) = AT_2_Temperatuur_dgC
+    Alias AT_2_meetwaarde(2) = AT_2_Actuele_geleidbaarheid_uS
+    Alias AT_2_meetwaarde(3) = AT_2_Specifieke_geleidbaarheid_uS
+    Alias AT_2_meetwaarde(4) = AT_2_Druk_mbar
+    Units AT_2_Temperatuur_dgC = dgC
+    Units AT_2_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_2_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_2_Druk_mbar = mbar
+
+  #ElseIf AT_2_type = 500
+    Public AT_2_meetwaarde(6)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_2_Status(3)
+    #EndIf
+    Alias AT_2_meetwaarde(1) = AT_2_Temperatuur_dgC
+    Alias AT_2_meetwaarde(2) = AT_2_Actuele_geleidbaarheid_uS
+    Alias AT_2_meetwaarde(3) = AT_2_Specifieke_geleidbaarheid_uS
+    Alias AT_2_meetwaarde(4) = AT_2_Druk_mbar
+    Alias AT_2_meetwaarde(5) = AT_2_Troebelheid_NTU
+    Alias AT_2_meetwaarde(6) = AT_2_Voeding_Vdc
+    Units AT_2_Temperatuur_dgC = dgC
+    Units AT_2_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_2_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_2_Druk_mbar = mbar
+    Units AT_2_Troebelheid_NTU = NTU
+    Units AT_2_Voeding_Vdc = Vdc
+
+  #EndIf
+#EndIf
+
+Public AT_3_setup As String * 50
+Public AT_3_info As String * 50
+Public AT_3_setup_status
+Public AT_3_ID As String * 50
+Dim AT_3_Brand As String
+Dim AT_3_Model As String
+Dim AT_3_sn As String
+Dim AT_3_OS
+
+#If AT_3_adres > -1
+
+  #If AT_3_type = 100
+    Public AT_3_meetwaarde(3)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_3_Status(1)
+    #EndIf
+    Alias AT_3_meetwaarde(1) = AT_3_Temperatuur_dgC
+    Alias AT_3_meetwaarde(2) = AT_3_Actuele_geleidbaarheid_uS
+    Alias AT_3_meetwaarde(3) = AT_3_Specifieke_geleidbaarheid_uS
+    Units AT_3_Temperatuur_dgC = dgC
+    Units AT_3_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_3_Specifieke_geleidbaarheid_uS = uS_cm
+
+  #ElseIf AT_3_type = 200
+    Public AT_3_meetwaarde(4)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_3_Status(1)
+    #EndIf
+    Alias AT_3_meetwaarde(1) = AT_3_Temperatuur_dgC
+    Alias AT_3_meetwaarde(2) = AT_3_Actuele_geleidbaarheid_uS
+    Alias AT_3_meetwaarde(3) = AT_3_Specifieke_geleidbaarheid_uS
+    Alias AT_3_meetwaarde(4) = AT_3_Druk_mbar
+    Units AT_3_Temperatuur_dgC = dgC
+    Units AT_3_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_3_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_3_Druk_mbar = mbar
+
+  #ElseIf AT_3_type = 500
+    Public AT_3_meetwaarde(6)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_3_Status(3)
+    #EndIf
+    Alias AT_3_meetwaarde(1) = AT_3_Temperatuur_dgC
+    Alias AT_3_meetwaarde(2) = AT_3_Actuele_geleidbaarheid_uS
+    Alias AT_3_meetwaarde(3) = AT_3_Specifieke_geleidbaarheid_uS
+    Alias AT_3_meetwaarde(4) = AT_3_Druk_mbar
+    Alias AT_3_meetwaarde(5) = AT_3_Troebelheid_NTU
+    Alias AT_3_meetwaarde(6) = AT_3_Voeding_Vdc
+    Units AT_3_Temperatuur_dgC = dgC
+    Units AT_3_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_3_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_3_Druk_mbar = mbar
+    Units AT_3_Troebelheid_NTU = NTU
+    Units AT_3_Voeding_Vdc = Vdc
+
+  #EndIf
+#EndIf
+
+Public AT_4_setup As String * 50
+Public AT_4_info As String * 50
+Public AT_4_setup_status
+Public AT_4_ID As String * 50
+Dim AT_4_Brand As String
+Dim AT_4_Model As String
+Dim AT_4_sn As String
+Dim AT_4_OS
+
+#If AT_4_adres > -1
+
+  #If AT_4_type = 100
+    Public AT_4_meetwaarde(3)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_4_Status(1)
+    #EndIf
+    Alias AT_4_meetwaarde(1) = AT_4_Temperatuur_dgC
+    Alias AT_4_meetwaarde(2) = AT_4_Actuele_geleidbaarheid_uS
+    Alias AT_4_meetwaarde(3) = AT_4_Specifieke_geleidbaarheid_uS
+    Units AT_4_Temperatuur_dgC = dgC
+    Units AT_4_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_4_Specifieke_geleidbaarheid_uS = uS_cm
+
+  #ElseIf AT_4_type = 200
+    Public AT_4_meetwaarde(4)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_4_Status(1)
+    #EndIf
+    Alias AT_4_meetwaarde(1) = AT_4_Temperatuur_dgC
+    Alias AT_4_meetwaarde(2) = AT_4_Actuele_geleidbaarheid_uS
+    Alias AT_4_meetwaarde(3) = AT_4_Specifieke_geleidbaarheid_uS
+    Alias AT_4_meetwaarde(4) = AT_4_Druk_mbar
+    Units AT_4_Temperatuur_dgC = dgC
+    Units AT_4_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_4_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_4_Druk_mbar = mbar
+
+  #ElseIf AT_4_type = 500
+    Public AT_4_meetwaarde(6)
+    #If Lees_status_informatie_sensoren = 1
+      Public AT_4_Status(3)
+    #EndIf
+    Alias AT_4_meetwaarde(1) = AT_4_Temperatuur_dgC
+    Alias AT_4_meetwaarde(2) = AT_4_Actuele_geleidbaarheid_uS
+    Alias AT_4_meetwaarde(3) = AT_4_Specifieke_geleidbaarheid_uS
+    Alias AT_4_meetwaarde(4) = AT_4_Druk_mbar
+    Alias AT_4_meetwaarde(5) = AT_4_Troebelheid_NTU
+    Alias AT_4_meetwaarde(6) = AT_4_Voeding_Vdc
+    Units AT_4_Temperatuur_dgC = dgC
+    Units AT_4_Actuele_geleidbaarheid_uS = uS_cm
+    Units AT_4_Specifieke_geleidbaarheid_uS = uS_cm
+    Units AT_4_Druk_mbar = mbar
+    Units AT_4_Troebelheid_NTU = NTU
+    Units AT_4_Voeding_Vdc = Vdc
+
+  #EndIf
+#EndIf
+
+Public Handmatig_sdi_12_vraag
+Public Antwoord_sdi_12 As String * 50
+Public Adres_sdi_12
+Public Vraag_sdi_12 As String
+
+Dim Registreer_meting
+Dim MinInDeDag
+Dim SecInDeDag
+
+Dim Info
+'Dim Counter
+
+Public Modem_handmatig_aan
+Public Modem_info As String * 40
+Public CSQ_waarde As String * 25
+Public Verzend_ftp_data
+Public Verzend_call_back_data
+Public Tijd_synchroniseren
+
+Dim rTime(9)
+Dim Trigger_verzend_call_back_data
+Dim PPP_afgesloten
+Dim T_PPP_sluiten
+Dim Modem_is_aan
+Dim PPP_verbinding As String * 30
+Dim C_geen_IP
+
+Const modem_dial_string = "AT&F;;ATV1;AT+CGDCONT=1," + CHR(34) + "IP" + CHR(34) + "," + CHR(34) + APN + CHR(34) + ";;ATD*99***1#"
+
+SetStatus ("pppdial",modem_dial_string)
+SetStatus ("ppppassword",APN_pass)
+SetStatus ("pppusername",APN_User)
+
+Const Scan_unit = sec
+Const Reg_unit = sec
+Const Scan_time_slow = 1
+Const Scan_unit_slow = min
+
+Const SDI12_port = C1      'communicatieport waar de SDI12 communivcatie over verloopt C1 of C2.
+
+Const Modem_port = comRS232      'communicatieport waar het modem op aangesloten is Com1, Com2 of ComRS232.
+Const Modem_cont = C2            'controle port waarmee het modem aan of uit gezet kan worden.
+Const Modem_baud_rate = 38400    'baudrate van de communicatie tussen logger en modem.
+
+SetSetting("Baudrate(COMRS232)",Modem_baud_rate)
+SetSetting("PPPInterface",Modem_port)
+
+SetSetting("FTPEnabled",0)
+SetSetting("HTTPEnabled",0)
+SetSetting("HTTPSEnabled",0)
+SetSetting("PingEnabled",-1)
+SetSetting("PakBusPort",Call_back_port)
+
+Units Loggertemperatuur_dgC = dgC
+Units Batterijspanning_Vdc = Vdc
+
+DataTable (MW_AT_1,-1,-1)
+  '  DataInterval (0,Registratie_tijd_min,Reg_unit,0)
+  #If AT_1_type = 100
+    Sample (3,AT_1_meetwaarde(),IEEE4)
+    #If Lees_status_informatie_sensoren = 1
+      Sample (1,AT_1_Status,IEEE4)
+    #EndIf
+  #EndIf
+  #If AT_1_type = 200
+    Sample (4,AT_1_meetwaarde(),IEEE4)
+    #If Lees_status_informatie_sensoren = 1
+      Sample (1,AT_1_Status,IEEE4)
+    #EndIf
+  #EndIf
+  #If AT_1_type = 500
+    Sample (6,AT_1_meetwaarde(),IEEE4)
+    #If Lees_status_informatie_sensoren = 1
+      Sample (3,AT_1_Status,IEEE4)
+    #EndIf
+  #EndIf
+  Sample (1,Loggertemperatuur_dgC,FP2)
+  Sample (1,Batterijspanning_Vdc,FP2)
+  Sample (1,Status_systeem,FP2)
+EndTable
+
+#If AT_2_adres > -1 Then
+  DataTable (MW_AT_2,-1,-1)
+    '  DataInterval (0,Registratie_tijd_min,Reg_unit,0)
+    #If AT_2_type = 100
+      Sample (3,AT_2_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_2_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_2_type = 200
+      Sample (4,AT_2_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_2_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_2_type = 500
+      Sample (6,AT_2_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (3,AT_2_Status,IEEE4)
+      #EndIf
+    #EndIf
+  EndTable
+#EndIf
+
+#If AT_3_adres > -1 Then
+  DataTable (MW_AT_3,-1,-1)
+    '  DataInterval (0,Registratie_tijd_min,Reg_unit,0)
+    #If AT_3_type = 100
+      Sample (3,AT_3_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_3_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_3_type = 200
+      Sample (4,AT_3_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_3_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_3_type = 500
+      Sample (6,AT_3_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (3,AT_3_Status,IEEE4)
+      #EndIf
+    #EndIf
+  EndTable
+#EndIf
+
+#If AT_4_adres > -1 Then
+  DataTable (MW_AT_4,-1,-1)
+    '  DataInterval (0,Registratie_tijd_min,Reg_unit,0)
+    #If AT_4_type = 100
+      Sample (3,AT_4_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_4_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_4_type = 200
+      Sample (4,AT_4_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (1,AT_4_Status,IEEE4)
+      #EndIf
+    #EndIf
+    #If AT_4_type = 500
+      Sample (6,AT_4_meetwaarde(),IEEE4)
+      #If Lees_status_informatie_sensoren = 1
+        Sample (3,AT_4_Status,IEEE4)
+      #EndIf
+    #EndIf
+  EndTable
+#EndIf
+
+DataTable (Sensor_setup,1,100)
+  Sample (1,AT_1_Model,String)
+  Sample (1,AT_1_sn,String)
+  Sample (1,AT_2_Model,String)
+  Sample (1,AT_2_sn,String)
+  Sample (1,AT_3_Model,String)
+  Sample (1,AT_3_sn,String)
+  Sample (1,AT_4_Model,String)
+  Sample (1,AT_4_sn,String)
+EndTable
+
+DataTable (Info,1,1000)
+  Sample (1,Info,FP2)
+EndTable
+
+' ********* Declaratie Subroutines *********
+
+BeginProg
+
+  Info = 3
+
+  CallTable Info
+
+  PPP_afgesloten = PPPClose
+  Modem_info = "Communicatie afgesloten, modem staat uit."
+
+  If AT_1_adres < 0 Then
+    AT_1_setup = "AT_1 = Niet ingesteld."
+    AT_1_setup_status = -1
+
+  ElseIf ((ASCII (AT_1_adres) >= 48 AND ASCII (AT_1_adres) <= 57) OR (ASCII (AT_1_adres) >= 65 AND ASCII (AT_1_adres) <= 122)) AND Len(AT_1_adres) = 1 Then
+
+    If AT_1_adres = AT_2_adres OR AT_1_adres = AT_3_adres OR AT_1_adres = AT_4_adres Then
+
+      AT_1_setup = "AT_1 = adres niet goed ingesteld."
+      AT_1_setup_status = 1
+
+    Else
+      If AT_1_type = 100 OR AT_1_type = 200 OR AT_1_type = 500 Then
+        AT_1_setup = "AT_1 = AT" & AT_1_type & " met adres " & AT_1_adres & "."
+        AT_1_setup_status = 0
+
+      Else
+        AT_1_setup = "AT_1 = type niet goed ingesteld."
+        AT_1_setup_status = 2
+
+      EndIf
+    EndIf
+  Else
+    AT_1_setup = "AT_1 = adres niet goed ingesteld."
+    AT_1_setup_status = 1
+  EndIf
+
+  If AT_2_adres < 0 Then
+    AT_2_setup = "AT_2 = Niet ingesteld."
+    AT_2_setup_status = -1
+
+  ElseIf ((ASCII (AT_2_adres) >= 48 AND ASCII (AT_2_adres) <= 57) OR (ASCII (AT_2_adres) >= 65 AND ASCII (AT_2_adres) <= 122)) AND Len(AT_2_adres) = 1  Then
+
+    If AT_2_adres = AT_1_adres OR AT_2_adres = AT_3_adres OR AT_2_adres = AT_4_adres Then
+
+      AT_2_setup = "AT_2 = adres niet goed ingesteld."
+      AT_2_setup_status = 1
+
+    Else
+      If AT_2_type = 100 OR AT_2_type = 200 OR AT_2_type = 500 Then
+        AT_2_setup = "AT_2 = AT" & AT_2_type & " met adres " & AT_2_adres & "."
+        AT_2_setup_status = 0
+
+      Else
+        AT_2_setup = "AT_2 = type niet goed ingesteld."
+        AT_2_setup_status = 2
+
+      EndIf
+    EndIf
+  Else
+    AT_2_setup = "AT_2 = adres niet goed ingesteld."
+    AT_2_setup_status = 1
+  EndIf
+
+  If AT_3_adres < 0 Then
+    AT_3_setup = "AT_3 = Niet ingesteld."
+    AT_3_setup_status = -1
+
+  ElseIf ((ASCII (AT_3_adres) >= 48 AND ASCII (AT_3_adres) <= 57) OR (ASCII (AT_3_adres) >= 65 AND ASCII (AT_3_adres) <= 122)) AND Len(AT_3_adres) = 1  Then
+
+    If AT_3_adres = AT_1_adres OR AT_3_adres = AT_2_adres OR AT_3_adres = AT_4_adres Then
+
+      AT_3_setup = "AT_3 = adres niet goed ingesteld."
+      AT_3_setup_status = 1
+
+    Else
+      If AT_3_type = 100 OR AT_3_type = 200 OR AT_3_type = 500 Then
+        AT_3_setup = "AT_3 = AT" & AT_3_type & " met adres " & AT_3_adres & "."
+        AT_3_setup_status = 0
+
+      Else
+        AT_3_setup = "AT_3 = type niet goed ingesteld."
+        AT_3_setup_status = 2
+
+      EndIf
+    EndIf
+  Else
+    AT_3_setup = "AT_3 = adres niet goed ingesteld."
+    AT_3_setup_status = 1
+  EndIf
+
+  If AT_4_adres < 0 Then
+    AT_4_setup = "AT_4 = Niet ingesteld."
+    AT_4_setup_status = -1
+
+  ElseIf ((ASCII (AT_4_adres) >= 48 AND ASCII (AT_4_adres) <= 57) OR (ASCII (AT_4_adres) >= 65 AND ASCII (AT_4_adres) <= 122)) AND Len(AT_4_adres) = 1  Then
+
+    If AT_4_adres = AT_1_adres OR AT_4_adres = AT_2_adres OR AT_4_adres = AT_3_adres Then
+
+      AT_4_setup = "AT_4 = adres niet goed ingesteld."
+      AT_4_setup_status = 1
+
+    Else
+      If AT_4_type = 100 OR AT_4_type = 200 OR AT_4_type = 500 Then
+        AT_4_setup = "AT_4 = AT" & AT_4_type & " met adres " & AT_4_adres & "."
+        AT_4_setup_status = 0
+
+      Else
+        AT_4_setup = "AT_4 = type niet goed ingesteld."
+        AT_4_setup_status = 2
+
+      EndIf
+    EndIf
+  Else
+    AT_4_setup = "AT_4 = adres niet goed ingesteld."
+    AT_4_setup_status = 1
+  EndIf
+
+  Initialiseren_sensoren = 1
+
+  If AT_1_setup_status > 0 OR AT_2_setup_status > 0 OR AT_3_setup_status > 0 OR AT_4_setup_status > 0 Then
+    Systeem_status_info = "Sensor setup niet juist ingesteld!!"
+  Else
+    Systeem_status_info = "Wacht op sensor initialisatie."
+  EndIf
+
+  If AT_1_setup_status > 0 Then
+    Status_systeem = Status_systeem OR &b00000001
+  Else
+    Status_systeem = Status_systeem AND &b11111110
+  EndIf
+
+  If AT_2_setup_status > 0 Then
+    Status_systeem = Status_systeem OR &b00000010
+  Else
+    Status_systeem = Status_systeem AND &b11111101
+  EndIf
+
+  If AT_3_setup_status > 0 Then
+    Status_systeem = Status_systeem OR &b00000100
+  Else
+    Status_systeem = Status_systeem AND &b11111011
+  EndIf
+
+  If AT_1_setup_status > 0 Then
+    Status_systeem = Status_systeem OR &b00001000
+  Else
+    Status_systeem = Status_systeem AND &b11110111
+  EndIf
+
+  Scan (Scan_tijd_sec,Scan_unit,0,0)
+
+    RealTime (Rtime)
+
+    SecInDeDag = Public.Timestamp(4,1)         'lees het aantal seconden in de huidige dag.
+    SecInDeDag = FIX( SecInDeDag)              'rond af op gehele seconden.
+    MinInDeDag = FIX( SecInDeDag/60)           'rond af op gehele minuten.
+
+    If AT_1_adres > -1 OR AT_2_adres > -1 OR AT_3_adres > -1 OR AT_4_adres > -1 Then
+      If SecInDeDag MOD Registratie_tijd_sec = 0 Then Registreer_meting = 1
+
+      If FTP_data_versturen_tijd <> -1 Then
+        If MinInDeDag MOD FTP_data_versturen_int = FTP_data_versturen_tijd Then Verzend_ftp_data = 1
+      EndIf
+
+      If Call_back_data_versturen_tijd <> -1 Then
+        If MinInDeDag MOD Call_back_data_versturen_int = Call_back_data_versturen_tijd Then Trigger_verzend_call_back_data = 1
+      EndIf
+
+      If Tijd_synchroniseren <> -1 Then
+        If MinInDeDag MOD Tijd_synchroniseren_int = Tijd_synchroniseren_tijd Then Tijd_synchroniseren = 1
+      EndIf
+    Else
+
+      Systeem_status_info = "Geen sensoren ingesteld = geen metingen."
+
+    EndIf
+
+    If Initialiseren_sensoren = 1 Then
+      Initialiseren_sensoren = 0
+
+      Systeem_status_info = "Sensor initialisatie wordt uitgevoerd."
+
+      If AT_1_setup_status = 0 OR AT_1_setup_status >= 2 Then
+        SDI12Recorder (AT_1_ID,SDI12_port,AT_1_adres,"I!",1.0,0)
+
+        If AT_1_ID = "NAN" Then
+          AT_1_setup_status = 4
+          AT_1_info = "AT_1 = Geem communicatie."
+          AT_1_Brand = 0
+          AT_1_Model = 0
+          AT_1_sn = 0
+          AT_1_OS = 0
+        Else
+          AT_1_setup_status = 0
+          AT_1_info = "AT_1 = Initialisatie gelezen."
+          AT_1_Brand = Mid (AT_1_ID,4,8)
+          AT_1_Model = Mid (AT_1_ID,12,6)
+          AT_1_sn = Right (AT_1_ID,7)
+          AT_1_OS = Mid (AT_1_ID,18,3)
+
+          If Mid(AT_1_Model,3,3) <> AT_1_type Then
+            AT_1_setup_status = 3
+            AT_1_setup = "AT_1 = type komt niet overeen met instelling."
+          EndIf
+        EndIf
+
+        Delay (1,100,mSec)
+
+      EndIf
+
+      If AT_2_setup_status = 0 OR AT_2_setup_status >= 2 Then
+        SDI12Recorder (AT_2_ID,SDI12_port,AT_2_adres,"I!",1.0,0)
+
+        If AT_2_ID = "NAN" Then
+          AT_2_setup_status = 4
+          AT_2_info = "AT_2 = Geem communicatie."
+          AT_2_Brand = 0
+          AT_2_Model = 0
+          AT_2_sn = 0
+          AT_2_OS = 0
+        Else
+          AT_2_setup_status = 0
+          AT_2_info = "AT_2 = Initialisatie gelezen."
+          AT_2_Brand = Mid (AT_2_ID,4,8)
+          AT_2_Model = Mid (AT_2_ID,12,6)
+          AT_2_sn = Right (AT_2_ID,7)
+          AT_2_OS = Mid (AT_2_ID,18,3)
+
+          If Mid(AT_2_Model,3,3) <> AT_2_type Then
+            AT_2_setup_status = 3
+            AT_2_setup = "AT_2 = type komt niet overeen met instelling."
+          EndIf
+        EndIf
+
+        Delay (1,100,mSec)
+
+      EndIf
+
+      If AT_3_setup_status = 0 OR AT_3_setup_status >= 2 Then
+        SDI12Recorder (AT_3_ID,SDI12_port,AT_3_adres,"I!",1.0,0)
+
+        If AT_3_ID = "NAN" Then
+          AT_3_setup_status = 4
+          AT_3_info = "AT_3 = Geem communicatie."
+          AT_3_Brand = 0
+          AT_3_Model = 0
+          AT_3_sn = 0
+          AT_3_OS = 0
+        Else
+          AT_3_setup_status = 0
+          AT_3_info = "AT_3 = Initialisatie gelezen."
+          AT_3_Brand = Mid (AT_3_ID,4,8)
+          AT_3_Model = Mid (AT_3_ID,12,6)
+          AT_3_sn = Right (AT_3_ID,7)
+          AT_3_OS = Mid (AT_3_ID,18,3)
+
+          If Mid(AT_3_Model,3,3) <> AT_3_type Then
+            AT_3_setup_status = 3
+            AT_3_setup = "AT_3 = type komt niet overeen met instelling."
+          EndIf
+        EndIf
+
+        Delay (1,100,mSec)
+
+      EndIf
+
+      If AT_4_setup_status = 0 OR AT_4_setup_status >= 2 Then
+        SDI12Recorder (AT_4_ID,SDI12_port,AT_4_adres,"I!",1.0,0)
+
+        If AT_4_ID = "NAN" Then
+          AT_4_setup_status = 4
+          AT_4_info = "AT_4 = Geem communicatie."
+          AT_4_Brand = 0
+          AT_4_Model = 0
+          AT_4_sn = 0
+          AT_4_OS = 0
+        Else
+          AT_4_setup_status = 0
+          AT_4_info = "AT_4 = Initialisatie gelezen."
+          AT_4_Brand = Mid (AT_4_ID,4,8)
+          AT_4_Model = Mid (AT_4_ID,12,6)
+          AT_4_sn = Right (AT_4_ID,7)
+          AT_4_OS = Mid (AT_4_ID,18,3)
+
+          If Mid(AT_4_Model,3,3) <> AT_4_type Then
+            AT_4_setup_status = 3
+            AT_4_setup = "AT_4 = type komt niet overeen met instelling."
+          EndIf
+        EndIf
+
+      EndIf
+
+      If AT_1_sn <> Sensor_setup.AT_1_sn(1,1) OR AT_2_sn <> Sensor_setup.AT_2_sn(1,1) OR AT_3_sn <> Sensor_setup.AT_3_sn(1,1) OR AT_4_sn <> Sensor_setup.AT_4_sn(1,1) Then CallTable Sensor_setup
+
+      Systeem_status_info = "Sensor initialisatie uitgevoerd."
+
+    EndIf
+
+    If Handmatig_sdi_12_vraag <> 0 Then
+      Handmatig_sdi_12_vraag = 0
+      SDI12Recorder (Antwoord_sdi_12,SDI12_port,Adres_sdi_12,Vraag_sdi_12,1.0,0)
+    EndIf
+
+    If Registreer_meting = 1 OR Controle_meting_uitvoeren = 1 Then
+
+      sdi_12_adres = ""
+
+      If AT_1_setup_status = 0 Then sdi_12_adres = sdi_12_adres & AT_1_adres
+      If AT_2_setup_status = 0 Then sdi_12_adres = sdi_12_adres & AT_2_adres
+      If AT_3_setup_status = 0 Then sdi_12_adres = sdi_12_adres & AT_3_adres
+      If AT_4_setup_status = 0 Then sdi_12_adres = sdi_12_adres & AT_4_adres
+
+      Systeem_status_info = "Meting wordt uitgevoerd."
+
+      PanelTemp (Loggertemperatuur_dgC,50)
+      Battery (Batterijspanning_Vdc)
+
+      SDI12Recorder (AT_meetwaarde(),SDI12_port,sdi_12_adres,"M!",1.0,0,-1)
+
+      If AT_1_setup_status = 0 Then
+
+        If AT_meetwaarde(1,1) <> NAN Then
+          #If AT_1_adres > -1 Then
+            #If AT_1_type = 100
+              AT_1_meetwaarde(1) = AT_meetwaarde(1,1)
+              AT_1_meetwaarde(2) = AT_meetwaarde(1,2)
+              AT_1_meetwaarde(3) = AT_meetwaarde(1,3)
+
+            #ElseIf AT_1_type = 200
+              AT_1_meetwaarde(1) = AT_meetwaarde(1,1)
+              AT_1_meetwaarde(2) = AT_meetwaarde(1,2)
+              AT_1_meetwaarde(3) = AT_meetwaarde(1,3)
+              AT_1_meetwaarde(4) = AT_meetwaarde(1,4)
+
+            #ElseIf AT_1_type = 500
+              AT_1_meetwaarde(1) = AT_meetwaarde(1,1)
+              AT_1_meetwaarde(2) = AT_meetwaarde(1,2)
+              AT_1_meetwaarde(3) = AT_meetwaarde(1,3)
+              AT_1_meetwaarde(4) = AT_meetwaarde(1,4)
+              AT_1_meetwaarde(5) = AT_meetwaarde(1,5)
+              AT_1_meetwaarde(6) = AT_meetwaarde(1,6)
+
+            #EndIf
+          #EndIf
+          AT_1_info = "AT 1 werkt correct."
+
+        Else
+          AT_1_info = "Geen communicatie met AT 1."
+          Status_systeem = Status_systeem OR &b00000001
+        EndIf
+      EndIf
+
+      If AT_2_setup_status = 0 Then
+
+        If AT_meetwaarde(2,1) <> NAN Then
+          #If AT_2_adres > -1 Then
+            #If AT_2_type = 100
+              AT_2_meetwaarde(1) = AT_meetwaarde(2,1)
+              AT_2_meetwaarde(2) = AT_meetwaarde(2,2)
+              AT_2_meetwaarde(3) = AT_meetwaarde(2,3)
+
+            #ElseIf AT_2_type = 200
+              AT_2_meetwaarde(1) = AT_meetwaarde(2,1)
+              AT_2_meetwaarde(2) = AT_meetwaarde(2,2)
+              AT_2_meetwaarde(3) = AT_meetwaarde(2,3)
+              AT_2_meetwaarde(4) = AT_meetwaarde(2,4)
+
+            #ElseIf AT_2_type = 500
+              AT_2_meetwaarde(1) = AT_meetwaarde(2,1)
+              AT_2_meetwaarde(2) = AT_meetwaarde(2,2)
+              AT_2_meetwaarde(3) = AT_meetwaarde(2,3)
+              AT_2_meetwaarde(4) = AT_meetwaarde(2,4)
+              AT_2_meetwaarde(5) = AT_meetwaarde(2,5)
+              AT_2_meetwaarde(6) = AT_meetwaarde(2,6)
+
+            #EndIf
+          #EndIf
+          AT_2_info = "AT 2 werkt correct."
+
+        Else
+          AT_2_info = "Geen communicatie met AT 2."
+          Status_systeem = Status_systeem OR &b00000010
+        EndIf
+      EndIf
+
+      If AT_3_setup_status = 0 Then
+
+        If AT_meetwaarde(3,1) <> NAN Then
+          #If AT_3_adres > -1 Then
+            #If AT_3_type = 100
+              AT_3_meetwaarde(1) = AT_meetwaarde(3,1)
+              AT_3_meetwaarde(2) = AT_meetwaarde(3,2)
+              AT_3_meetwaarde(3) = AT_meetwaarde(3,3)
+
+            #ElseIf AT_3_type = 200
+              AT_3_meetwaarde(1) = AT_meetwaarde(3,1)
+              AT_3_meetwaarde(2) = AT_meetwaarde(3,2)
+              AT_3_meetwaarde(3) = AT_meetwaarde(3,3)
+              AT_3_meetwaarde(4) = AT_meetwaarde(3,4)
+
+            #ElseIf AT_3_type = 500
+              AT_3_meetwaarde(1) = AT_meetwaarde(3,1)
+              AT_3_meetwaarde(2) = AT_meetwaarde(3,2)
+              AT_3_meetwaarde(3) = AT_meetwaarde(3,3)
+              AT_3_meetwaarde(4) = AT_meetwaarde(3,4)
+              AT_3_meetwaarde(5) = AT_meetwaarde(3,5)
+              AT_3_meetwaarde(6) = AT_meetwaarde(3,6)
+
+            #EndIf
+          #EndIf
+          AT_3_info = "AT 3 werkt correct."
+
+        Else
+          AT_3_info = "Geen communicatie met AT 3."
+          Status_systeem = Status_systeem OR &b00000100
+        EndIf
+      EndIf
+
+      If AT_4_setup_status = 0 Then
+
+        If AT_meetwaarde(4,1) <> NAN Then
+          #If AT_4_adres > -1 Then
+            #If AT_4_type = 100
+              AT_4_meetwaarde(1) = AT_meetwaarde(4,1)
+              AT_4_meetwaarde(2) = AT_meetwaarde(4,2)
+              AT_4_meetwaarde(3) = AT_meetwaarde(4,3)
+
+            #ElseIf AT_4_type = 200
+              AT_4_meetwaarde(1) = AT_meetwaarde(4,1)
+              AT_4_meetwaarde(2) = AT_meetwaarde(4,2)
+              AT_4_meetwaarde(3) = AT_meetwaarde(4,3)
+              AT_4_meetwaarde(4) = AT_meetwaarde(4,4)
+
+            #ElseIf AT_4_type = 500
+              AT_4_meetwaarde(1) = AT_meetwaarde(4,1)
+              AT_4_meetwaarde(2) = AT_meetwaarde(4,2)
+              AT_4_meetwaarde(3) = AT_meetwaarde(4,3)
+              AT_4_meetwaarde(4) = AT_meetwaarde(4,4)
+              AT_4_meetwaarde(5) = AT_meetwaarde(4,5)
+              AT_4_meetwaarde(6) = AT_meetwaarde(4,6)
+
+            #EndIf
+          #EndIf
+          AT_4_info = "AT 4 werkt correct."
+
+        Else
+          AT_4_info = "Geen communicatie met AT 4."
+          Status_systeem = Status_systeem OR &b00001000
+        EndIf
+      EndIf
+
+      #If Lees_status_informatie_sensoren = 1
+
+        Systeem_status_info = "Status wordt opgevraagd."
+
+        SDI12Recorder (AT_Status(),SDI12_port,sdi_12_adres,"V!",1.0,0)
+
+
+        If AT_1_setup_status = 0 Then
+
+          If AT_Status(1) <> NAN Then
+
+            #If AT_1_type = 100
+              AT_1_Status(1) = AT_Status(1,1)
+
+            #ElseIf AT_1_type = 200
+              AT_1_Status(1) = AT_Status(1,1)
+
+            #ElseIf AT_1_type = 500
+              AT_1_Status(1) = AT_Status(1,1)
+              AT_1_Status(2) = AT_Status(1,2)
+              AT_1_Status(3) = AT_Status(1,3)
+            #EndIf
+
+            AT_1_info = "AT 1 werkt correct."
+            Status_systeem = Status_systeem AND &b11111110
+
+          Else
+            #If AT_1_type = 100
+              AT_1_Status(1) = -99
+
+            #ElseIf AT_1_type = 200
+              AT_1_Status(1) = -99
+
+            #ElseIf AT_1_type = 500
+              AT_1_Status(1) = -99
+              AT_1_Status(2) = -99
+              AT_1_Status(3) = -99
+            #EndIf
+
+            AT_1_info = "Geen communicatie met AT 1."
+            Status_systeem = Status_systeem OR &b00000001
+          EndIf
+        EndIf
+
+        If AT_2_setup_status = 0 Then
+
+          If AT_2_Status(1) <> NAN Then
+            #If AT_2_type = 100
+              AT_2_Status(1) = AT_Status(2,1)
+
+            #ElseIf AT_2_type = 200
+              AT_2_Status(1) = AT_Status(2,1)
+
+            #ElseIf AT_2_type = 500
+              AT_2_Status(1) = AT_Status(2,1)
+              AT_2_Status(2) = AT_Status(2,2)
+              AT_2_Status(3) = AT_Status(2,3)
+            #EndIf
+
+            AT_2_info = "AT 2 werkt correct."
+            Status_systeem = Status_systeem AND &b11111101
+
+          Else
+            #If AT_2_type = 100
+              AT_2_Status(1) = -99
+
+            #ElseIf AT_2_type = 200
+              AT_2_Status(1) = -99
+
+            #ElseIf AT_2_type = 500
+              AT_2_Status(1) = -99
+              AT_2_Status(2) = -99
+              AT_2_Status(3) = -99
+            #EndIf
+
+            AT_2_info = "Geen communicatie met AT 2."
+            Status_systeem = Status_systeem OR &b00000010
+          EndIf
+        EndIf
+
+        If AT_3_setup_status = 0 Then
+
+          If AT_3_Status(1) <> NAN Then
+
+            #If AT_3_type = 100
+              AT_3_Status(1) = AT_Status(3,1)
+
+            #ElseIf AT_3_type = 200
+              AT_3_Status(1) = AT_Status(3,1)
+
+            #ElseIf AT_3_type = 500
+              AT_3_Status(1) = AT_Status(3,1)
+              AT_3_Status(2) = AT_Status(3,2)
+              AT_3_Status(3) = AT_Status(3,3)
+            #EndIf
+
+            AT_3_info = "AT 3 werkt correct."
+            Status_systeem = Status_systeem AND &b11111011
+
+          Else
+            #If AT_3_type = 100
+              AT_3_Status(1) = -99
+
+            #ElseIf AT_3_type = 200
+              AT_3_Status(1) = -99
+
+            #ElseIf AT_3_type = 500
+              AT_3_Status(1) = -99
+              AT_3_Status(2) = -99
+              AT_3_Status(3) = -99
+            #EndIf
+
+            AT_3_info = "Geen communicatie met AT 3."
+            Status_systeem = Status_systeem OR &b00000100
+          EndIf
+        EndIf
+
+        If AT_4_setup_status = 0 Then
+
+          If AT_4_Status(1) <> NAN Then
+
+            #If AT_4_type = 100
+              AT_4_Status(1) = AT_Status(4,1)
+
+            #ElseIf AT_4_type = 200
+              AT_4_Status(1) = AT_Status(4,1)
+
+            #ElseIf AT_4_type = 500
+              AT_4_Status(1) = AT_Status(4,1)
+              AT_4_Status(2) = AT_Status(4,2)
+              AT_4_Status(3) = AT_Status(4,3)
+            #EndIf
+
+            AT_4_info = "AT 4 werkt correct."
+            Status_systeem = Status_systeem AND &b11110111
+
+          Else
+            #If AT_4_type = 100
+              AT_4_Status(1) = -99
+
+            #ElseIf AT_4_type = 200
+              AT_4_Status(1) = -99
+
+            #ElseIf AT_4_type = 500
+              AT_4_Status(1) = -99
+              AT_4_Status(2) = -99
+              AT_4_Status(3) = -99
+            #EndIf
+
+            AT_4_info = "Geen communicatie met AT 4."
+            Status_systeem = Status_systeem OR &b00001000
+          EndIf
+        EndIf
+      #EndIf
+    EndIf
+
+    If Registreer_meting = 1 Then
+      Registreer_meting = 0
+      Controle_meting_uitvoeren = 0
+
+      CallTable MW_AT_1
+
+      #If AT_2_adres > -1 Then
+        CallTable MW_AT_2
+      #EndIf
+
+      #If AT_3_adres > -1 Then
+        CallTable MW_AT_3
+      #EndIf
+
+      #If AT_4_adres > -1 Then
+        CallTable MW_AT_4
+      #EndIf
+
+    EndIf
+
+    Systeem_status_info = "Wacht op volgende scan."
+
+    If Trigger_verzend_call_back_data = 1 Then
+      Trigger_verzend_call_back_data = 0
+      Verzend_call_back_data = 1
+    EndIf
+
+    If Modem_is_aan = 1 AND PPP_verbinding = "0.0.0.0" Then
+      C_geen_IP = C_geen_IP + 1
+    EndIf
+
+  NextScan
+
+  SlowSequence
+
+  Dim Data_FTP_timer
+  Dim Data_call_back_timer
+  Dim Tijd_synchroniseren_timer
+  Dim Time_is_Set
+  Dim Modem_status
+  Dim Sluit_GPRS
+  Dim GSM_comm_aanmelden
+  Dim T_GSM_comm_aanmelden
+  Dim PPP_verbinding_aktief
+  Dim T_IP_ontvangen
+  Dim PPP_is_open
+  Dim modem_afmelden
+  Dim T_modem_afmelden
+  Dim modem_restart
+  Dim T_modem_restart
+  Dim Call_back_Socket As Long
+  Dim Test_1
+  Dim Test_2
+  Dim Tijd_synchronistatie_result
+  Dim verzend_ftp_data_1
+  Dim verzend_ftp_data_2
+  Dim verzend_ftp_data_3
+  Dim verzend_ftp_data_4
+  Dim RemoteFileName_1 As String * 100
+  Dim RemoteFileName_2 As String * 100
+  Dim RemoteFileName_3 As String * 100
+  Dim RemoteFileName_4 As String * 100
+  Dim Tijd_code As String * 25
+  Dim Tijd_string As String * 200
+  Dim Tijd_header As String * 200
+  Dim Huidige_tijd As String * 100
+  Dim delta_tijd
+  Dim Tijd_array(7)
+  Dim Tijd_dev_start
+  Dim Tijd_dev_set
+  Dim Schrikkel_jaar
+  Dim Ontvangen_tijd_juist
+
+  Scan (Scan_time_slow,Scan_unit_slow,3,0)
+
+    If C_geen_IP >= 60 Then
+      Info = 7
+      CallTable Info
+      Restart
+    EndIf
+
+    ' ### Test of modem aangezet moet worden. ###
+    ' ### Test of het modem aangezet moet worden op tijd. ###
+    Test_1 = (MinInDeDag - Modem_aan_tijd - FIX(MinInDeDag/Modem_aan_uit_int) * Modem_aan_uit_int) MOD Modem_aan_uit_int < Modem_uit_tijd - Modem_aan_tijd
+    Test_2 = (MinInDeDag - Modem_aan_tijd - FIX(MinInDeDag/Modem_aan_uit_int) * Modem_aan_uit_int) MOD Modem_aan_uit_int >= 0
+
+    ' ### controle of GPRS aan moet blijven na communicatie ###
+    If Verzend_ftp_data = 0 AND Verzend_call_back_data = 0 AND Modem_handmatig_aan = 0 Then
+      If Modem_aan_tijd < Modem_uit_tijd Then
+        If Test_1 AND Test_2 Then
+          If Modem_is_aan = 0 Then Modem_is_aan = 1
+        Else
+          If Modem_is_aan <> 0 Then
+            Sluit_GPRS = 1
+            Modem_is_aan = 0
+          EndIf
+        EndIf
+
+      ElseIf Modem_aan_tijd > Modem_uit_tijd Then
+        If Test_1 OR Test_2 Then
+          If Modem_is_aan = 0 Then Modem_is_aan = 1
+        Else
+          If Modem_is_aan <> 0 Then
+            Sluit_GPRS = 1
+            Modem_is_aan = 0
+          EndIf
+        EndIf
+
+      ElseIf Modem_is_aan <> 0 Then
+        Sluit_GPRS = 1
+        Modem_is_aan = 0
+      EndIf
+    EndIf
+
+    If (Verzend_ftp_data = 1 OR Verzend_call_back_data = 1 OR Modem_handmatig_aan = 1) AND Modem_is_aan = 0 Then Modem_is_aan = 1
+
+    ' ### GPRS/GSM afmelden ###
+    If Sluit_GPRS = 1 Then
+
+      PortGet(Modem_status,Modem_cont)        'test of modem nog aan staat, dan uitzetten
+
+      If Modem_status = 1 Then
+
+        PPP_afgesloten = 0
+        Modem_info = "PPP afsluiten."
+
+        Timer(0,uSec,2)
+        Do
+          PPP_afgesloten = PPPClose
+          T_PPP_sluiten = Timer(0,uSec,4)/1000000
+        Loop Until (PPP_afgesloten = -1) OR (T_PPP_sluiten >= 10)
+        Timer(0,uSec,3)
+
+        Modem_info = "Modem afmelden."
+
+        SerialOpen(Modem_port,Modem_baud_rate,0,0,1000)
+
+        Timer(0,uSec,2)
+        Do
+          modem_afmelden = SerialOut(Modem_port,"at^SMSO"+ CHR(13),"^SHUTDOWN",1,1000)
+          T_modem_afmelden = Timer(0,uSec,4)/1000000
+        Loop Until (modem_afmelden <> 0) OR (T_modem_afmelden >= 15)
+        Timer(0,uSec,3)
+
+        SerialClose(Modem_port)
+
+        Modem_info = "Modem uitzetten."
+      EndIf
+
+      Delay(0,1,sec)
+      Sluit_GPRS = 0
+      PPP_is_open = 0
+      PortSet(Modem_cont,0)
+      Modem_is_aan = 0
+      Modem_info = "Communicatie afgesloten, modem staat uit."
+    EndIf
+
+    ' ### GSM/GPRS aanmelden ###
+    If Modem_is_aan = 1 Then
+      PPP_is_open = 0
+      Sluit_GPRS = 1
+      T_PPP_sluiten = 0
+      T_modem_afmelden = 0
+      Modem_info = "Modem aanzetten."
+
+      Do While PPP_is_open = 0
+
+        PortSet (Modem_cont ,1 )                'modem aan zetten
+        Delay(0,1,sec)
+
+        SerialOpen(Modem_port,Modem_baud_rate,0,0,1000)
+
+        Timer(0,uSec,2)
+        Do
+          modem_restart = SerialOut(Modem_port,"A","A",1,50)
+          If modem_restart = 0 Then
+            modem_restart = SerialOut(Modem_port,"at+ipr=" + Modem_baud_rate + CHR(13),"OK",1,50)
+            modem_restart = SerialOut(Modem_port,"atX0" + CHR(13),"OK",1,50)
+            modem_restart = SerialOut(Modem_port,"at&d0" + CHR(13),"OK",1,50)
+            modem_restart = SerialOut(Modem_port,"at&W" + CHR(13),"OK",1,50)
+          EndIf
+          T_modem_restart = Timer(0,uSec,4)/1000000
+        Loop Until (modem_restart <> 0) OR (T_modem_restart >= 15)
+        Timer(0,uSec,3)
+
+        If T_modem_restart >= 15 Then ExitDo
+
+        Delay(0,1,sec)
+
+        GSM_comm_aanmelden = 0
+        Modem_info = "Modem aanmelden."
+
+        Timer(0,uSec,2)                'test of modem is aangemeld dan verder anders exit scan
+        Do
+          GSM_comm_aanmelden = SerialOut(Modem_port,"at+creg?"+ CHR(13),"0,5",1,50)
+          If GSM_comm_aanmelden = 0 Then
+            GSM_comm_aanmelden = SerialOut(Modem_port,"at+creg?"+ CHR(13),"0,1",1,50)
+          EndIf
+          T_GSM_comm_aanmelden = Timer(0,uSec,4)/1000000
+        Loop Until (GSM_comm_aanmelden <> 0) OR (T_GSM_comm_aanmelden >= 30)
+        Timer(0,uSec,3)
+
+        If T_GSM_comm_aanmelden >= 30 Then ExitDo
+
+        '##### CSQ waarde opvragen nog uitwerken.
+        SerialFlush (Modem_port)
+        SerialOut(Modem_port,"at+csq"+CHR(13),"",0,10)
+        SerialIn (CSQ_waarde,Modem_port,100,"OK",25)
+
+        SerialClose(Modem_port)
+
+        Modem_info = "Ip-nummer opvragen."
+        PPP_verbinding = "0.0.0.0"
+
+        Timer(0,uSec,2)                'PPP openen. gelukt dan verder ander exit scan
+        Do
+          PPP_verbinding = PPPOpen
+          T_IP_ontvangen = Timer(0,uSec,4)/1000000
+        Loop Until (PPP_verbinding <> "0.0.0.0") OR (T_IP_ontvangen >= 40)
+        Timer(0,uSec,3)
+
+        If T_IP_ontvangen >= 40 Then ExitDo
+
+        Delay(0,1,Sec)
+        PPP_is_open = -1                  'open PPP gelukt ppp_is_open = -1 anders bij volgende scan weer op nieuw
+        Modem_is_aan = -1
+        Sluit_GPRS = 0
+        C_geen_IP = 0
+        Modem_info = "Ip-nummer: " + PPP_verbinding + " ontvangen"
+      Loop
+    EndIf
+
+    ' ### tijdsynchroniseren ###
+    'opvragen de tijd bij de website
+    If Modem_is_aan = -1 AND Tijd_synchroniseren = 1 Then
+
+      Tijd_synchroniseren = 0
+      Timer (6,Sec,2)
+
+      If NTP_server = "" Then
+
+        Tijd_header = ""
+        Tijd_synchronistatie_result = HTTPGet (Tijd_URL,Tijd_string,Tijd_header,500)
+      Else
+
+        Time_is_Set = 0
+        Time_is_Set = NetworkTimeProtocol (NTP_server,Tijd_zone*3600,5000)
+      EndIf
+    EndIf
+
+    If Time_is_Set <> 0 Then
+      Timer (6,Sec,1)
+    EndIf
+
+    'na het ontvangen van informatie controle op juiste waarde en tijd goed zetten.
+    If NTP_server = "" Then
+      If Tijd_synchronistatie_result >= 100 AND Tijd_synchroniseren = -1 Then
+
+        SplitStr (Tijd_array(),Tijd_string,CHR(45)&CHR(58)&CHR(84),6,7)
+        Tijd_array(7) = 0
+
+        Ontvangen_tijd_juist = 0
+
+        If Tijd_array(1) >= 2017 AND Tijd_array(1) <= 2050 Then
+          If Tijd_array(2) >= 1 AND Tijd_array(2) <= 12 Then
+            If Tijd_array(3) >= 1 AND Tijd_array(3) <= 31 Then
+              If Tijd_array(4) >= 0 AND Tijd_array(4) <= 23 Then
+                If Tijd_array(5) >= 0 AND Tijd_array(5) <= 59 Then
+                  If Tijd_array(6) >= 0 AND Tijd_array(6) <= 59 Then
+                    Ontvangen_tijd_juist = 1
+                  EndIf
+                EndIf
+              EndIf
+            EndIf
+          EndIf
+        EndIf
+
+        'tijd vweschil tussen start instructie en hier opvragen om de zien of het in de huidige scan is uitgevoerd.
+        delta_tijd = Timer (6,mSec,1)
+
+        'huidige tijd van de logger opvragen.
+        Huidige_tijd = status.timestamp(1,1)
+
+        'klok variatie nog zonder aanpassing opvragen.
+        Tijd_dev_start = ClockChange
+
+        'alleen de tijd zetten als alle goed is ontvangen en binnen de gestelde tijd.
+        If delta_tijd < 5000 AND Ontvangen_tijd_juist = 1 Then
+
+          'helft van het tijdverschil tussen het vragen en ontvangen van de tijd van de website er bij tellen
+          Tijd_array(7) = FRAC(delta_tijd / 2000) * 1000
+          Tijd_array(6) = Tijd_array(6) + INT(delta_tijd / 2000)
+
+          'van UTC tijd naar locale tijd.
+          Tijd_array(4) = Tijd_array(4) + Tijd_zone
+
+          'test of we over de 60 seconden gaan.
+          'als dat zo is wordt de secondewaarde goed gezet en 1 bij de minuutwaarde geteld.
+          If Tijd_array(6) > 59 Then
+            Tijd_array(6) = Tijd_array(6) - 60
+            Tijd_array (5) = Tijd_array(5) + 1
+          EndIf
+
+          'test of we over de 60 minuten gaan.
+          'als dat zo is wordt de minuutwaarde goed gezet en 1 bij de uurwaarde geteld.
+          If Tijd_array(5) > 59 Then
+            Tijd_array(5) = Tijd_array(5) - 60
+            Tijd_array (4) = Tijd_array(4) + 1
+          EndIf
+
+          'test of we over de 24 uur gaan.
+          'als dat zo is wordt de uurwaarde goed gezet en 1 bij de dagwaarde geteld.
+          If Tijd_array(4) > 23 Then
+            Tijd_array(4) = Tijd_array(4) - 24
+            Tijd_array (3) = Tijd_array(3) + 1
+          EndIf
+
+          'tes of het een schrikkeljaar is.
+          If Tijd_array(1) MOD 4 <> 0 Then
+            Schrikkel_jaar = 0
+          ElseIf Tijd_array(1) MOD 400 = 0 Then
+            Schrikkel_jaar = 1
+          ElseIf Tijd_array(1) MOD 100 = 0 Then
+            Schrikkel_jaar = 0
+          Else
+            Schrikkel_jaar = 1
+          EndIf
+
+          'test of we te veel dagen in de maand krijgen.
+          'maand 2 afhankelijk van het schrikkeljaar 28 of 29.
+          'maand 4, 6, 9 en 11 max 30.
+          'maand 1, 3, 5, 7, 8, 10 en 12 max 31.
+          'bij te veel dag aanpassen en maand 1 ophogen.
+          If Tijd_array(3) > 28 AND Tijd_array(2) = 2 AND Schrikkel_jaar = 0 Then
+            Tijd_array(3) = Tijd_array(3) - 28
+            Tijd_array(2) = Tijd_array(2) + 1
+          ElseIf Tijd_array(3) > 29 AND Tijd_array(2) = 2 Then
+            Tijd_array(3) = Tijd_array(3) - 29
+            Tijd_array(2) = Tijd_array(2) + 1
+          ElseIf Tijd_array(3) > 30 AND (Tijd_array(2) = 4 OR Tijd_array(2) = 6 OR Tijd_array(2) = 9 OR Tijd_array(2) = 11) Then
+            Tijd_array(3) = Tijd_array(3) - 30
+            Tijd_array(2) = Tijd_array(2) + 1
+          ElseIf Tijd_array(3) > 31 Then
+            Tijd_array(3) = Tijd_array(3) - 31
+            Tijd_array(2) = Tijd_array(2) + 1
+          EndIf
+
+          'test of we te veel maanden in het jaar krijgen.
+          'anders maand aanpassen en het jaar 1 ophogen.
+          If Tijd_array(2) > 12 Then
+            Tijd_array(2) = Tijd_array(2) - 12
+            Tijd_array(1) = Tijd_array(1) + 1
+          EndIf
+
+          Tijd_synchroniseren = 0
+          ClockSet (Tijd_array())
+          Delay (1,1000,mSec)
+          Tijd_dev_set = ClockChange
+
+          Info = 1
+          CallTable Info
+          Tijd_dev_set = 0
+
+        Else
+          Tijd_synchroniseren = 0
+          Info = 2
+          CallTable Info
+
+        EndIf
+      EndIf
+    EndIf
+
+    ' ### Call Back data verzenden ###
+    If Modem_is_aan = -1 AND Verzend_call_back_data = 1 Then
+
+      Verzend_call_back_data = 2
+      Timer (5,Sec,2)
+      Call_back_Socket = TCPOpen (IP_URL_call_back_server,Call_back_port,0)
+      SendVariables (Verzend_call_back_data,Call_back_Socket,4094,4094,0000,1000,"Public","Callback",Info,1)
+
+    EndIf
+
+    If Verzend_call_back_data = 0 Then
+      Timer (5,Sec,1)
+    EndIf
+
+    ' ### FTP data verzenden ###
+    If Modem_is_aan = -1 AND Verzend_ftp_data = 1 Then
+
+      Verzend_ftp_data = 2
+      Timer (4,Sec,2)
+
+      verzend_ftp_data_1 = 1
+      verzend_ftp_data_2 = 1
+      verzend_ftp_data_3 = 1
+      verzend_ftp_data_4 = 1
+
+      Tijd_code =  "_" + rTime(1) + "-" + FormatFloat (rTime(2),"%02.0f") + "-" + FormatFloat (rTime(3),"%02.0f") + "_" + FormatFloat (rTime(4),"%02.0f") + FormatFloat (rTime(5),"%02.0f") + FormatFloat (rTime(6),"%02.0f")
+
+      RemoteFileName_1 = "aquatroll/" + Locatie_code + AT_sensor_1_code + Tijd_code + ".dat"
+      verzend_ftp_data_1 = FTPClient (IP_URL_ftp_server,User_ftp,Pass_ftp,"MW_AT_1",RemoteFileName_1,2,0,0,Min,1012)
+
+      RemoteFileName_2 = "aquatroll/" + Locatie_code + AT_sensor_2_code + Tijd_code + ".dat"
+
+      #If AT_2_adres <> 0 Then
+        verzend_ftp_data_2 = "aquatroll/" + FTPClient (IP_URL_ftp_server,User_ftp,Pass_ftp,"MW_AT_2",RemoteFileName_2,2,0,0,Min,1012)
+      #EndIf
+
+      RemoteFileName_3 = "aquatroll/" + Locatie_code + AT_sensor_3_code + Tijd_code + ".dat"
+      #If AT_3_adres <> 0 Then
+        verzend_ftp_data_3 = FTPClient (IP_URL_ftp_server,User_ftp,Pass_ftp,"MW_AT_3",RemoteFileName_3,2,0,0,Min,1012)
+      #EndIf
+
+      RemoteFileName_4 = Locatie_code + AT_sensor_4_code + Tijd_code + ".dat"
+      #If AT_4_adres <> 0 Then
+        verzend_ftp_data_4 = FTPClient (IP_URL_ftp_server,User_ftp,Pass_ftp,"MW_AT_4",RemoteFileName_4,2,0,0,Min,1012)
+      #EndIf
+
+    EndIf
+
+    If verzend_ftp_data_1 < 1 AND verzend_ftp_data_2 < 1 AND verzend_ftp_data_3 < 1 AND verzend_ftp_data_4 < 1 Then
+      Verzend_ftp_data = 0
+      Timer (4,Sec,1)
+    EndIf
+
+    ' ### geen communicatie afvangen ###
+    Data_FTP_timer = Timer (4,Sec,4)
+    Data_call_back_timer = Timer (5,Sec,4)
+    Tijd_synchroniseren_timer = Timer (6,sec,4)
+
+    If Data_FTP_timer >= 300 Then
+      Verzend_ftp_data = 0
+      Timer (4,Sec,3)
+      Info = 4
+      CallTable Info
+      Sluit_GPRS = 1
+      Modem_is_aan = 0
+    EndIf
+
+    If Data_call_back_timer >= 300 OR Verzend_call_back_data >= 5 Then
+      Verzend_call_back_data = 0
+      Timer (5,Sec,3)
+      Info = 5
+      CallTable Info
+      Sluit_GPRS = 1
+      Modem_is_aan = 0
+      Restart
+    EndIf
+
+    If Tijd_synchroniseren_timer >= 90 OR Time_is_Set = NAN Then
+      Tijd_synchroniseren = 0
+      Timer (6,Sec,3)
+      Info = 6
+      CallTable Info
+      Sluit_GPRS = 1
+      Modem_is_aan = 0
+    EndIf
+
+    PPP_verbinding_aktief = ComPortIsActive (Call_back_Socket)
+
+  NextScan
+
+EndProg
+

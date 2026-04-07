@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Waarschuwing – Victron Blue Smart Charger en LiFePO4 batterij</title>
+
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      margin:40px;
+      line-height:1.6;
+      background:#ffffff;
+      color:#222;
+    }
+
+    h1{
+      color:#003366;
+      border-bottom:3px solid #003366;
+      padding-bottom:10px;
+    }
+
+    h2{
+      color:#003366;
+      margin-top:40px;
+    }
+
+    .warning{
+      background:#ffe6e6;
+      border-left:6px solid red;
+      padding:20px;
+      font-weight:bold;
+      margin:30px 0;
+    }
+
+    .figure{
+      margin:30px 0;
+      text-align:center;
+    }
+
+    .figure img{
+      max-width:700px;
+      border:1px solid #ccc;
+      box-shadow:0px 3px 8px rgba(0,0,0,0.2);
+    }
+
+    .caption{
+      font-size:0.9em;
+      color:#444;
+      margin-top:8px;
+    }
+
+    .step{
+      background:#f4f7fb;
+      padding:20px;
+      border-left:6px solid #2b6cb0;
+      margin:25px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>WAARSCHUWING – Correct instellen van een LiFePO4 batterij op de Victron Blue Smart Charger</h1>
+
+  <div class="warning">
+    ⚠ BELANGRIJK:<br>
+    Wanneer een <b>LiFePO4 batterij</b> wordt geladen met de Victron Blue Smart Charger, moet de batterij-instelling in de app correct worden ingesteld op <b>Smart Lithium (LiFePO4)</b>.<br><br>
+    Indien de lader ingesteld blijft op <b>Li-ion</b> of een loodzuurprofiel, kan de batterij <b>beschadigd raken of een sterk verminderde levensduur krijgen</b>.
+  </div>
+
+  <h2>1. Batterijtype</h2>
+
+  <div class="figure">
+    <img src="01_lifepo4_batterij.jpeg" alt="Voorbeeld van een LiFePO4 batterij (12.8V 100Ah).">
+    <div class="caption">Fig.1 – Voorbeeld van een LiFePO4 batterij (12.8V 100Ah).</div>
+  </div>
+
+  <p>
+    Deze batterij is een <b>Lithium Iron Phosphate (LiFePO4)</b> batterij.<br>
+    Dit batterijtype vereist een specifiek laadprofiel dat verschilt van klassieke lithium-ion of loodzuur batterijen.
+  </p>
+
+  <h2>2. Gebruikte lader</h2>
+
+  <div class="figure">
+    <img src="02_victron_blue_smart_charger.jpg" alt="Victron Blue Smart Charger 12V / 5A met Bluetooth configuratie.">
+    <div class="caption">Fig.2 – Victron Blue Smart Charger 12V / 5A met Bluetooth configuratie.</div>
+  </div>
+
+  <p>De Victron Blue Smart Charger wordt geconfigureerd via de <b>VictronConnect app</b>.</p>
+
+  <h2>3. VictronConnect app openen</h2>
+
+  <div class="figure">
+    <img src="03_victronconnect_app_start.jpg" alt="Start de VictronConnect app op de smartphone.">
+    <div class="caption">Fig.3 – Start de VictronConnect app op de smartphone.</div>
+  </div>
+
+  <h2>4. Lader status</h2>
+
+  <div class="figure">
+    <img src="04_lader_status_druppellading.jpg" alt="Overzicht van laadstatus (spanning, stroom en laadfase).">
+    <div class="caption">Fig.4 – Overzicht van laadstatus (spanning, stroom en laadfase).</div>
+  </div>
+
+  <p>In dit voorbeeld staat de batterij reeds in <b>druppellading</b>.</p>
+
+  <h2>5. Batterijtype selecteren</h2>
+
+  <div class="figure">
+    <img src="05_selecteer_lifepo4_profiel.jpg" alt="Kies het juiste batterijtype.">
+    <div class="caption">Fig.5 – Kies het juiste batterijtype.</div>
+  </div>
+
+  <div class="step">
+    Selecteer altijd:<br><br>
+    <b>Smart Lithium (LiFePO4)</b>
+  </div>
+
+  <p>Andere opties zoals <b>PzS traction</b> of standaard lithium kunnen verkeerde laadspanningen gebruiken.</p>
+
+  <h2>6. Accu instellingen openen</h2>
+
+  <div class="figure">
+    <img src="06_accu_instellingen_menu.jpg" alt="Accu configuratiemenu.">
+    <div class="caption">Fig.6 – Accu configuratiemenu.</div>
+  </div>
+
+  <p>Hier kan men kiezen tussen:</p>
+
+  <ul>
+    <li>ingebouwde instellingen</li>
+    <li>gebruikersinstellingen</li>
+    <li>voorinstellingen</li>
+  </ul>
+
+  <h2>7. Controle van laadspanningen</h2>
+
+  <div class="figure">
+    <img src="07_lifepo4_laadparameters.jpg" alt="Typische LiFePO4 laadinstellingen.">
+    <div class="caption">Fig.7 – Typische LiFePO4 laadinstellingen.</div>
+  </div>
+
+  <p>Typische waarden voor een 12V LiFePO4 batterij:</p>
+
+  <ul>
+    <li>Absorptie: ~14.2 – 14.4V</li>
+    <li>Druppelspanning: ~13.5 – 13.8V</li>
+    <li>Opslag: ~13.2V</li>
+  </ul>
+
+  <h2>8. Controle op de lader zelf</h2>
+
+  <p>Controleer dat de lader niet in een verkeerd laadprofiel staat.</p>
+
+  <div class="warning">
+    ⚠ Samenvatting:<br><br>
+    Gebruik bij LiFePO4 batterijen altijd:<br><br>
+    <b>VictronConnect → Smart Lithium (LiFePO4)</b><br><br>
+    Gebruik <b>NOOIT</b> standaard Li-ion of loodzuur instellingen.
+  </div>
+
+  <h2>Conclusie</h2>
+
+  <p>Een verkeerd laadprofiel kan leiden tot:</p>
+
+  <ul>
+    <li>verminderde batterijcapaciteit</li>
+    <li>overladen of onderladen</li>
+    <li>beschadiging van het BMS</li>
+    <li>sterk verkorte levensduur</li>
+  </ul>
+
+  <p>Controleer daarom altijd de instellingen in de VictronConnect app voordat de batterij langdurig wordt geladen.</p>
+</body>
+</html>
