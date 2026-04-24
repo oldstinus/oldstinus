@@ -2,12 +2,14 @@
 setlocal
 
 set "ROOT=%~dp0"
-set "PYTHON_EXE=%ROOT%.venv\Scripts\python.exe"
+set "PYTHON_EXE=%ROOT%.venv_oldstinus\Scripts\python.exe"
+set "CATALOG_SCRIPT=%ROOT%generate_oldstinus_catalog.py"
+set "OUTPUT_HTML=%ROOT%oldstinus_overzicht.html"
 
 if exist "%PYTHON_EXE%" (
-  "%PYTHON_EXE%" "%ROOT%docs\generate_oldstinus_catalog.py"
+  "%PYTHON_EXE%" "%CATALOG_SCRIPT%"
 ) else (
-  python "%ROOT%docs\generate_oldstinus_catalog.py"
+  python "%CATALOG_SCRIPT%"
 )
 
-start "" "%ROOT%docs\oldstinus_overzicht.html"
+start "" "%OUTPUT_HTML%"

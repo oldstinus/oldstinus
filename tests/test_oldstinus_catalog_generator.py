@@ -51,7 +51,7 @@ class OldstinusCatalogGeneratorTests(unittest.TestCase):
         self.assertEqual(launcher_path, ROOT / "tests" / Path(item.launcher_rel_path).name)
         self.assertIn(f'set "PROJECT_DIR={ROOT}"', launcher_text)
         self.assertIn(f'set "SCRIPT_PATH={ROOT / "Super-generiek_csv_tijdgrafiek_gui.py"}"', launcher_text)
-        self.assertIn(f'set "VENV_ACTIVATE={ROOT / ".venv" / "Scripts" / "activate.bat"}"', launcher_text)
+        self.assertIn(f'set "VENV_ACTIVATE={ROOT / ".venv_oldstinus" / "Scripts" / "activate.bat"}"', launcher_text)
         self.assertIn('start "" "%CODE_EXE%" --new-window "%PROJECT_DIR%" "%SCRIPT_PATH%"', launcher_text)
         self.assertNotIn(f'set "PROJECT_DIR={ROOT / "Super-generiek_csv_tijdgrafiek_gui.py"}"', launcher_text)
 

@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Offline Kalibratie Drukreferentie Diver OSSI</title>
+  <style>
+    :root{--bg:#f5eee2;--card:#fffaf2ee;--ink:#231b12;--muted:#6d604f;--line:#d7c6ad;--accent:#0f6e61;--accent2:#b45b2f}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#eee2cd,#f7f2e8);color:var(--ink);font-family:"Trebuchet MS","Gill Sans",sans-serif;overflow-x:hidden}
+    .page{max-width:1280px;margin:0 auto;padding:20px}
+    .hero,.layout,.stats,.buttons,.opts{display:grid;gap:14px;align-items:start}
+    .hero{grid-template-columns:1.3fr .7fr;margin-bottom:14px}
+    .layout{grid-template-columns:minmax(320px,380px) minmax(0,1fr)}
+    .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .buttons,.opts{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+    .panel{background:var(--card);border:1px solid #d9c6a544;border-radius:20px;padding:18px;box-shadow:0 12px 40px #51371514;text-align:left;min-width:0;overflow:hidden}
+    h1,h2{margin:0 0 10px;font-family:Georgia,"Palatino Linotype",serif} h1{font-size:clamp(2rem,3vw,3rem);line-height:1}
+    p,.hint{color:var(--muted);line-height:1.45} .hint{font-size:.88rem}
+    p,.hint,label,th,td,button,strong,.pill,code{overflow-wrap:anywhere;word-break:break-word}
+    label{display:block;margin:9px 0 6px}
+    input,select,button,textarea{width:100%;max-width:100%;min-width:0;padding:10px 12px;border-radius:14px;border:1px solid var(--line);font:inherit;background:#fff}
+    button{white-space:normal;line-height:1.25;min-height:46px;display:flex;align-items:center;justify-content:center;text-align:center}
+    input[type="radio"],input[type="checkbox"]{width:auto;margin-right:8px;accent-color:var(--accent)}
+    .choice{display:block;padding:11px;border:1px solid #d8c6aa;border-radius:16px;background:#fff}
+    .choice span{display:block;margin-top:5px;color:var(--muted);font-size:.86rem}
+    .choices{display:grid;gap:8px} .section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #d9c8ae80;min-width:0} .section:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+    .primary{background:linear-gradient(135deg,var(--accent),#1d8c7d);color:#fff;border-color:#0f6e61}
+    .secondary{background:#def0eb;border-color:#9cc7bc;color:#174740}
+    .pill{display:inline-flex;max-width:100%;padding:4px 10px;border-radius:999px;font-size:.8rem;border:1px solid #0001;background:#fff}
+    .ok{background:#def0eb;color:#174740}.warn{background:#f6e0d6;color:#7d341f}
+    .stat strong{display:block;font-size:1.35rem;color:var(--accent);margin:4px 0}
+    table{width:100%;border-collapse:collapse;font-size:.92rem;table-layout:fixed} th,td{text-align:left;padding:9px 8px;border-bottom:1px solid #d8c6aa66;vertical-align:top} th{color:var(--muted)}
+    canvas{display:block;width:100%;height:auto;max-width:100%;border:1px solid #d9c8ae80;border-radius:18px;background:#fff;cursor:crosshair}
+    textarea{min-height:120px;resize:vertical;font-family:Consolas,monospace;font-size:.85rem}
+    code{font-family:Consolas,monospace}
+    .hero > *, .layout > *, .stats > *, .buttons > *, .opts > *, main, aside, section{min-width:0}
+    @media (max-width:1080px){.hero,.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:720px){.stats,.buttons,.opts{grid-template-columns:1fr}.page{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="panel">
+        <h1>Offline verwerking van Drukreferentie, Diver en OSSI</h1>
+        <p>Deze pagina verwerkt geregistreerde bestanden: drukreferentie-data uit de digitale displayherkenning, Diver <code>.mon</code> en OSSI <code>.csv</code>.</p>
+      </div>
+      <div class="panel">
+        <h2>Workflow</h2>
+        <p class="hint">1. laad de drie bestanden in<br>2. pieken in de drukreferentie worden opgeschoond<br>3. Diver alleen of Diver plus OSSI wordt gekalibreerd op de drukreferentie<br>4. tijdreeks, rapport, PDF en gefilterde CSV-exports komen direct uit de browser</p>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <div class="section">
+          <h2>Bestanden</h2>
+          <label for="ocrFile">Drukreferentie CSV</label>
+          <input id="ocrFile" type="file" accept=".csv,.txt" />
+          <div class="hint">Bij relatieve tijden kan de start komen uit de filenaam, uit het referentiebestand zelf of handmatig via datum+tijd.</div>
+          <label for="ocrTimeSource">Tijdbron drukreferentie</label>
+          <select id="ocrTimeSource">
+            <option value="filename" selected>Uit filenaam / eerste regel</option>
+            <option value="file">Uit referentiebestand</option>
+            <option value="manual">Handmatig via kalender + tijd</option>
+          </select>
+          <div class="opts" style="margin-top:10px">
+            <div><label for="ocrManualDate">Handmatige datum drukreferentie</label><input id="ocrManualDate" type="date" /></div>
+            <div><label for="ocrManualTime">Handmatige tijd drukreferentie</label><input id="ocrManualTime" type="time" step="1" /></div>
+            <div class="hint">Gebruik <code>Uit referentiebestand</code> als het bestand absolute datums of een header-starttijd bevat.</div>
+          </div>
+          <label for="diverFile">Diver .mon</label>
+          <input id="diverFile" type="file" accept=".mon,.txt" />
+          <label for="ossiFiles">OSSI CSV-bestanden</label>
+          <input id="ossiFiles" type="file" accept=".csv,.txt" multiple />
+          <label for="ossiTimeSource">Tijdbron OSSI</label>
+          <select id="ossiTimeSource">
+            <option value="filename" selected>Uit filenaam / OSSI-header</option>
+            <option value="reference">Overnemen van drukreferentie</option>
+            <option value="manual">Handmatig via kalender + tijd</option>
+          </select>
+          <div class="opts" style="margin-top:10px">
+            <div><label for="ossiManualDate">Handmatige datum OSSI</label><input id="ossiManualDate" type="date" /></div>
+            <div><label for="ossiManualTime">Handmatige tijd OSSI</label><input id="ossiManualTime" type="time" step="1" /></div>
+            <div class="hint">Bij meerdere OSSI-bestanden loopt de tijd na het eerste bestand sequentieel door.</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Kalibratie</h2>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="mode" value="diver_only" checked />Alleen Diver<span>OSSI blijft onveranderd.</span></label>
+            <label class="choice"><input type="radio" name="mode" value="diver_and_ossi" />Diver en OSSI<span>Beide sensoren worden op de drukreferentie afgestemd.</span></label>
+            <label class="choice"><input type="radio" name="mode" value="none" />Alleen vergelijken<span>Wel filteren en visualiseren, geen automatische kalibratie.</span></label>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="buttons" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:10px">
+            <button id="shiftDownRunBtn" class="secondary" type="button">Tijd omlaag</button>
+            <button id="shiftStopBtn" class="secondary" type="button" disabled>Stop tijdloop</button>
+            <button id="shiftUpRunBtn" class="secondary" type="button">Tijd omhoog</button>
+            <button id="autoBestShiftBtn" class="primary" type="button">Zoek beste R2</button>
+            <button id="processBtn" class="primary">Verwerk bestanden</button>
+            <button id="updateBtn" class="secondary">Update data</button>
+          </div>
+          <h2>Opties</h2>
+          <div class="opts">
+            <div><label for="ocrUnit">Drukreferentie drukeenheid</label><select id="ocrUnit"><option value="raw" selected>Geen conversie</option><option value="pa">Pa</option><option value="bar">bar naar Pa</option><option value="mbar">mbar naar Pa</option><option value="mmh2o">mmH2O naar Pa</option></select></div>
+            <div><label for="sampleRate">OSSI sample rate fallback</label><input id="sampleRate" type="number" step="0.1" value="8" /></div>
+            <div><label for="toleranceSec">Match tolerantie (s)</label><input id="toleranceSec" type="number" step="0.1" value="2" /></div>
+          </div>
+          <div class="opts" style="margin-top:10px">
+            <div><label for="referenceOffset">Drukreferentie offset</label><input id="referenceOffset" type="number" step="0.1" value="0" /></div>
+            <div><label for="diverOffset">Diver offset</label><input id="diverOffset" type="number" step="0.1" value="0" /></div>
+            <div><label for="diverShift">Diver tijdoffset</label><input id="diverShift" type="number" step="0.1" value="0" /></div>
+          </div>
+          <div class="opts" style="margin-top:10px">
+            <div><label for="ossiShift">OSSI tijdoffset</label><input id="ossiShift" type="number" step="0.1" value="0" /></div>
+            <div><label for="spikeStep">Max drukreferentie pieksprong</label><input id="spikeStep" type="number" step="1" value="80" /></div>
+            <div><label>&nbsp;</label><label class="hint"><input id="ossiMultiply" type="checkbox" checked />OSSI x1000</label></div>
+          </div>
+          <div class="opts" style="margin-top:10px">
+            <div><label for="autoShiftRange">Zoekbereik Diver tijdoffset (s)</label><input id="autoShiftRange" type="number" step="0.1" value="10" /></div>
+            <div><label for="autoShiftStep">Stap Diver tijdoffset (s)</label><input id="autoShiftStep" type="number" step="0.01" value="0.1" /></div>
+            <div class="hint">Automatische scan zoekt rond de huidige Diver tijdoffset op basis van de beste lineaire fit R2.</div>
+          </div>
+          <div class="opts" style="margin-top:10px">
+            <div class="hint"><label class="hint"><input id="ossiUseHeaderRate" type="checkbox" checked />Gebruik OSSI sample rate uit header indien beschikbaar</label></div>
+            <div class="hint">Vink uit om altijd de fallback sample rate hierboven te forceren.</div>
+            <div></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="buttons" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+            <button id="saveAllBtn" class="secondary" disabled>Sla alles op</button>
+            <button id="downloadCombinedBtn" class="secondary" disabled>Download combined CSV</button>
+            <button id="downloadReportBtn" disabled>Download rapport CSV</button>
+            <button id="downloadPdfBtn" class="secondary" disabled>Download rapport PDF</button>
+          </div>
+          <div class="hint" style="margin-top:10px">Browserbeveiliging laat niet toe om de map van het gekozen bronbestand automatisch te kennen. Met <code>Sla alles op</code> kies je die map eenmaal en daarna worden combined CSV, rapport CSV, rapport PDF en de gefilterde sensor-CSV's daar direct opgeslagen.</div>
+        </div>
+
+        <div class="section">
+          <h2>Log</h2>
+          <textarea id="log" readonly></textarea>
+        </div>
+      </aside>
+
+      <main style="display:grid;gap:14px">
+        <section class="stats">
+          <div class="panel stat"><div id="ocrBadge" class="pill warn">Drukreferentie niet geladen</div><strong id="ocrCount">0</strong><div class="hint">drukreferentiepunten na filtering</div></div>
+          <div class="panel stat"><div id="diverBadge" class="pill warn">Diver niet geladen</div><strong id="diverCount">0</strong><div class="hint">Diver meetpunten</div></div>
+          <div class="panel stat"><div id="ossiBadge" class="pill warn">OSSI niet geladen</div><strong id="ossiCount">0</strong><div class="hint">OSSI meetpunten</div></div>
+          <div class="panel stat"><div id="modeBadge" class="pill ok">nog niet verwerkt</div><strong id="combinedCount">0</strong><div class="hint">punten in combined export</div></div>
+        </section>
+
+        <section class="panel">
+          <h2>Tijdreeks</h2>
+          <p class="hint">Sleep op de grafiek om een tijdsselectie te maken. Gebruik <code>Update data</code> na een optie-wijziging. <code>ArrowUp</code> en <code>ArrowDown</code> passen de Diver tijdoffset live toe en herberekenen de kalibratie op de huidige gefilterde data en selectie. Verwijderen van pieken haalt de geselecteerde data uit drukreferentie en Diver/OSSI.</p>
+          <div class="buttons" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:10px">
+            <button id="clearSelBtn" class="secondary">Selectie wissen</button>
+            <button id="dropSelBtn" class="secondary">Verwijder selectie</button>
+            <button id="dropSpikesBtn" class="secondary">Verwijder pieken</button>
+            <button id="zoomSelBtn" class="secondary">Zoom op selectie</button>
+            <button id="recalcSelBtn" class="primary">Herbereken op selectie</button>
+          </div>
+          <canvas id="timeCanvas" width="920" height="360"></canvas>
+        </section>
+
+        <section class="panel">
+          <h2>Kalibratierapport</h2>
+          <p class="hint">Kalibratieformule: y (werkelijke/gekalibreerde druk) = a * x (gemeten sensorwaarde) + b. Voor Diver is x de gemeten Diverdruk.</p>
+          <table><thead><tr><th>Sensor</th><th>Toegepast</th><th>Punten</th><th>a (slope)</th><th>b (intercept)</th><th>R2</th><th>Opmerking</th></tr></thead><tbody id="reportBody"></tbody></table>
+        </section>
+
+        <section class="panel">
+          <h2>XY met trendlijn</h2>
+          <p class="hint">Voor Diver: x = gemeten Diverdruk en y = werkelijke/gekalibreerde druk. Voor andere metingen: x = Diver-meting.</p>
+          <canvas id="xyCanvas" width="920" height="360"></canvas>
+        </section>
+
+        <section class="panel">
+          <h2>Druksamenvatting</h2>
+          <table><thead><tr><th>Reeks</th><th>Start</th><th>Einde</th><th>Max</th><th>Punten</th></tr></thead><tbody id="summaryBody"></tbody></table>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    const state={reference:[],diver:[],ossi:[],combined:[],reports:[],rawReference:[],rawDiver:[],rawOssi:[]};
+    const selection={start:null,end:null};
+    let chartScale={minX:null,maxX:null,minY:null,maxY:null}, dragStart=null, selectionPreview=null, zoomRange=null, shiftRunTimer=null, shiftSearchActive=false, cancelShiftSearch=false, outputDirHandle=null;
+    function adjustCanvasSize(){
+      const rect=ui.timeCanvas.getBoundingClientRect();
+      const targetW=Math.max(600,Math.round(rect.width));
+      if(ui.timeCanvas.width!==targetW){
+        ui.timeCanvas.width=targetW;
+        ui.timeCanvas.height=Math.round(targetW*360/920);
+      }
+    }
+    const el=id=>document.getElementById(id);
+    const ui={
+      ocrFile:el("ocrFile"),diverFile:el("diverFile"),ossiFiles:el("ossiFiles"),
+      ocrTimeSource:el("ocrTimeSource"),ocrManualDate:el("ocrManualDate"),ocrManualTime:el("ocrManualTime"),
+      ossiTimeSource:el("ossiTimeSource"),ossiManualDate:el("ossiManualDate"),ossiManualTime:el("ossiManualTime"),
+      ocrUnit:el("ocrUnit"),sampleRate:el("sampleRate"),toleranceSec:el("toleranceSec"),ossiUseHeaderRate:el("ossiUseHeaderRate"),
+      referenceOffset:el("referenceOffset"),diverOffset:el("diverOffset"),diverShift:el("diverShift"),
+      ossiShift:el("ossiShift"),spikeStep:el("spikeStep"),ossiMultiply:el("ossiMultiply"),autoShiftRange:el("autoShiftRange"),autoShiftStep:el("autoShiftStep"),
+      shiftDownRunBtn:el("shiftDownRunBtn"),shiftStopBtn:el("shiftStopBtn"),shiftUpRunBtn:el("shiftUpRunBtn"),autoBestShiftBtn:el("autoBestShiftBtn"),
+      processBtn:el("processBtn"),updateBtn:el("updateBtn"),saveAllBtn:el("saveAllBtn"),downloadCombinedBtn:el("downloadCombinedBtn"),downloadReportBtn:el("downloadReportBtn"),downloadPdfBtn:el("downloadPdfBtn"),
+      log:el("log"),
+      ocrBadge:el("ocrBadge"),diverBadge:el("diverBadge"),ossiBadge:el("ossiBadge"),modeBadge:el("modeBadge"),
+      ocrCount:el("ocrCount"),diverCount:el("diverCount"),ossiCount:el("ossiCount"),combinedCount:el("combinedCount"),
+      reportBody:el("reportBody"),summaryBody:el("summaryBody"),
+      timeCanvas:el("timeCanvas"),xyCanvas:el("xyCanvas"),
+      clearSelBtn:el("clearSelBtn"),dropSelBtn:el("dropSelBtn"),dropSpikesBtn:el("dropSpikesBtn"),zoomSelBtn:el("zoomSelBtn"),recalcSelBtn:el("recalcSelBtn"),
+    };
+    const mode=()=>document.querySelector('input[name="mode"]:checked').value;
+    const log=m=>{ui.log.value+=`[${new Date().toLocaleTimeString("nl-BE",{hour12:false})}] ${m}\n`;ui.log.scrollTop=ui.log.scrollHeight};
+    const clearLog=()=>{ui.log.value=""};
+    const num=v=>{const s=String(v??"").trim().replace(/\s+/g,"").replace(",",".");return Number(s)};
+    const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    const safeFilePart=s=>String(s??"").replace(/\.[^.]+$/,"").replace(/[<>:"/\\|?*\x00-\x1F]+/g,"_").replace(/\s+/g,"_").replace(/_+/g,"_").replace(/^_+|_+$/g,"");
+    const exportBaseStem=()=>safeFilePart(ui.diverFile.files[0]?.name)||safeFilePart(ui.ocrFile.files[0]?.name)||safeFilePart(ui.ossiFiles.files[0]?.name)||"offline_kalibratie";
+    function exportFileName(kind){
+      const stem=exportBaseStem();
+      if(kind==="combined_csv")return `${stem}_combined_ocr_diver_ossi.csv`;
+      if(kind==="report_csv")return `${stem}_kalibratie_rapport.csv`;
+      if(kind==="report_pdf")return `${stem}_kalibratie_rapport.pdf`;
+      if(kind==="reference_csv")return `${stem}_drukreferentie_filtered.csv`;
+      if(kind==="diver_csv")return `${stem}_diver_filtered.csv`;
+      if(kind==="ossi_csv")return `${stem}_ossi_filtered.csv`;
+      return `${stem}_${kind}`;
+    }
+    const delim=t=>{const s=t.split(/\r?\n/).find(x=>x.trim())||"";const c=[[";",(s.match(/;/g)||[]).length],[",",(s.match(/,/g)||[]).length],["\t",(s.match(/\t/g)||[]).length]].sort((a,b)=>b[1]-a[1]);return c[0][1]>0?c[0][0]:","};
+    function splitLine(line,d){if(d!==","&&d!==";")return line.split(d);let o=[],cur="",q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){q=!q;continue}if(ch===d&&!q){o.push(cur);cur=""}else cur+=ch}o.push(cur);return o}
+    const stripBom=text=>String(text??"").replace(/^\uFEFF/,"");
+    async function readTextFile(file){
+      const buffer=await file.arrayBuffer();
+      const bytes=new Uint8Array(buffer);
+      const decode=(encoding,fatal=false)=>{
+        try{return stripBom(new TextDecoder(encoding,{fatal}).decode(bytes))}catch{return null}
+      };
+      const utf8=decode("utf-8",true);
+      if(utf8!==null)return utf8;
+      const ansi=decode("windows-1252");
+      if(ansi!==null)return ansi;
+      const latin=decode("iso-8859-1");
+      if(latin!==null)return latin;
+      return stripBom(await file.text());
+    }
+    function parseDateLoose(v){const t=String(v??"").trim();if(!t)return null;const d1=new Date(t);if(!Number.isNaN(d1.getTime()))return d1;const t2=t.replace(/\./g,"/").replace(/(\d{2})\/(\d{2})\/(\d{4})/,"$3-$2-$1");const d2=new Date(t2);return Number.isNaN(d2.getTime())?null:d2}
+    function parseFilenameStamp(datePart,timePart){let y,m,d;if(datePart.length===8){y=Number(datePart.slice(0,4));m=Number(datePart.slice(4,6));d=Number(datePart.slice(6,8))}else if(datePart.length===6){const yy=Number(datePart.slice(0,2));y=yy>=70?1900+yy:2000+yy;m=Number(datePart.slice(2,4));d=Number(datePart.slice(4,6))}else return null;const hh=Number(timePart.slice(0,2)),mm=Number(timePart.slice(2,4)),ss=Number(timePart.slice(4,6));const dt=new Date(y,m-1,d,hh,mm,ss);return dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d&&dt.getHours()===hh&&dt.getMinutes()===mm&&dt.getSeconds()===ss?dt:null}
+    function parseStartFromFilename(name){const base=String(name??"").split(/[\\/]/).pop()||"";const m=base.match(/(?:^|[^0-9])(?:DDR[_-]?)?((?:19|20)\d{6}|\d{6})[_-](\d{6})(?:[^0-9]|$)/i);return m?parseFilenameStamp(m[1],m[2]):null}
+    function parseStartFromText(text){return parseStartFromFilename(text)||parseDateLoose(text)}
+    function parseOssiHeaderMeta(text){
+      const lines=text.split(/\r?\n/);
+      let sampleRate=null,start=null;
+      try{
+        const rateLine=splitLine(lines[4]||"",",");
+        const rateCandidate=[rateLine[1],rateLine[2],rateLine[0]].map(v=>num(v)).find(v=>Number.isFinite(v)&&v>0);
+        if(Number.isFinite(rateCandidate)&&rateCandidate>0)sampleRate=rateCandidate;
+      }catch{}
+      try{
+        const d=splitLine(lines[9]||"",",")[2]?.trim()||"";
+        const t=splitLine(lines[10]||"",",")[2]?.trim()||"";
+        start=parseDateLoose(`${d} ${t}`);
+      }catch{}
+      return {sampleRate,start:start instanceof Date&&!Number.isNaN(start.getTime())?start:null};
+    }
+    function combineDateTime(dateValue,timeValue){if(!dateValue)return null;const dt=new Date(`${dateValue}T${timeValue||"00:00:00"}`);return Number.isNaN(dt.getTime())?null:dt}
+    function setDateTimeInputs(dateEl,timeEl,dt){if(!(dt instanceof Date)||Number.isNaN(dt.getTime()))return;const pad=v=>String(v).padStart(2,"0");dateEl.value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;timeEl.value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`}
+    function resolveStartSource(mode,{filenameStart=null,fileStart=null,manualStart=null,referenceStart=null}={}){if(mode==="manual"){if(!(manualStart instanceof Date)||Number.isNaN(manualStart.getTime()))throw new Error("Vul een geldige handmatige datum en tijd in.");return manualStart}if(mode==="reference"){if(!(referenceStart instanceof Date)||Number.isNaN(referenceStart.getTime()))throw new Error("Er is geen drukreferentie-starttijd beschikbaar voor de gekozen OSSI tijdbron.");return referenceStart}if(mode==="file")return fileStart||filenameStart||referenceStart||null;return filenameStart||fileStart||referenceStart||null}
+    function toPressure(v,u){const n=num(v);if(!Number.isFinite(n))return NaN; if(u==="bar")return n*100000; if(u==="mbar")return n*100; if(u==="mmh2o")return n*9.80665; return n}
+    function normalizeRows(rows){
+      return (rows||[])
+        .filter(r=>r&&r.time instanceof Date&&!Number.isNaN(r.time.getTime())&&Number.isFinite(r.pressure))
+        .map(r=>({...r}))
+        .sort((a,b)=>a.time-b.time);
+    }
+    function median(a){if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+    function rollingMedian(rows,i,key){const vals=[];for(let j=Math.max(0,i-2);j<=Math.min(rows.length-1,i+2);j++){const v=rows[j][key];if(Number.isFinite(v))vals.push(v)}return median(vals)}
+    function cleanReference(rows,maxStep){const out=rows.filter(r=>r.time instanceof Date&&!Number.isNaN(r.time)&&Number.isFinite(r.pressure)).sort((a,b)=>a.time-b.time).map(r=>({time:r.time,pressure:r.pressure,pressureRaw:r.pressure,flag:"ok"}));
+      for(let i=0;i<out.length;i++){const med=rollingMedian(out,i,"pressureRaw"),res=Math.abs(out[i].pressureRaw-med),loc=[];for(let j=Math.max(0,i-2);j<=Math.min(out.length-1,i+2);j++)loc.push(Math.abs(out[j].pressureRaw-med));const mad=median(loc)||0,lim=Math.max(25,mad*6),p=i>0?Math.abs(out[i].pressureRaw-out[i-1].pressureRaw):0,n=i<out.length-1?Math.abs(out[i].pressureRaw-out[i+1].pressureRaw):0,bad=out[i].pressureRaw<0||out[i].pressureRaw>500000||((p>maxStep)&&(n>maxStep))||res>lim;if(bad){out[i].pressure=NaN;out[i].flag="filtered"}}
+      for(let i=0;i<out.length;i++){if(Number.isFinite(out[i].pressure))continue;let l=i-1,r=i+1;while(l>=0&&!Number.isFinite(out[l].pressure))l--;while(r<out.length&&!Number.isFinite(out[r].pressure))r++;if(l>=0&&r<out.length){const frac=(out[i].time-out[l].time)/((out[r].time-out[l].time)||1);out[i].pressure=out[l].pressure+(out[r].pressure-out[l].pressure)*frac}else if(l>=0)out[i].pressure=out[l].pressure;else if(r<out.length)out[i].pressure=out[r].pressure}
+      return out.filter(r=>Number.isFinite(r.pressure))}
+    async function parseReference(file){const text=await readTextFile(file),d=delim(text),lines=text.split(/\r?\n/).filter(l=>l.trim());if(!lines.length)throw new Error("Drukreferentie-bestand is leeg.");const head=splitLine(lines[0],d).map(v=>v.trim().toLowerCase());let ti=head.findIndex(n=>n.includes("tijd")||n.includes("time")||n.includes("datum")),pi=head.findIndex(n=>n.includes("druk")||n.includes("pressure")||n.includes("data")),dataLines=lines.slice(1);if(ti<0||pi<0){ti=0;pi=1;dataLines=lines[0].startsWith("DDR_")?lines.slice(2):lines}const rows=dataLines.map(l=>splitLine(l,d));const filenameStart=parseStartFromFilename(file.name),fileStart=parseStartFromText(lines[0]),manualStart=combineDateTime(ui.ocrManualDate.value,ui.ocrManualTime.value),selectedMode=ui.ocrTimeSource.value,selectedStart=resolveStartSource(selectedMode,{filenameStart,fileStart,manualStart}),off=num(ui.referenceOffset.value)||0,u=ui.ocrUnit.value,absoluteTimes=rows.map(c=>parseDateLoose(c[ti])),absoluteCount=absoluteTimes.filter(dt=>dt instanceof Date&&!Number.isNaN(dt.getTime())).length,firstAbsolute=absoluteTimes.find(dt=>dt instanceof Date&&!Number.isNaN(dt.getTime()))||null;
+      return rows.map((c,idx)=>{let time=null;if(absoluteCount>=2){const parsed=absoluteTimes[idx];if(!(parsed instanceof Date)||Number.isNaN(parsed.getTime()))return null;if(selectedMode==="file")time=parsed;else{if(!(selectedStart instanceof Date)||Number.isNaN(selectedStart.getTime()))throw new Error("Kon geen starttijd bepalen voor de drukreferentie met de gekozen tijdbron.");time=new Date(selectedStart.getTime()+(parsed.getTime()-firstAbsolute.getTime()))}}else{const sec=num(c[ti]);if(!Number.isFinite(sec))throw new Error("Drukreferentie bevat geen bruikbare absolute of relatieve tijd.");if(!(selectedStart instanceof Date)||Number.isNaN(selectedStart.getTime()))throw new Error("Kon geen starttijd bepalen voor de drukreferentie met de gekozen tijdbron.");time=new Date(selectedStart.getTime()+sec*1000)}return{time,pressure:toPressure(c[pi],u)+off,source:"reference",idx}}).filter(r=>r&&Number.isFinite(r.pressure))}
+    async function parseDiver(file){const text=await readTextFile(file),lines=text.split(/\r?\n/),shift=num(ui.diverShift.value)||0,off=num(ui.diverOffset.value)||0,out=[];for(let i=53;i<lines.length;i++){const line=lines[i].trim();if(!line)continue;if(line.includes("END OF DATA"))break;const m=line.match(/^(\d{4}\/\d{2}\/\d{2})\s+(\d{2}:\d{2}:\d{2}(?:\.\d+)?)\s+([+-]?\d+(?:[.,]\d+)?)/);if(!m)continue;const t=new Date(m[1].replace(/\//g,"-")+"T"+m[2]);if(Number.isNaN(t.getTime()))continue;out.push({time:new Date(t.getTime()+shift*1000),timeRaw:new Date(t.getTime()),pressure:num(m[3])+off,source:"diver"})}return normalizeRows(out)}
+    async function parseOssi(files,referenceStart){const fallbackHz=Math.max(.001,num(ui.sampleRate.value)||8),shift=num(ui.ossiShift.value)||0,mult=ui.ossiMultiply.checked,sorted=[...files].sort((a,b)=>a.lastModified-b.lastModified||a.name.localeCompare(b.name)),out=[],mode=ui.ossiTimeSource.value,useHeaderRate=ui.ossiUseHeaderRate.checked;let sequentialStart=mode==="manual"?combineDateTime(ui.ossiManualDate.value,ui.ossiManualTime.value):mode==="reference"?referenceStart:null;for(const file of sorted){const text=await readTextFile(file),headerMeta=parseOssiHeaderMeta(text),filenameStart=parseStartFromFilename(file.name),start=resolveStartSource(mode,{filenameStart,fileStart:headerMeta.start,manualStart:sequentialStart,referenceStart}),hz=Math.max(.001,useHeaderRate&&Number.isFinite(headerMeta.sampleRate)&&headerMeta.sampleRate>0?headerMeta.sampleRate:fallbackHz);if(!(start instanceof Date)||Number.isNaN(start.getTime()))throw new Error(`Kon geen starttijd bepalen voor OSSI-bestand ${file.name}.`);log(`OSSI ${file.name}: sample rate ${hz.toFixed(3)} Hz${useHeaderRate&&Number.isFinite(headerMeta.sampleRate)?' (header)':' (fallback)'}.`);const lines=text.split(/\r?\n/).slice(10);let count=0,lastTime=null;for(const line of lines){if(!line.trim())continue;const c=splitLine(line,",");if(c.length<3||String(c[1]).trim()!=="C1")continue;let p=num(c[2]);if(!Number.isFinite(p))continue;if(mult)p*=1000;lastTime=new Date(start.getTime()+(count/hz+shift)*1000);out.push({time:lastTime,pressure:p,source:"ossi"});count++}if(lastTime)sequentialStart=new Date(lastTime.getTime()+1000/hz)}return normalizeRows(out)}
+    function alignNearest(sensor,reference,tolSec){const tol=tolSec*1000,out=[];let ri=0;for(const s of sensor){while(ri<reference.length-1&&reference[ri+1].time<=s.time)ri++;const cand=[reference[ri],reference[ri+1]].filter(Boolean);let best=null,delta=Infinity;for(const c of cand){const d=Math.abs(c.time-s.time);if(d<delta){best=c;delta=d}}if(best&&delta<=tol)out.push({time:s.time,sensorPressure:s.pressure,sensorRawPressure:Number.isFinite(s.pressureRaw)?s.pressureRaw:s.pressure,referencePressure:best.pressure,referenceRawPressure:Number.isFinite(best.pressureRaw)?best.pressureRaw:best.pressure})}return out}
+    function regress(x,y){if(x.length<2)return null;const n=x.length,mx=x.reduce((a,b)=>a+b,0)/n,my=y.reduce((a,b)=>a+b,0)/n;let nume=0,den=0,tot=0,res=0;for(let i=0;i<n;i++){const dx=x[i]-mx;nume+=dx*(y[i]-my);den+=dx*dx}if(!den)return null;const slope=nume/den,intercept=my-slope*mx;for(let i=0;i<n;i++){const est=slope*x[i]+intercept;tot+=(y[i]-my)**2;res+=(y[i]-est)**2}return{slope,intercept,r2:tot?1-res/tot:1}}
+    function applyCalibrationFit(series,fit){
+      if(!fit||!Number.isFinite(fit.slope)||!Number.isFinite(fit.intercept)||fit.slope<=0)return normalizeRows(series);
+      return normalizeRows(series.map(p=>({...p,pressureRaw:Number.isFinite(p.pressureRaw)?p.pressureRaw:p.pressure,pressure:fit.slope*p.pressure+fit.intercept,calibrated:true})));
+    }
+    function calibrate(series,reference,name,tolSec){
+      const metrics=calibrationMetrics(series,reference,tolSec),report={sensor:name,applied:false,points:metrics?.points||0,slope:"",intercept:"",r2:"",note:"Geen kalibratie uitgevoerd."};
+      if(!metrics){report.note="Te weinig overlappende punten.";return{series,report,fit:null}}
+      const fit={slope:metrics.slope,intercept:metrics.intercept,r2:metrics.r2};
+      if(!fit||!Number.isFinite(fit.slope)||Math.abs(fit.slope)<1e-9){report.note="Regressie is ongeldig.";return{series,report,fit:null}}
+      if(fit.slope<=0){report.slope=fit.slope.toFixed(6);report.intercept=fit.intercept.toFixed(3);report.r2=fit.r2.toFixed(4);report.note="Kalibratie overgeslagen: negatieve slope zou de data omkeren.";return{series,report,fit:null}}
+      const calibrated=applyCalibrationFit(series,fit);
+      report.applied=true;
+      report.slope=fit.slope.toFixed(6);
+      report.intercept=fit.intercept.toFixed(3);
+      report.r2=fit.r2.toFixed(4);
+      report.note=`${name} direct gekalibreerd op drukreferentie.`;
+      return{series:calibrated,report,fit}
+    }
+    function summary(name,rows){if(!rows.length)return{name,start:"",end:"",max:"",count:0};return{name,start:rows[0].pressure.toFixed(2),end:rows[rows.length-1].pressure.toFixed(2),max:Math.max(...rows.map(r=>r.pressure)).toFixed(2),count:rows.length}}
+    function nearest(rows,time,tolMs){let best=null,d=Infinity;for(const r of rows){const now=Math.abs(r.time-time);if(now<d){best=r;d=now}if(r.time>time&&now>d)break}return best&&d<=tolMs?best:null}
+    function buildCombined(reference,diver,ossi,tolSec){const tol=tolSec*1000,base=reference.length?reference:(diver.length?diver:ossi);return base.map(p=>{const r=reference.length?nearest(reference,p.time,tol):null,d=diver.length?nearest(diver,p.time,tol):null,o=ossi.length?nearest(ossi,p.time,tol):null;return{Datetime:p.time.toISOString(),Drukreferentie:r?r.pressure:"",DrukreferentieRaw:r&&Number.isFinite(r.pressureRaw)?r.pressureRaw:"",DrukreferentieFlag:r?(r.flag||"ok"):"",DiverPressure:d?d.pressure:"",DiverPressureRaw:d&&Number.isFinite(d.pressureRaw)?d.pressureRaw:"",OSSIPressure:o?o.pressure:"",OSSIPressureRaw:o&&Number.isFinite(o.pressureRaw)?o.pressureRaw:""}})}
+    function calibrationMetrics(series,reference,tolSec){
+      const aligned=alignNearest(series,reference,tolSec);
+      if(aligned.length<3)return null;
+      const sensorVals=aligned.map(r=>r.sensorPressure),referenceVals=aligned.map(r=>r.referencePressure),fit=regress(sensorVals,referenceVals);
+      if(!fit)return null;
+      return{points:aligned.length,slope:fit.slope,intercept:fit.intercept,r2:fit.r2};
+    }
+    function badge(node,text,ok=true){node.className=`pill ${ok?"ok":"warn"}`;node.textContent=text}
+    function renderReports(rows){ui.reportBody.innerHTML=rows.map(r=>`<tr><td>${esc(r.sensor)}</td><td>${r.applied?"ja":"nee"}</td><td>${esc(r.points)}</td><td>${esc(r.slope)}</td><td>${esc(r.intercept)}</td><td>${esc(r.r2)}</td><td>${esc(r.note)}</td></tr>`).join("")}
+    function renderSummary(rows){ui.summaryBody.innerHTML=rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.start)}</td><td>${esc(r.end)}</td><td>${esc(r.max)}</td><td>${esc(r.count)}</td></tr>`).join("")}
+    function formatDateTime(value){
+      if(value instanceof Date&&!Number.isNaN(value.getTime()))return value.toLocaleString("nl-BE",{hour12:false});
+      return value?String(value):"";
+    }
+    function selectedFileNames(fileList){
+      return [...(fileList||[])].map(f=>f.name).join(", ")||"niet geladen";
+    }
+    function modeLabel(){
+      return {
+        diver_only:"Alleen Diver",
+        diver_and_ossi:"Diver en OSSI",
+        none:"Alleen vergelijken"
+      }[mode()]||mode();
+    }
+    function pdfSectionRows(){
+      return [
+        ["Export aangemaakt",formatDateTime(new Date())],
+        ["Kalibratiemodus",modeLabel()],
+        ["Drukreferentie CSV",ui.ocrFile.files[0]?.name||"niet geladen"],
+        ["Diver .mon",ui.diverFile.files[0]?.name||"niet geladen"],
+        ["OSSI CSV-bestanden",selectedFileNames(ui.ossiFiles.files)],
+        ["Tijdbron drukreferentie",ui.ocrTimeSource.options[ui.ocrTimeSource.selectedIndex]?.text||ui.ocrTimeSource.value],
+        ["Handmatige datum drukreferentie",ui.ocrManualDate.value||"-"],
+        ["Handmatige tijd drukreferentie",ui.ocrManualTime.value||"-"],
+        ["Tijdbron OSSI",ui.ossiTimeSource.options[ui.ossiTimeSource.selectedIndex]?.text||ui.ossiTimeSource.value],
+        ["Handmatige datum OSSI",ui.ossiManualDate.value||"-"],
+        ["Handmatige tijd OSSI",ui.ossiManualTime.value||"-"],
+        ["Drukreferentie drukeenheid",ui.ocrUnit.options[ui.ocrUnit.selectedIndex]?.text||ui.ocrUnit.value],
+        ["OSSI sample rate",ui.sampleRate.value||"-"],
+        ["OSSI header sample rate",ui.ossiUseHeaderRate.checked?"ja":"nee"],
+        ["Match tolerantie (s)",ui.toleranceSec.value||"-"],
+        ["Drukreferentie offset",ui.referenceOffset.value||"-"],
+        ["Diver offset",ui.diverOffset.value||"-"],
+        ["Diver tijdoffset",ui.diverShift.value||"-"],
+        ["Zoekbereik Diver tijdoffset",ui.autoShiftRange.value||"-"],
+        ["Zoekstap Diver tijdoffset",ui.autoShiftStep.value||"-"],
+        ["OSSI tijdoffset",ui.ossiShift.value||"-"],
+        ["Max drukreferentie pieksprong",ui.spikeStep.value||"-"],
+        ["OSSI x1000",ui.ossiMultiply.checked?"ja":"nee"]
+      ];
+    }
+    function pdfReportRows(){
+      return state.reports.map(r=>[
+        r.sensor,
+        r.applied?"ja":"nee",
+        r.points,
+        r.slope,
+        r.intercept,
+        r.r2,
+        r.note
+      ]);
+    }
+    function pdfSummaryRows(){
+      return [
+        summary("Drukreferentie",state.reference),
+        summary("Diver",state.diver),
+        summary("OSSI",state.ossi)
+      ].map(r=>[r.name,r.start,r.end,r.max,r.count]);
+    }
+    function tableHtml(headers,rows){
+      const thead=`<thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead>`;
+      const tbody=rows.length
+        ? `<tbody>${rows.map(row=>`<tr>${row.map(cell=>`<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody>`
+        : `<tbody><tr><td colspan="${headers.length}">Geen gegevens beschikbaar.</td></tr></tbody>`;
+      return `<table>${thead}${tbody}</table>`;
+    }
+    function sanitizePdfText(value){
+      return String(value??"")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^\x20-\x7E]/g,"?")
+        .replace(/\\/g,"\\\\")
+        .replace(/\(/g,"\\(")
+        .replace(/\)/g,"\\)");
+    }
+    function wrapPdfLine(text,maxChars=92){
+      const clean=sanitizePdfText(text).trim();
+      if(!clean)return [""];
+      const words=clean.split(/\s+/);
+      const lines=[];
+      let current="";
+      for(const word of words){
+        const next=current?`${current} ${word}`:word;
+        if(next.length>maxChars&&current){
+          lines.push(current);
+          current=word;
+        }else current=next;
+      }
+      if(current)lines.push(current);
+      return lines;
+    }
+    function wrapCanvasText(ctx,text,maxWidth){
+      const clean=String(text??"").trim();
+      if(!clean)return [""];
+      const words=clean.split(/\s+/);
+      const lines=[];
+      let current="";
+      for(const word of words){
+        const next=current?`${current} ${word}`:word;
+        if(ctx.measureText(next).width>maxWidth&&current){
+          lines.push(current);
+          current=word;
+        }else current=next;
+      }
+      if(current)lines.push(current);
+      return lines;
+    }
+    function pdfTextLines(){
+      const lines=[
+        "Instellingen en kalibratierapport",
+        `Gegenereerd op ${formatDateTime(new Date())}`,
+        "",
+        "Instellingen"
+      ];
+      pdfSectionRows().forEach(([label,value])=>lines.push(`${label}: ${value}`));
+      lines.push("");
+      lines.push("Kalibratierapport");
+      if(pdfReportRows().length){
+        lines.push("Formule: y (werkelijke/gekalibreerde druk) = a * x (gemeten sensorwaarde) + b. Voor Diver is x de gemeten Diverdruk.");
+        pdfReportRows().forEach(row=>lines.push(`Sensor=${row[0]} | Toegepast=${row[1]} | Punten=${row[2]} | a=${row[3]} | b=${row[4]} | R2=${row[5]} | Opmerking=${row[6]}`));
+      }else lines.push("Geen gegevens beschikbaar.");
+      lines.push("");
+      lines.push("Druksamenvatting");
+      pdfSummaryRows().forEach(row=>lines.push(`${row[0]} | Start=${row[1]} | Einde=${row[2]} | Max=${row[3]} | Punten=${row[4]}`));
+      return lines.flatMap(line=>wrapPdfLine(line));
+    }
+    function captureSettingsCanvas(){
+      const rows=pdfSectionRows();
+      const width=1240,padding=40,labelWidth=360,valueWidth=width-padding*2-labelWidth-24,rowGap=10,lineHeight=22;
+      const canvas=document.createElement("canvas");
+      const ctx=canvas.getContext("2d");
+      ctx.font="16px Trebuchet MS";
+      const measured=rows.map(([label,value])=>{
+        const labelLines=wrapCanvasText(ctx,label,labelWidth-12);
+        const valueLines=wrapCanvasText(ctx,value,valueWidth-12);
+        return {labelLines,valueLines,height:Math.max(labelLines.length,valueLines.length)*lineHeight+20};
+      });
+      const height=padding+64+measured.reduce((sum,row)=>sum+row.height+rowGap,0)+20;
+      canvas.width=width;
+      canvas.height=height;
+      ctx.fillStyle="#fffaf2";
+      ctx.fillRect(0,0,width,height);
+      ctx.fillStyle="#231b12";
+      ctx.font="bold 28px Georgia";
+      ctx.fillText("GUI instellingen",padding,48);
+      ctx.font="15px Trebuchet MS";
+      ctx.fillStyle="#6d604f";
+      ctx.fillText(`Diver: ${ui.diverFile.files[0]?.name||"niet geladen"}`,padding,74);
+      let y=96;
+      measured.forEach((row,index)=>{
+        ctx.fillStyle=index%2===0?"#f6eee2":"#fffaf2";
+        ctx.fillRect(padding,y,width-padding*2,row.height);
+        ctx.strokeStyle="#d7c6ad";
+        ctx.strokeRect(padding,y,width-padding*2,row.height);
+        ctx.fillStyle="#174740";
+        ctx.font="bold 15px Trebuchet MS";
+        row.labelLines.forEach((line,lineIndex)=>ctx.fillText(line,padding+12,y+24+lineIndex*lineHeight));
+        ctx.fillStyle="#231b12";
+        ctx.font="15px Trebuchet MS";
+        row.valueLines.forEach((line,lineIndex)=>ctx.fillText(line,padding+labelWidth+24,y+24+lineIndex*lineHeight));
+        y+=row.height+rowGap;
+      });
+      return canvas;
+    }
+    function captureFigureCanvas(title,sourceCanvas){
+      const width=1400,height=980,padding=36;
+      const canvas=document.createElement("canvas");
+      const ctx=canvas.getContext("2d");
+      canvas.width=width;
+      canvas.height=height;
+      ctx.fillStyle="#fffaf2";
+      ctx.fillRect(0,0,width,height);
+      ctx.fillStyle="#231b12";
+      ctx.font="bold 28px Georgia";
+      ctx.fillText(title,padding,48);
+      ctx.font="15px Trebuchet MS";
+      ctx.fillStyle="#6d604f";
+      ctx.fillText(`Diver: ${ui.diverFile.files[0]?.name||"niet geladen"} | ${formatDateTime(new Date())}`,padding,74);
+      const boxX=padding,boxY=96,boxW=width-padding*2,boxH=height-boxY-padding;
+      ctx.fillStyle="#ffffff";
+      ctx.fillRect(boxX,boxY,boxW,boxH);
+      ctx.strokeStyle="#d7c6ad";
+      ctx.lineWidth=2;
+      ctx.strokeRect(boxX,boxY,boxW,boxH);
+      if(sourceCanvas&&sourceCanvas.width&&sourceCanvas.height){
+        const scale=Math.min((boxW-20)/sourceCanvas.width,(boxH-20)/sourceCanvas.height);
+        const drawW=sourceCanvas.width*scale,drawH=sourceCanvas.height*scale;
+        const dx=boxX+(boxW-drawW)/2,dy=boxY+(boxH-drawH)/2;
+        ctx.drawImage(sourceCanvas,dx,dy,drawW,drawH);
+      }else{
+        ctx.fillStyle="#6d604f";
+        ctx.font="18px Trebuchet MS";
+        ctx.fillText("Geen figuur beschikbaar.",boxX+20,boxY+40);
+      }
+      return canvas;
+    }
+    function dataUrlToBytes(dataUrl){
+      const base64=(dataUrl||"").split(",")[1]||"";
+      const binary=atob(base64);
+      const bytes=new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+      return bytes;
+    }
+    function canvasToPdfImageAsset(title,canvas){
+      const jpegUrl=canvas.toDataURL("image/jpeg",0.92);
+      return {title,width:canvas.width,height:canvas.height,bytes:dataUrlToBytes(jpegUrl)};
+    }
+    function splitPdfTextPages(lines,maxLines=52){
+      const wrapped=lines.length?lines:["Geen gegevens beschikbaar."];
+      const pages=[];
+      for(let i=0;i<wrapped.length;i+=maxLines)pages.push(wrapped.slice(i,i+maxLines));
+      return pages;
+    }
+    function buildReportPdfBlob(){
+      const pageWidth=595,pageHeight=842,marginX=40,topY=800,lineHeight=14;
+      const textPages=splitPdfTextPages(pdfTextLines());
+      const imageAssets=[
+        canvasToPdfImageAsset("GUI instellingen",captureSettingsCanvas()),
+        canvasToPdfImageAsset("Figuur 1 - Tijdreeks",captureFigureCanvas("Figuur 1 - Tijdreeks",ui.timeCanvas)),
+        canvasToPdfImageAsset("Figuur 2 - XY met trendlijn",captureFigureCanvas("Figuur 2 - XY met trendlijn",ui.xyCanvas))
+      ];
+      const pageSpecs=[
+        ...textPages.map(lines=>({type:"text",lines})),
+        ...imageAssets.map(asset=>({type:"image",asset}))
+      ];
+      const encoder=new TextEncoder();
+      const ascii=str=>encoder.encode(str);
+      const objects=[];
+      let nextObjectNumber=1;
+      const catalogObjectNumber=nextObjectNumber++;
+      const pagesObjectNumber=nextObjectNumber++;
+      const fontObjectNumber=nextObjectNumber++;
+      const pageObjectNumbers=[];
+
+      pageSpecs.forEach(spec=>{
+        const pageObjectNumber=nextObjectNumber++;
+        const contentObjectNumber=nextObjectNumber++;
+        pageObjectNumbers.push(pageObjectNumber);
+        if(spec.type==="text"){
+          const contentLines=["BT","/F1 11 Tf",`${lineHeight} TL`,`${marginX} ${topY} Td`];
+          spec.lines.forEach((line,lineIndex)=>{
+            contentLines.push(`(${sanitizePdfText(line)}) Tj`);
+            if(lineIndex<spec.lines.length-1)contentLines.push("T*");
+          });
+          contentLines.push("ET");
+          const content=contentLines.join("\n");
+          const contentBytes=ascii(content);
+          objects[pageObjectNumber]=[ascii(`<< /Type /Page /Parent ${pagesObjectNumber} 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObjectNumber} 0 R >> >> /Contents ${contentObjectNumber} 0 R >>`)];
+          objects[contentObjectNumber]=[ascii(`<< /Length ${contentBytes.length} >>\nstream\n`),contentBytes,ascii("\nendstream")];
+        }else{
+          const imageObjectNumber=nextObjectNumber++;
+          const {asset}=spec;
+          const availableWidth=pageWidth-2*marginX,availableHeight=pageHeight-120;
+          const scale=Math.min(availableWidth/asset.width,availableHeight/asset.height);
+          const drawWidth=asset.width*scale,drawHeight=asset.height*scale;
+          const drawX=(pageWidth-drawWidth)/2,drawY=50;
+          const titleY=pageHeight-36;
+          const content=`BT\n/F1 16 Tf\n${marginX} ${titleY} Td\n(${sanitizePdfText(asset.title)}) Tj\nET\nq\n${drawWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${drawX.toFixed(2)} ${drawY.toFixed(2)} cm\n/Im1 Do\nQ`;
+          const contentBytes=ascii(content);
+          objects[pageObjectNumber]=[ascii(`<< /Type /Page /Parent ${pagesObjectNumber} 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObjectNumber} 0 R >> /XObject << /Im1 ${imageObjectNumber} 0 R >> >> /Contents ${contentObjectNumber} 0 R >>`)];
+          objects[contentObjectNumber]=[ascii(`<< /Length ${contentBytes.length} >>\nstream\n`),contentBytes,ascii("\nendstream")];
+          objects[imageObjectNumber]=[ascii(`<< /Type /XObject /Subtype /Image /Width ${asset.width} /Height ${asset.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${asset.bytes.length} >>\nstream\n`),asset.bytes,ascii("\nendstream")];
+        }
+      });
+
+      objects[catalogObjectNumber]=[ascii(`<< /Type /Catalog /Pages ${pagesObjectNumber} 0 R >>`)];
+      objects[pagesObjectNumber]=[ascii(`<< /Type /Pages /Count ${pageObjectNumbers.length} /Kids [${pageObjectNumbers.map(n=>`${n} 0 R`).join(" ")}] >>`)];
+      objects[fontObjectNumber]=[ascii("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>")];
+
+      const chunks=[ascii("%PDF-1.4\n")];
+      const offsets=[0];
+      let currentOffset=chunks[0].length;
+      for(let objectNumber=1;objectNumber<objects.length;objectNumber++){
+        const parts=objects[objectNumber]||[ascii("<< >>")];
+        offsets[objectNumber]=currentOffset;
+        const prefix=ascii(`${objectNumber} 0 obj\n`);
+        const suffix=ascii("\nendobj\n");
+        chunks.push(prefix,...parts,suffix);
+        currentOffset+=prefix.length+suffix.length+parts.reduce((sum,part)=>sum+part.length,0);
+      }
+      const xrefStart=currentOffset;
+      const xrefLines=[`xref\n0 ${objects.length}\n`,`0000000000 65535 f \n`];
+      for(let objectNumber=1;objectNumber<objects.length;objectNumber++)xrefLines.push(`${String(offsets[objectNumber]||0).padStart(10,"0")} 00000 n \n`);
+      const trailer=ascii(`${xrefLines.join("")}trailer\n<< /Size ${objects.length} /Root ${catalogObjectNumber} 0 R >>\nstartxref\n${xrefStart}\n%%EOF`);
+      chunks.push(trailer);
+      return new Blob(chunks,{type:"application/pdf"});
+    }
+    function canWriteToDirectory(){return !!window.showDirectoryPicker}
+    async function ensureOutputDirectoryHandle(forcePrompt=false){
+      if(!canWriteToDirectory())return null;
+      if(outputDirHandle&&!forcePrompt)return outputDirHandle;
+      outputDirHandle=await window.showDirectoryPicker({mode:"readwrite",id:"offline-kalibratie-output"});
+      log("Opslagmap gekozen voor exportbestanden.");
+      return outputDirHandle;
+    }
+    function csvText(rows){
+      if(!rows.length)return "";
+      const headers=Object.keys(rows[0]);
+      const lines=rows.map(r=>headers.map(h=>{const v=String(r[h]??"").replace(/"/g,'""');return /[",\n]/.test(v)?`"${v}"`:v}).join(","));
+      return [headers.join(","),...lines].join("\n");
+    }
+    function sensorCsvRows(rows){
+      return normalizeRows(rows).map(r=>({
+        Datetime:r.time.toISOString(),
+        Pressure:r.pressure,
+        PressureRaw:Number.isFinite(r.pressureRaw)?r.pressureRaw:"",
+        Flag:r.flag||"",
+        Calibrated:r.calibrated?"ja":"nee",
+        Source:r.source||""
+      }));
+    }
+    async function writeBlobToDirectory(handle,name,blob){
+      const fileHandle=await handle.getFileHandle(name,{create:true});
+      const writable=await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    }
+    async function writeTextToDirectory(handle,name,text,mime="text/plain;charset=utf-8"){
+      await writeBlobToDirectory(handle,name,new Blob([text],{type:mime}));
+    }
+    async function saveAllOutputsToDirectory({forcePrompt=false}={}){
+      if(!state.reference.length&&!state.diver.length&&!state.ossi.length&&!state.reports.length&&!state.combined.length){
+        alert("Verwerk eerst gegevens voordat je bestanden opslaat.");
+        return false;
+      }
+      if(!canWriteToDirectory()){
+        alert("Deze browser ondersteunt geen directe opslag naar een gekozen map. Gebruik dan de downloadknoppen.");
+        return false;
+      }
+      const handle=await ensureOutputDirectoryHandle(forcePrompt);
+      if(!handle)return false;
+      const tasks=[];
+      if(state.reference.length)tasks.push(writeTextToDirectory(handle,exportFileName("reference_csv"),csvText(sensorCsvRows(state.reference)),"text/csv;charset=utf-8"));
+      if(state.diver.length)tasks.push(writeTextToDirectory(handle,exportFileName("diver_csv"),csvText(sensorCsvRows(state.diver)),"text/csv;charset=utf-8"));
+      if(state.ossi.length)tasks.push(writeTextToDirectory(handle,exportFileName("ossi_csv"),csvText(sensorCsvRows(state.ossi)),"text/csv;charset=utf-8"));
+      if(state.combined.length)tasks.push(writeTextToDirectory(handle,exportFileName("combined_csv"),csvText(state.combined),"text/csv;charset=utf-8"));
+      if(state.reports.length)tasks.push(writeTextToDirectory(handle,exportFileName("report_csv"),csvText(reportCsv()),"text/csv;charset=utf-8"));
+      if(state.reference.length||state.diver.length||state.ossi.length||state.reports.length)tasks.push(writeBlobToDirectory(handle,exportFileName("report_pdf"),buildReportPdfBlob()));
+      if(!tasks.length){
+        alert("Er zijn geen exportbestanden beschikbaar om op te slaan.");
+        return false;
+      }
+      await Promise.all(tasks);
+      log(`Alle exportbestanden opgeslagen in de gekozen map voor ${exportBaseStem()}.`);
+      return true;
+    }
+    function downloadPdfReport(){
+      if(!state.reference.length&&!state.diver.length&&!state.ossi.length&&!state.reports.length){
+        alert("Verwerk eerst gegevens voordat je een PDF-rapport downloadt.");
+        return;
+      }
+      const blob=buildReportPdfBlob();
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;
+      a.download=exportFileName("report_pdf");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      log(`PDF-rapport direct gedownload als ${exportFileName("report_pdf")}.`);
+    }
+    function restoreBaseRows(rows){return normalizeRows((rows||[]).map(r=>{const baseTime=r.timeRaw instanceof Date&&!Number.isNaN(r.timeRaw.getTime())?r.timeRaw:r.time;const rawPressure=Number.isFinite(r.pressureRaw)?r.pressureRaw:r.pressure;return{...r,time:baseTime instanceof Date?new Date(baseTime.getTime()):new Date(baseTime),pressure:rawPressure,calibrated:false}}))}
+    function applyDiverShift(rows,shiftSeconds){return normalizeRows((rows||[]).map(r=>{const baseTime=r.timeRaw instanceof Date&&!Number.isNaN(r.timeRaw.getTime())?r.timeRaw:r.time;const t=baseTime instanceof Date?baseTime:new Date(baseTime);return{...r,time:new Date(t.getTime()+shiftSeconds*1000)}}))}
+    function slim(rows,max=1600){if(rows.length<=max)return rows;const step=Math.ceil(rows.length/max);return rows.filter((_,i)=>i%step===0||i===rows.length-1)}
+    function autoShiftStepValue(){return Math.max(0.001,Math.abs(num(ui.autoShiftStep.value)||num(ui.diverShift.step)||0.1))}
+    function autoShiftRangeValue(){return Math.max(0,Math.abs(num(ui.autoShiftRange.value)||10))}
+    function setShiftRunState(){
+      const busy=shiftRunTimer!==null||shiftSearchActive;
+      ui.shiftDownRunBtn.disabled=busy;
+      ui.shiftUpRunBtn.disabled=busy;
+      ui.shiftStopBtn.disabled=!busy;
+      ui.autoBestShiftBtn.disabled=busy;
+    }
+    function stopShiftRun(logMessage=""){
+      let stopped=false;
+      if(shiftRunTimer!==null){
+        clearInterval(shiftRunTimer);
+        shiftRunTimer=null;
+        stopped=true;
+      }
+      if(shiftSearchActive){cancelShiftSearch=true;stopped=true}
+      setShiftRunState();
+      if(stopped&&logMessage)log(logMessage);
+    }
+    function drawChart(seriesDefs){
+      const c=ui.timeCanvas,ctx=c.getContext("2d"),w=c.width,h=c.height;
+      ctx.clearRect(0,0,w,h);
+      const series=seriesDefs.filter(s=>s.rows.length).map(s=>({...s,rows:slim(s.rows)}));
+      if(!series.length){
+        chartScale={minX:null,maxX:null,minY:null,maxY:null};
+        ctx.fillStyle="#6d604f";ctx.font="16px Trebuchet MS";ctx.fillText("Nog geen gegevens om te tekenen.",28,40);
+        return;
+      }
+      const xs=series.flatMap(s=>s.rows.map(r=>r.time.getTime())),ys=series.flatMap(s=>s.rows.map(r=>r.pressure));
+      let minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+      if(zoomRange&&zoomRange.minX&&zoomRange.maxX){minX=zoomRange.minX;maxX=zoomRange.maxX;}
+      if(minY===maxY){minY-=1;maxY+=1}
+      chartScale={minX,maxX,minY,maxY};
+      ctx.strokeStyle="#b9a68c";ctx.beginPath();ctx.moveTo(60,18);ctx.lineTo(60,h-36);ctx.lineTo(w-20,h-36);ctx.stroke();
+      ctx.fillStyle="#6d604f";ctx.font="12px Trebuchet MS";ctx.fillText(new Date(minX).toLocaleString("nl-BE"),60,h-10);ctx.fillText(new Date(maxX).toLocaleString("nl-BE"),w-190,h-10);ctx.fillText(maxY.toFixed(1),10,24);ctx.fillText(minY.toFixed(1),10,h-40);
+      const px=x=>60+((x-minX)/((maxX-minX)||1))*(w-80), py=y=>(h-36)-((y-minY)/((maxY-minY)||1))*(h-64);
+      const overlaySel=selectionPreview||(selection.start&&selection.end?selection:null);
+      if(overlaySel){
+        const xs1=px(overlaySel.start.getTime()), xs2=px(overlaySel.end.getTime()), x1=Math.min(xs1,xs2), x2=Math.max(xs1,xs2);
+        ctx.fillStyle="rgba(180,91,47,0.12)";ctx.fillRect(x1,18,x2-x1,h-54);
+        ctx.strokeStyle="#b45b2f";ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(x1,18);ctx.lineTo(x1,h-36);ctx.moveTo(x2,18);ctx.lineTo(x2,h-36);ctx.stroke();ctx.setLineDash([]);
+      }
+      series.forEach((s,i)=>{ctx.strokeStyle=s.color;ctx.lineWidth=1.7;ctx.beginPath();s.rows.forEach((r,k)=>{const x=px(r.time.getTime()),y=py(r.pressure);if(!k)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.fillStyle=s.color;ctx.fillRect(w-170,24+i*18,12,12);ctx.fillStyle="#231b12";ctx.fillText(s.label,w-150,34+i*18)});
+    }
+    function downloadCsv(name,rows){if(!rows.length)return;const blob=new Blob([csvText(rows)],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+    function reportCsv(){return state.reports.map(r=>({Sensor:r.sensor,Toegepast:r.applied?"ja":"nee",Punten:r.points,"a (slope, y=werkelijk/gekalibreerd, x=gemeten sensor)":r.slope,"b (intercept)":r.intercept,R2:r.r2,Opmerking:r.note}))}
+    function renderXY(refRows,diverRows,ossiRows){
+      const c=el("xyCanvas"),ctx=c.getContext("2d");
+      ctx.clearRect(0,0,c.width,c.height);
+      const tol=Math.max(.1,num(ui.toleranceSec.value)||2);
+      let aligned=[],xVals=[],yVals=[],xLabel="",yLabel="",pointColor="#185ab0",lineLabel="";
+      if(diverRows?.length&&ossiRows?.length){
+        aligned=alignNearest(ossiRows,diverRows,tol);
+        xVals=aligned.map(r=>r.referenceRawPressure);
+        yVals=aligned.map(r=>r.sensorRawPressure);
+        xLabel="gemeten Diverdruk";
+        yLabel="OSSI-meting";
+        pointColor="#b45b2f";
+        lineLabel="OSSI t.o.v. Diver";
+      }else if(refRows?.length&&diverRows?.length){
+        aligned=alignNearest(diverRows,refRows,tol);
+        xVals=aligned.map(r=>r.sensorRawPressure);
+        yVals=aligned.map(r=>r.referencePressure);
+        xLabel="gemeten Diverdruk";
+        yLabel="werkelijke/gekalibreerde druk";
+        lineLabel="Diver-kalibratie";
+      }else if(refRows?.length&&ossiRows?.length){
+        aligned=alignNearest(ossiRows,refRows,tol);
+        xVals=aligned.map(r=>r.sensorRawPressure);
+        yVals=aligned.map(r=>r.referencePressure);
+        xLabel="gemeten OSSI-druk";
+        yLabel="werkelijke/gekalibreerde druk";
+        pointColor="#b45b2f";
+        lineLabel="OSSI-kalibratie";
+      }else{
+        ctx.fillStyle="#6d604f";ctx.font="16px Trebuchet MS";ctx.fillText("Geen data voor XY-grafiek.",18,32);return;
+      }
+      if(!aligned.length){ctx.fillStyle="#6d604f";ctx.font="16px Trebuchet MS";ctx.fillText("Geen overlappende punten.",18,32);return;}
+      const fit=regress(xVals,yVals);
+      const minX=Math.min(...xVals),maxX=Math.max(...xVals),minY=Math.min(...yVals),maxY=Math.max(...yVals);
+      const pad=0.05,rangeX=(maxX-minX)||1,rangeY=(maxY-minY)||1;
+      const x0=minX-rangeX*pad,x1=maxX+rangeX*pad,y0=minY-rangeY*pad,y1=maxY+rangeY*pad;
+      const px=x=>60+((x-x0)/((x1-x0)||1))*(c.width-90), py=y=>(c.height-50)-((y-y0)/((y1-y0)||1))*(c.height-80);
+      ctx.strokeStyle="#b9a68c";ctx.beginPath();ctx.moveTo(60,20);ctx.lineTo(60,c.height-40);ctx.lineTo(c.width-20,c.height-40);ctx.stroke();
+      ctx.fillStyle="#6d604f";ctx.font="12px Trebuchet MS";ctx.fillText(x0.toFixed(1),60,c.height-20);ctx.fillText(x1.toFixed(1),c.width-120,c.height-20);ctx.fillText(y1.toFixed(1),10,24);ctx.fillText(y0.toFixed(1),10,c.height-44);
+      ctx.fillStyle=pointColor;for(let i=0;i<xVals.length;i++){ctx.beginPath();ctx.arc(px(xVals[i]),py(yVals[i]),3,0,Math.PI*2);ctx.fill();}
+      if(fit){const linePoints=[[x0,fit.slope*x0+fit.intercept],[x1,fit.slope*x1+fit.intercept]];
+        ctx.strokeStyle="#0f6e61";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px(linePoints[0][0]),py(linePoints[0][1]));ctx.lineTo(px(linePoints[1][0]),py(linePoints[1][1]));ctx.stroke();
+        ctx.fillStyle="#231b12";ctx.font="12px Trebuchet MS";ctx.fillText(`y (${yLabel}) = ${fit.slope.toFixed(4)} * x (${xLabel}) + ${fit.intercept.toFixed(3)}   R²=${(fit.r2||0).toFixed(4)}   ${lineLabel}`,60,38);
+      }
+    }
+    const cloneRows=rows=>normalizeRows(rows).map(r=>({...r}));
+    const hasSelection=()=>selection.start instanceof Date&&selection.end instanceof Date&&!Number.isNaN(selection.start)&&!Number.isNaN(selection.end);
+    const inSelection=time=>hasSelection()&&time>=selection.start&&time<=selection.end;
+    const filterSelection=rows=>hasSelection()?rows.filter(r=>inSelection(r.time)):rows;
+    const scopeRows=rows=>hasSelection()?rows.filter(r=>inSelection(r.time)):rows;
+    const chartSeries=()=>[
+      {label:"Drukreferentie",color:"#0f6e61",rows:state.reference},
+      {label:"Diver",color:"#185ab0",rows:state.diver},
+      {label:"OSSI",color:"#b45b2f",rows:state.ossi}
+    ];
+    function updateOutputs({referenceRows=state.reference,diverRows=state.diver,ossiRows=state.ossi,reports=state.reports,combinedRows=state.combined,referenceBadgeText=null,diverBadgeText=null,ossiBadgeText=null,modeBadgeText=null}={}){
+      state.reference=normalizeRows(referenceRows);
+      state.diver=normalizeRows(diverRows);
+      state.ossi=normalizeRows(ossiRows);
+      state.reports=[...(reports||[])];
+      state.combined=[...(combinedRows||[])];
+      renderReports(state.reports);
+      renderSummary([summary("Drukreferentie",state.reference),summary("Diver",state.diver),summary("OSSI",state.ossi)]);
+      drawChart(chartSeries());
+      renderXY(state.reference,state.diver,state.ossi);
+      badge(ui.ocrBadge,referenceBadgeText??(state.reference.length?"Drukreferentie geladen":"Drukreferentie niet geladen"),!!state.reference.length);
+      badge(ui.diverBadge,diverBadgeText??(state.diver.length?"Diver geladen":"Diver niet geladen"),!!state.diver.length);
+      badge(ui.ossiBadge,ossiBadgeText??(state.ossi.length?"OSSI geladen":"OSSI niet geladen"),!!state.ossi.length);
+      if(modeBadgeText!==null)badge(ui.modeBadge,modeBadgeText,true);
+      ui.ocrCount.textContent=String(state.reference.length);
+      ui.diverCount.textContent=String(state.diver.length);
+      ui.ossiCount.textContent=String(state.ossi.length);
+      ui.combinedCount.textContent=String(state.combined.length);
+      ui.saveAllBtn.disabled=!state.combined.length&&!state.reports.length&&!state.reference.length&&!state.diver.length&&!state.ossi.length;
+      ui.downloadCombinedBtn.disabled=!state.combined.length;
+      ui.downloadReportBtn.disabled=!state.reports.length;
+      ui.downloadPdfBtn.disabled=!state.reports.length&&!state.reference.length&&!state.diver.length&&!state.ossi.length;
+    }
+    function recomputeWithCurrentData({requireSelection=false,logMessage=""}={}){
+      if(requireSelection&&!hasSelection()){alert("Maak eerst een selectie op de grafiek.");return false;}
+      const tol=Math.max(.1,num(ui.toleranceSec.value)||2),m=mode(),shiftSeconds=num(ui.diverShift.value)||0;
+      const referenceFull=restoreBaseRows(state.reference);
+      const diverFull=applyDiverShift(restoreBaseRows(state.diver),shiftSeconds);
+      const ossiFull=restoreBaseRows(state.ossi);
+      const refScope=scopeRows(referenceFull),diverScope=scopeRows(diverFull),ossiScope=scopeRows(ossiFull);
+      let diverView=diverFull,ossiView=ossiFull,diverScopeView=diverScope,ossiScopeView=ossiScope;
+      state.reference=referenceFull;
+      state.reports=[];
+      if(m==="diver_only"&&refScope.length&&diverScope.length){const r=calibrate(diverScope,refScope,"Diver",tol);diverScopeView=r.series;if(r.fit)diverView=applyCalibrationFit(diverFull,r.fit);state.reports.push(r.report)}
+      else if(m==="diver_and_ossi"&&refScope.length){
+        if(diverScope.length){const r1=calibrate(diverScope,refScope,"Diver",tol);diverScopeView=r1.series;if(r1.fit)diverView=applyCalibrationFit(diverFull,r1.fit);state.reports.push(r1.report)}
+        if(ossiScope.length){const r2=calibrate(ossiScope,refScope,"OSSI",tol);ossiScopeView=r2.series;if(r2.fit)ossiView=applyCalibrationFit(ossiFull,r2.fit);state.reports.push(r2.report)}
+      }
+      else if(m==="none"){state.reports.push({sensor:"Modus",applied:false,points:0,slope:"",intercept:"",r2:"",note:"Alleen vergelijking, geen automatische kalibratie."})}
+      else if((m==="diver_only"||m==="diver_and_ossi")&&!refScope.length){state.reports.push({sensor:"Modus",applied:false,points:0,slope:"",intercept:"",r2:"",note:hasSelection()?"Kalibratie gevraagd maar geen drukreferentie in selectie.":"Kalibratie gevraagd maar geen drukreferentie beschikbaar."})}
+      state.diver=diverView;
+      state.ossi=ossiView;
+      diverScopeView=scopeRows(state.diver);
+      ossiScopeView=scopeRows(state.ossi);
+      state.combined=buildCombined(refScope,diverScopeView,ossiScopeView,tol);
+      updateOutputs({
+        referenceRows:state.reference,
+        diverRows:state.diver,
+        ossiRows:state.ossi,
+        reports:state.reports,
+        combinedRows:state.combined,
+        referenceBadgeText:refScope.length?(hasSelection()?"Drukreferentie selectie":"Drukreferentie geladen"):(hasSelection()?"Drukreferentie leeg":"Drukreferentie niet geladen"),
+        diverBadgeText:diverScopeView.length?(hasSelection()?"Diver selectie":"Diver geladen"):(hasSelection()?"Diver leeg":"Diver niet geladen"),
+        ossiBadgeText:ossiScopeView.length?(hasSelection()?"OSSI selectie":"OSSI geladen"):(hasSelection()?"OSSI leeg":"OSSI niet geladen")
+      });
+      renderSummary([summary("Drukreferentie",refScope),summary("Diver",diverScopeView),summary("OSSI",ossiScopeView)]);
+      renderXY(refScope,diverScopeView,ossiScopeView);
+      ui.ocrCount.textContent=String(refScope.length);
+      ui.diverCount.textContent=String(diverScopeView.length);
+      ui.ossiCount.textContent=String(ossiScopeView.length);
+      ui.combinedCount.textContent=String(state.combined.length);
+      state.rawDiver=applyDiverShift(restoreBaseRows(state.rawDiver),shiftSeconds);
+      if(logMessage)log(logMessage);
+      return true;
+    }
+    function nudgeDiverShift(direction,multiplier=1,overrideStep=null){
+      const baseStep=overrideStep??(Math.abs(num(ui.diverShift.step))||0.1);
+      const step=direction*baseStep*multiplier;
+      const current=num(ui.diverShift.value)||0;
+      const next=Math.round((current+step)*1000)/1000;
+      ui.diverShift.value=String(next);
+      recomputeWithCurrentData({logMessage:`Diver tijdoffset aangepast naar ${next.toFixed(3)} s.`});
+    }
+    function startShiftRun(direction){
+      if(!state.reference.length||!(state.diver.length||state.rawDiver.length)){
+        alert("Laad eerst drukreferentie- en Diver-data.");
+        return;
+      }
+      stopShiftRun();
+      const step=autoShiftStepValue();
+      setShiftRunState();
+      log(`Automatische Diver tijdoffset gestart: ${direction>0?"omhoog":"omlaag"} met stap ${step.toFixed(3)} s.`);
+      shiftRunTimer=setInterval(()=>nudgeDiverShift(direction,1,step),180);
+      setShiftRunState();
+    }
+    async function searchBestDiverShift(){
+      if(!state.reference.length||!(state.diver.length||state.rawDiver.length)){
+        alert("Laad eerst drukreferentie- en Diver-data.");
+        return;
+      }
+      stopShiftRun();
+      const tol=Math.max(.1,num(ui.toleranceSec.value)||2),center=num(ui.diverShift.value)||0,range=autoShiftRangeValue(),step=autoShiftStepValue();
+      const referenceFull=restoreBaseRows(state.reference),diverBase=restoreBaseRows(state.diver),refScope=scopeRows(referenceFull);
+      if(!refScope.length){
+        alert("Geen drukreferentie beschikbaar voor de huidige selectie.");
+        return;
+      }
+      let best=null,iterations=0;
+      const start=center-range,end=center+range;
+      shiftSearchActive=true;
+      cancelShiftSearch=false;
+      setShiftRunState();
+      log(`Zoek beste Diver tijdoffset: van ${start.toFixed(3)} s tot ${end.toFixed(3)} s in stappen van ${step.toFixed(3)} s.`);
+      try{
+        for(let shift=start;shift<=end+step/2;shift+=step){
+          if(cancelShiftSearch){
+            log("Zoeken naar beste Diver tijdoffset afgebroken.");
+            return;
+          }
+          const candidate=Math.round(shift*1000)/1000;
+          const diverScope=scopeRows(applyDiverShift(diverBase,candidate));
+          const metrics=calibrationMetrics(diverScope,refScope,tol);
+          if(metrics&&Number.isFinite(metrics.r2)&&Number.isFinite(metrics.slope)&&metrics.slope>0){
+            if(!best||metrics.r2>best.r2||(Math.abs(metrics.r2-best.r2)<1e-12&&metrics.points>best.points)||(
+              Math.abs(metrics.r2-best.r2)<1e-12&&metrics.points===best.points&&Math.abs(candidate-center)<Math.abs(best.shift-center)
+            )){
+              best={shift:candidate,...metrics};
+            }
+          }
+          iterations++;
+          if(iterations%25===0)await new Promise(r=>setTimeout(r,0));
+        }
+      }
+      finally{
+        shiftSearchActive=false;
+        cancelShiftSearch=false;
+        setShiftRunState();
+      }
+      if(!best){
+        log("Geen geldige Diver tijdoffset gevonden met positieve slope en voldoende overlap.");
+        alert("Geen geldige Diver tijdoffset gevonden in het opgegeven bereik.");
+        return;
+      }
+      ui.diverShift.value=best.shift.toFixed(3);
+      recomputeWithCurrentData({logMessage:`Beste Diver tijdoffset gevonden: ${best.shift.toFixed(3)} s, R2=${best.r2.toFixed(4)}, punten=${best.points}.`});
+    }
+    const pxToTime=x=>{
+      if(!chartScale.minX||!chartScale.maxX)return null;
+      const px=Math.min(Math.max(x,60),ui.timeCanvas.width-20);
+      const frac=(px-60)/((ui.timeCanvas.width-80)||1);
+      return new Date(chartScale.minX+frac*(chartScale.maxX-chartScale.minX));
+    };
+    const eventToCanvasX=e=>{
+      const rect=ui.timeCanvas.getBoundingClientRect();
+      const scale=ui.timeCanvas.width/rect.width;
+      return (e.clientX-rect.left)*scale;
+    };
+    function toggleManualInputs(){const ocrManual=ui.ocrTimeSource.value==="manual",ossiManual=ui.ossiTimeSource.value==="manual";ui.ocrManualDate.disabled=!ocrManual;ui.ocrManualTime.disabled=!ocrManual;ui.ossiManualDate.disabled=!ossiManual;ui.ossiManualTime.disabled=!ossiManual}
+    ui.ocrFile.addEventListener("change",()=>{const file=ui.ocrFile.files[0];if(!file)return;setDateTimeInputs(ui.ocrManualDate,ui.ocrManualTime,parseStartFromFilename(file.name)||new Date(file.lastModified))})
+    ui.ossiFiles.addEventListener("change",()=>{const file=ui.ossiFiles.files[0];if(!file)return;setDateTimeInputs(ui.ossiManualDate,ui.ossiManualTime,parseStartFromFilename(file.name)||new Date(file.lastModified))})
+    ui.ocrTimeSource.addEventListener("change",toggleManualInputs)
+    ui.ossiTimeSource.addEventListener("change",toggleManualInputs)
+    ui.shiftDownRunBtn.addEventListener("click",()=>startShiftRun(-1))
+    ui.shiftUpRunBtn.addEventListener("click",()=>startShiftRun(1))
+    ui.shiftStopBtn.addEventListener("click",()=>stopShiftRun("Automatische Diver tijdoffset gestopt."))
+    ui.autoBestShiftBtn.addEventListener("click",()=>{searchBestDiverShift().catch(e=>{shiftSearchActive=false;cancelShiftSearch=false;setShiftRunState();log(`Fout: ${e.message||e}`);alert(e.message||e)})})
+    ui.diverShift.addEventListener("change",()=>{recomputeWithCurrentData({logMessage:`Diver tijdoffset aangepast naar ${(num(ui.diverShift.value)||0).toFixed(3)} s.`})})
+    document.addEventListener("keydown",e=>{
+      if(e.key!=="ArrowUp"&&e.key!=="ArrowDown")return;
+      const target=e.target;
+      const editable=target&&(
+        target.tagName==="TEXTAREA"||
+        (target.tagName==="INPUT"&&target!==ui.diverShift)||
+        target.tagName==="SELECT"||
+        target.isContentEditable
+      );
+      if(editable)return;
+      if(!state.diver.length&&!state.rawDiver.length)return;
+      e.preventDefault();
+      nudgeDiverShift(e.key==="ArrowUp"?1:-1,e.shiftKey?10:1);
+    })
+    ui.timeCanvas.addEventListener("mousedown",e=>{if(!chartScale.minX)return;dragStart=eventToCanvasX(e);selectionPreview=null;})
+    ui.timeCanvas.addEventListener("mouseup",e=>{
+      if(dragStart===null)return;
+      const endX=eventToCanvasX(e);
+      const t1=pxToTime(dragStart),t2=pxToTime(endX);
+      if(t1&&t2){
+        selection.start=t1<t2?t1:t2;
+        selection.end=t1<t2?t2:t1;
+      }
+      dragStart=null;selectionPreview=null;
+      drawChart(chartSeries());
+    })
+    ui.timeCanvas.addEventListener("mousemove",e=>{
+      if(dragStart===null)return;
+      const endX=eventToCanvasX(e);
+      const t1=pxToTime(dragStart),t2=pxToTime(endX);
+      if(t1&&t2){
+        selectionPreview={start:t1<t2?t1:t2,end:t1<t2?t2:t1};
+        drawChart(chartSeries());
+      }
+    })
+    window.addEventListener("resize",()=>{adjustCanvasSize();drawChart(chartSeries());})
+    async function processAll(){stopShiftRun();clearLog();selection.start=null;selection.end=null;state.reference=[];state.diver=[];state.ossi=[];state.combined=[];state.reports=[];const ocr=ui.ocrFile.files[0],diver=ui.diverFile.files[0],ossi=ui.ossiFiles.files,tol=Math.max(.1,num(ui.toleranceSec.value)||2),spike=Math.max(1,num(ui.spikeStep.value)||80),m=mode();if(!ocr&&!diver&&!ossi.length)throw new Error("Laad minstens een drukreferentie-, Diver- of OSSI-bestand.");
+      if(ocr){log(`Drukreferentie lezen: ${ocr.name}`);state.reference=cleanReference(await parseReference(ocr),spike);log(`Drukreferentie klaar: ${state.reference.length} punten.`)}
+      if(diver){log(`Diver lezen: ${diver.name}`);state.diver=await parseDiver(diver);log(`Diver klaar: ${state.diver.length} punten.`)}
+      if(ossi.length){log(`OSSI lezen: ${ossi.length} bestand(en).`);state.ossi=await parseOssi(ossi,state.reference.length?state.reference[0].time:null);log(`OSSI klaar: ${state.ossi.length} punten.`)}
+      state.rawReference=cloneRows(state.reference);state.rawDiver=cloneRows(state.diver);state.rawOssi=cloneRows(state.ossi);
+      if(m==="diver_only"&&state.reference.length&&state.diver.length){const r=calibrate(state.diver,state.reference,"Diver",tol);state.diver=r.series;state.reports.push(r.report)}
+      else if(m==="diver_and_ossi"&&state.reference.length){if(state.diver.length){const r1=calibrate(state.diver,state.reference,"Diver",tol);state.diver=r1.series;state.reports.push(r1.report)} if(state.ossi.length){const r2=calibrate(state.ossi,state.reference,"OSSI",tol);state.ossi=r2.series;state.reports.push(r2.report)}}
+      else if(m==="none"){state.reports.push({sensor:"Modus",applied:false,points:0,slope:"",intercept:"",r2:"",note:"Alleen vergelijking, geen automatische kalibratie."})}
+      else if((m==="diver_only"||m==="diver_and_ossi")&&!state.reference.length){state.reports.push({sensor:"Modus",applied:false,points:0,slope:"",intercept:"",r2:"",note:"Kalibratie gevraagd maar geen drukreferentie geladen."})}
+      state.combined=buildCombined(state.reference,state.diver,state.ossi,tol);
+      updateOutputs({modeBadgeText:m});
+      log("Verwerking klaar.")}
+    ui.processBtn.addEventListener("click",async()=>{try{await processAll()}catch(e){log(`Fout: ${e.message||e}`);alert(e.message||e)}})
+    ui.updateBtn.addEventListener("click",async()=>{try{log("Opties gewijzigd, data wordt opnieuw opgebouwd.");await processAll()}catch(e){log(`Fout: ${e.message||e}`);alert(e.message||e)}})
+    ui.saveAllBtn.addEventListener("click",async()=>{try{await saveAllOutputsToDirectory({forcePrompt:!outputDirHandle})}catch(e){log(`Fout: ${e.message||e}`);alert(e.message||e)}})
+    ui.downloadCombinedBtn.addEventListener("click",()=>downloadCsv(exportFileName("combined_csv"),state.combined))
+    ui.downloadReportBtn.addEventListener("click",()=>downloadCsv(exportFileName("report_csv"),reportCsv()))
+    ui.downloadPdfBtn.addEventListener("click",downloadPdfReport)
+    ui.clearSelBtn.addEventListener("click",()=>{
+      selection.start=null;selection.end=null;
+      selectionPreview=null;zoomRange=null;
+      state.reference=cloneRows(state.rawReference);state.diver=cloneRows(state.rawDiver);state.ossi=cloneRows(state.rawOssi);
+      updateOutputs({
+        combinedRows:state.combined,
+        reports:state.reports
+      });
+    })
+    ui.dropSelBtn.addEventListener("click",()=>{
+      if(!hasSelection()){alert("Maak eerst een selectie op de grafiek.");return;}
+      const drop=rows=>rows.filter(r=>!inSelection(r.time));
+      state.reference=drop(state.reference);state.diver=drop(state.diver);state.ossi=drop(state.ossi);
+      updateOutputs({
+        combinedRows:state.combined,
+        reports:state.reports
+      });
+      log("Selectie verwijderd uit alle reeksen.");
+    })
+    function recomputeOnSelection(){recomputeWithCurrentData({requireSelection:true});}
+
+    ui.dropSpikesBtn.addEventListener("click",()=>{
+      if(!hasSelection()){alert("Maak eerst een selectie op de grafiek.");return;}
+      const drop=rows=>rows.filter(r=>!inSelection(r.time));
+      state.reference=drop(state.reference);
+      state.diver=drop(state.diver);
+      state.ossi=drop(state.ossi);
+      recomputeWithCurrentData({requireSelection:true,logMessage:"Pieken in de selectie zijn verwijderd uit drukreferentie en Diver/OSSI."});
+    })
+    ui.zoomSelBtn.addEventListener("click",()=>{
+      if(!hasSelection()){alert("Maak eerst een selectie op de grafiek.");return;}
+      zoomRange={minX:selection.start.getTime(),maxX:selection.end.getTime()};
+      drawChart(chartSeries());
+    })
+    ui.recalcSelBtn.addEventListener("click",()=>{
+      recomputeWithCurrentData({requireSelection:true,logMessage:"Herberekend op de huidige selectie."});
+    })
+    toggleManualInputs()
+    setShiftRunState()
+    adjustCanvasSize()
+    drawChart([])
+  </script>
+</body>
+</html>

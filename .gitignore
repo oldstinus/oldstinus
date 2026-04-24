@@ -9,10 +9,12 @@ __pycache__/
 .ipynb_checkpoints/
 .python-version
 .venv/
+.venv_*/
 venv/
 env/
 ENV/
 **/.venv/
+**/.venv_*/
 **/venv/
 **/env/
 **/ENV/
@@ -32,10 +34,10 @@ tmp*/
 **/agent_outputs/
 
 # Embedded third-party or duplicate repositories
-ADCP_Nortek_Aquadopp_AWAC_Vector/Nortek-Python/
-ADCP_Sontek_Riversurveyor_M9_IQ/QRevPy/
-Drukkamer_HF_DIVER/old/Seven-Segment-OCR/
-Drukkamer_HF_DIVER/old/seven-segment-ocr-1/
+**/ADCP_Nortek_Aquadopp_AWAC_Vector/Nortek-Python/
+**/ADCP_Sontek_Riversurveyor_M9_IQ/QRevPy/
+**/Drukkamer_HF_DIVER/old/Seven-Segment-OCR/
+**/Drukkamer_HF_DIVER/old/seven-segment-ocr-1/
 OLD/clone_imos-toolbox/imos-toolbox/
 OLD/openMVG/
 OLD/openMVS/
@@ -74,6 +76,10 @@ Desktop.ini
 *.bmp
 *.tif
 *.tiff
+*.mov
+*.MOV
+*.mp4
+*.MP4
 *.map
 *.obj
 *.stl
